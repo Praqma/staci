@@ -4,16 +4,6 @@ jira:
     - "8080"
   ports:
     - "8080:8080"
-  links:
-    - atlassiandb
-
-atlassiandb:
-  image: staci/atlassiandb:0.1
-  expose:
-    - "3306"
   volumes:
-    - "/data/jira/db/:/var/lib/mysql/"
-  environment:
-    - MYSQL_ROOT_PASSWORD="pw"
-    - MYSQL_PASSWORD="nlpw"
-    - MYSQL_USER="jira"
+    - /data/atlassian/jira:/var/atlassian/jira
+  

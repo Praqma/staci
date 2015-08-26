@@ -22,6 +22,20 @@ echo "
 source setEnv.sh
 source $STACI_HOME/functions/tools.f
 
+# Find location for persistant container data
+volume_dir=$(getProperty "volume_dir")
+echo " - Using $volume_dir for persistance"
+
+# Create folders for persistant container data, if not existing
+if [ ! -d "$volume_dir" ]; then
+  mkdir "$volume_dir"
+  mkdir "$volume_dir/jira"
+  mkdir "$volume_dir/confluence"
+  mkdir "$volume_dir/bamboo"
+  mkdir "$volume_dir/atlassiandb"
+  echo " - Created $volume_dir folder."
+fi
+
 # Find out, if we should create a cluster or not
 cluster=$(getProperty "createCluster")
 

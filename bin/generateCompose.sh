@@ -9,7 +9,9 @@ start_mysql=$(getProperty "start_mysql")
 start_jira=$(getProperty "start_jira")
 start_confluence=$(getProperty "start_confluence")
 start_bamboo=$(getProperty "start_bamboo")
+volume_dir=$(getProperty "volume_dir")
 
+# Check if a database will be needed
 if [ "$start_mysql" == "1" ]; then
    dblink="links:
     - atlassiandb
@@ -18,6 +20,7 @@ else
    dblink=""
 fi
 
+# Printing Jira specific yml
 if [ "$start_jira" == "1" ]; then
 cat << EOF
 jira:
@@ -26,10 +29,13 @@ jira:
     - "8080"
   ports:
     - "8080:8080"
+  volumes:
+    - $volume_dir/jira:/var/atlassian/jira
   $dblink
 EOF
-
 fi
+
+# Printing Confluence specific yml
 if [ "$start_confluence" == "1" ]; then
 cat << EOF
 confluence:
@@ -42,6 +48,7 @@ confluence:
 EOF
 fi
 
+# Printing Bamboo specific yml
 if [ "$start_bamboo" == "1" ]; then
 cat << EOF
 bamboo:
@@ -54,6 +61,7 @@ bamboo:
 EOF
 fi
 
+# Printing database specific yml
 if [ "$start_mysql" == "1" ]; then
 cat << EOF
 atlassiandb:
