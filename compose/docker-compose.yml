@@ -1,9 +1,18 @@
-jira:
-  image: staci/jira:0.1
+confluence:
+  image: staci/confluence:0.1
   expose:
-    - "8080"
+    - "8090"
   ports:
-    - "8080:8080"
+    - "8090:8090"
   volumes:
-    - /data/atlassian/jira:/var/atlassian/jira
+    - /data/atlassian/confluence:/var/atlassian/confluence
+  
+bamboo:
+  image: staci/bamboo:0.1
+  expose:
+    - "8085"
+  ports:
+    - "8085:8085"
+  volumes:
+    - /data/atlassian/bamboo:/var/lib/bamboo
   

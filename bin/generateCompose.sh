@@ -44,6 +44,8 @@ confluence:
     - "8090"
   ports:
     - "8090:8090"
+  volumes:
+    - $volume_dir/confluence:/var/atlassian/confluence
   $dblink
 EOF
 fi
@@ -57,6 +59,8 @@ bamboo:
     - "8085"
   ports:
     - "8085:8085"
+  volumes:
+    - $volume_dir/bamboo:/var/lib/bamboo
   $dblink
 EOF
 fi
@@ -69,7 +73,7 @@ atlassiandb:
   expose:
     - "3306"
   volumes:
-    - "/data/jira/db/:/var/lib/mysql/"
+    - "/data/jira/atlassiandb:/var/lib/mysql"
   environment:
     - MYSQL_ROOT_PASSWORD="pw"
     - MYSQL_PASSWORD="nlpw"

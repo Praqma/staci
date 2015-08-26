@@ -5,6 +5,10 @@ ENV CONF_HOME     /var/atlassian/confluence
 ENV CONF_INSTALL  /opt/atlassian/confluence
 ENV CONF_VERSION  @@VERSION@@
 
+# Add luci user and set password
+RUN useradd -u 1000 -ms /bin/bash atlassian
+RUN echo "atlassian:praqma" | chpasswd
+
 # Install Atlassian Confluence and helper tools and setup initial home
 # directory structure.
 RUN set -x \
@@ -13,17 +17,17 @@ RUN set -x \
     && apt-get clean \
     && mkdir -p                "${CONF_HOME}" \
     && chmod -R 700            "${CONF_HOME}" \
-    && chown daemon:daemon     "${CONF_HOME}" \
+    && chown atlassian:atlassian     "${CONF_HOME}" \
     && mkdir -p                "${CONF_INSTALL}/conf" \
     && curl -Ls                "http://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-5.9.0-OD-58-008.tar.gz" | tar -xz --directory "${CONF_INSTALL}" --strip-components=1 --no-same-owner \
     && chmod -R 700            "${CONF_INSTALL}/conf" \
     && chmod -R 700            "${CONF_INSTALL}/temp" \
     && chmod -R 700            "${CONF_INSTALL}/logs" \
     && chmod -R 700            "${CONF_INSTALL}/work" \
-    && chown -R daemon:daemon  "${CONF_INSTALL}/conf" \
-    && chown -R daemon:daemon  "${CONF_INSTALL}/temp" \
-    && chown -R daemon:daemon  "${CONF_INSTALL}/logs" \
-    && chown -R daemon:daemon  "${CONF_INSTALL}/work" \
+    && chown -R atlassian:atlassian  "${CONF_INSTALL}/conf" \
+    && chown -R atlassian:atlassian  "${CONF_INSTALL}/temp" \
+    && chown -R atlassian:atlassian  "${CONF_INSTALL}/logs" \
+    && chown -R atlassian:atlassian  "${CONF_INSTALL}/work" \
     && echo -e                 "\nconfluence.home=$CONF_HOME" >> "${CONF_INSTALL}/confluence/WEB-INF/classes/confluence-init.properties" \
     && xmlstarlet              ed --inplace \
         --delete               "Server/@debug" \
@@ -39,7 +43,7 @@ RUN set -x \
 # Use the default unprivileged account. This could be considered bad practice
 # on systems where multiple processes end up being executed by 'daemon' but
 # here we only ever run one process anyway.
-USER daemon:daemon
+USER atlassian:atlassian
 
 # Expose default HTTP connector port.
 EXPOSE 8090

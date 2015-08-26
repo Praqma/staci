@@ -2,10 +2,10 @@ FROM ubuntu:vivid
 
 ENV BAMBOO_HOME=/var/lib/bamboo \
     BAMBOO_INSTALL=/opt/atlassian/bamboo \
-    BAMBOO_UID=8085 \
-    BAMBOO_USER=bamboo \
-    BAMBOO_GID=8085 \
-    BAMBOO_GROUP=bamboo \
+    BAMBOO_UID=1000 \
+    BAMBOO_USER=atlassian \
+    BAMBOO_GID=1000 \
+    BAMBOO_GROUP=atlassian \
     BAMBOO_VERSION=5.9.4 \
 #
     DOCKER_GID=999 \
