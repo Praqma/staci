@@ -32,6 +32,8 @@ jira:
   volumes:
     - $volume_dir/jira:/var/atlassian/jira
   $dblink
+  environment:
+    - CATALINA_OPTS="-Datlassian.plugins.enable.wait=300"
 EOF
 fi
 

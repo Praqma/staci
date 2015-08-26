@@ -1,3 +1,16 @@
+jira:
+  image: staci/jira:0.1
+  expose:
+    - "8080"
+  ports:
+    - "8080:8080"
+  volumes:
+    - /data/atlassian/jira:/var/atlassian/jira
+  links:
+    - atlassiandb
+
+  environment:
+    - CATALINA_OPTS="-Datlassian.plugins.enable.wait=300"
 confluence:
   image: staci/confluence:0.1
   expose:
@@ -6,13 +19,31 @@ confluence:
     - "8090:8090"
   volumes:
     - /data/atlassian/confluence:/var/atlassian/confluence
-  
+  links:
+    - atlassiandb
+
+    - jira
 bamboo:
   image: staci/bamboo:0.1
   expose:
     - "8085"
+    - "54663"
   ports:
     - "8085:8085"
+    - "54663:54663"
   volumes:
     - /data/atlassian/bamboo:/var/lib/bamboo
-  
+  links:
+    - atlassiandb
+
+    - jira
+atlassiandb:
+  image: staci/atlassiandb:0.1
+  expose:
+    - "3306"
+  volumes:
+    - "/data/jira/atlassiandb:/var/lib/mysql"
+  environment:
+    - MYSQL_ROOT_PASSWORD="pw"
+    - MYSQL_PASSWORD="nlpw"
+    - MYSQL_USER="jira"

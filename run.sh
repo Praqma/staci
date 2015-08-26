@@ -39,9 +39,6 @@ fi
 # Find out, if we should create a cluster or not
 cluster=$(getProperty "createCluster")
 
-echo "Building images"
-./bin/build-all.sh
-
 # Check if we have a DOCKER_HOST variable
 if [ -z "$DOCKER_HOST" ] && [ "$cluster" == 0 ]; then
    echo " - Cant find a valid DOCKER_HOST variable, and cluster is OFF."
@@ -57,17 +54,17 @@ if [ ! -z "$DOCKER_HOST" ] && [ "$cluster" == 1 ]; then
    exit
 fi
 
-
 if [ ! -z "$DOCKER_HOST" ]; then
    echo " - Deploying on $DOCKER_HOST"
-else
-   echo ' - DOCKER_HOST not set. Set to "unix:///var/run/docker.sock" or "tcp://ip:port"'
 fi
 
 if [ "$cluster" == 1 ]; then
    echo " - Deploying on cluster"
+   source ./bin/createSwarm.sh
 fi 
 
+echo "Building images"
+./bin/build-all.sh
 
 # Generate a new compose yml, and put it in the compose folder
 echo -n " - Generating docker-compose.yml - "
@@ -76,13 +73,6 @@ if [ $? -ne 0 ]; then
    echo "ERROR"
 else
    echo "OK"
-fi
-
-
-# Create a cluster, if needed
-if [ "$cluster" == "1" ]; then
-   echo -n " - Creating cluster to run STACI - "
-   echo "Not implemented yet"
 fi
 
 # Start the containers with docker-compose
