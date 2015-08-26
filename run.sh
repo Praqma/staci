@@ -60,6 +60,8 @@ fi
 
 if [ ! -z "$DOCKER_HOST" ]; then
    echo " - Deploying on $DOCKER_HOST"
+else
+   echo ' - DOCKER_HOST not set. Set to "unix:///var/run/docker.sock" or "tcp://ip:port"'
 fi
 
 if [ "$cluster" == 1 ]; then

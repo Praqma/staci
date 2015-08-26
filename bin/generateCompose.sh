@@ -47,6 +47,7 @@ confluence:
   volumes:
     - $volume_dir/confluence:/var/atlassian/confluence
   $dblink
+    - jira
 EOF
 fi
 
@@ -64,6 +65,7 @@ bamboo:
   volumes:
     - $volume_dir/bamboo:/var/lib/bamboo
   $dblink
+    - jira
 EOF
 fi
 
