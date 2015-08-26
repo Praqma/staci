@@ -57,8 +57,10 @@ bamboo:
   image: staci/bamboo:$version
   expose:
     - "8085"
+    - "54663"
   ports:
     - "8085:8085"
+    - "54663:54663"
   volumes:
     - $volume_dir/bamboo:/var/lib/bamboo
   $dblink
