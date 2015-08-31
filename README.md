@@ -1,9 +1,14 @@
-STACI - Support Ticketing and Continous Integration
+# STACI Support Ticketing and Continous Integration
 
+## Important information
 Remember to turn off SE-LINUX and APPAMOR.
 
-Create a folder structure in /data where a user with uid has full read-write access. Also, create a jira, atlassiandb, confluence and bamboo inside this folder with same rights. You can specify another folder in ./bin/staci.properties instead of /data (look for volume_dir=/data)
+## Preperation
+- Create a folder structure in /data where a user with uid has full read-write access. 
+- Create a jira, atlassiandb, confluence and bamboo folder inside this folder with same rights. 
+- You can specify another folder in ./bin/staci.properties instead of /data (look for volume_dir=/data)
 
+## Getting started
 ```
 pull the repository
 cd staci
