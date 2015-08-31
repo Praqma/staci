@@ -10,28 +10,28 @@ docker-machine create \
     --swarm \
     --swarm-master \
     --swarm-discovery token://$swarmId \
-    --virtualbox-memory 2000
+    --virtualbox-memory 2000 \
     staci-jira &
 
 docker-machine create \
     -d virtualbox \
     --swarm \
     --swarm-discovery token://$swarmId \
-    --virtualbox-memory 3000
+    --virtualbox-memory 3000 \
     staci-confluence &
 
 docker-machine create \
     -d virtualbox \
     --swarm \
     --swarm-discovery token://$swarmId \
-    --virtualbox-memory 1500
+    --virtualbox-memory 1500 \
     staci-bamboo &
 
 docker-machine create \
     -d virtualbox \
     --swarm \
     --swarm-discovery token://$swarmId \
-    --virtualbox-memory 512
+    --virtualbox-memory 512 \
     staci-atlassiandb &
 
 wait
