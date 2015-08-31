@@ -83,7 +83,8 @@ else
 fi
 
 # Start the containers with docker-compose
-echo -n " - Starting containers, using docker-compose : "
+echo -n " - Starting containers, using docker-compose : 
+"
 docker-compose -f ./compose/docker-compose.yml up -d
 
 echo '
