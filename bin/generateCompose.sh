@@ -11,14 +11,6 @@ start_confluence=$(getProperty "start_confluence")
 start_bamboo=$(getProperty "start_bamboo")
 volume_dir=$(getProperty "volume_dir")
 
-# Check if a database will be needed
-if [ "$start_mysql" == "1" ]; then
-   dblink="links:
-    - atlassiandb
-"
-else
-   dblink=""
-fi
 
 # Printing Jira specific yml
 if [ "$start_jira" == "1" ]; then
@@ -32,7 +24,6 @@ jira:
     - "8080:8080"
   volumes:
     - $volume_dir/jira:/var/atlassian/jira
-  $dblink
   environment:
     - CATALINA_OPTS="-Datlassian.plugins.enable.wait=300"
 EOF
@@ -50,8 +41,6 @@ confluence:
     - "8090:8090"
   volumes:
     - $volume_dir/confluence:/var/atlassian/confluence
-  $dblink
-    - jira
 EOF
 fi
 
@@ -69,8 +58,6 @@ bamboo:
     - "54663:54663"
   volumes:
     - $volume_dir/bamboo:/var/lib/bamboo
-  $dblink
-    - jira
 EOF
 fi
 
@@ -85,8 +72,8 @@ atlassiandb:
   ports:
     - "3306:3306"
   volumes:
-    - "/data/jira/atlassiandb:/var/lib/mysql"
+    - $volume_dir/atlassiandb:/var/lib/mysql
   environment:
-    - MYSQL_ROOT_PASSWORD="pw"
+    - MYSQL_ROOT_PASSWORD=pass_word
 EOF
 fi
