@@ -1,4 +1,4 @@
-# STACI Support Ticketing and Continous Integration
+# Support Ticketing and Continous Integration
 
 ## Important information
 Remember to turn off SE-LINUX and APPAMOR.
@@ -10,7 +10,7 @@ Remember to turn off SE-LINUX and APPAMOR.
 
 ## Getting started
 ```
-pull the repository
+pull the repository (git clone https://github.com/Praqma/staci.git)
 cd staci
 export DOCKER_HOST=YOUR-IP:2375
 ./run.sh
