@@ -1,8 +1,8 @@
 # Support Ticketing and Continous Integration
 
 ## Important information
-Remember to turn off SE-LINUX and APPAMOR.
-Application linking does now yet work. Confluence looses its users, when administrated from Jira.
+- Remember to turn off SE-LINUX and APPAMOR.
+- Application linking does now yet work. Confluence looses its users, when administrated from Jira.
 
 ## Preperation
 - Create a folder structure in /data where a user with uid has full read-write access. 
