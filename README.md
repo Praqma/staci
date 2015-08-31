@@ -57,3 +57,23 @@ Use the folloing when setup Confluence DB connection
 - Database URL : jdbc:mysql://192.168.0.175/confluence?sessionVariables=storage_engine%3DInnoDB
 - User Name : confluenceuser
 - Password : confluencepass
+
+## Setting up MySQL for Bamboo
+run a mysql container to get a mysql-client
+```
+docker run -it --link compose_atlassiandb_1:mysql  mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p'
+enter mysql root password "pass_word" (found in ./bin/generateCompose.sh if changed)
+
+CREATE DATABASE bamboo CHARACTER SET utf8 COLLATE utf8_bin;
+GRANT ALL PRIVILEGES ON bamboo.* TO 'bamboouser'@'%' IDENTIFIED BY 'bamboopass';
+FLUSH PRIVILEGES;
+```
+
+Use the folloing when setup Bamboo DB connection
+- Install type : Production install
+- Select database : External MySQL
+- Connection : Direct JDBC
+- Database URL : jdbc:mysql://192.168.0.175/bamboo?autoReconnect=true
+- User name : bamboouser
+- Password : bamboopass
+- Overwrite Existing data : Yes, if you want

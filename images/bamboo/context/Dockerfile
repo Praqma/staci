@@ -87,6 +87,9 @@ COPY src/main/container/srv/ /srv/
 RUN set -x \
  && find /srv/ -name "*.sh" | xargs chmod -v +x
 
+# Getting the MySQL driver
+RUN curl -Ls "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.36.tar.gz" | tar -xz --directory "${BAMBOO_INSTALL}/lib/" --strip-components=1 --no-same-owner
+
 USER ${BAMBOO_USER}:${BAMBOO_GROUP}
 
 VOLUME ["${BAMBOO_HOME}"]
