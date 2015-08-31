@@ -25,6 +25,7 @@ if [ "$start_jira" == "1" ]; then
 cat << EOF
 jira:
   image: staci/jira:$version
+  hostname: jira
   expose:
     - "8080"
   ports:
@@ -42,6 +43,7 @@ if [ "$start_confluence" == "1" ]; then
 cat << EOF
 confluence:
   image: staci/confluence:$version
+  hostname: confluence
   expose:
     - "8090"
   ports:
@@ -58,6 +60,7 @@ if [ "$start_bamboo" == "1" ]; then
 cat << EOF
 bamboo:
   image: staci/bamboo:$version
+  hostname: bamboo
   expose:
     - "8085"
     - "54663"
@@ -76,13 +79,14 @@ if [ "$start_mysql" == "1" ]; then
 cat << EOF
 atlassiandb:
   image: staci/atlassiandb:$version
+  hostname: atlassiandb
   expose:
     - "3306"
+  ports:
+    - "3306:3306"
   volumes:
     - "/data/jira/atlassiandb:/var/lib/mysql"
   environment:
     - MYSQL_ROOT_PASSWORD="pw"
-    - MYSQL_PASSWORD="nlpw"
-    - MYSQL_USER="jira"
 EOF
 fi

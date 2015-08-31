@@ -1,0 +1,41 @@
+Sending build context to Docker daemon 4.096 kB
+Sending build context to Docker daemon 
+Step 0 : FROM airdock/oracle-jdk:1.8
+ ---> 0753a3a7c63a
+Step 1 : ENV JIRA_HOME /var/atlassian/jira
+ ---> Using cache
+ ---> 3040322da8cf
+Step 2 : ENV JIRA_INSTALL /opt/atlassian/jira
+ ---> Using cache
+ ---> 700426bd68d7
+Step 3 : ENV JIRA_VERSION 6.4.10
+ ---> Using cache
+ ---> be46ac121ade
+Step 4 : RUN useradd -u 1000 -ms /bin/bash atlassian
+ ---> Using cache
+ ---> 16d93022b7bf
+Step 5 : RUN echo "atlassian:praqma" | chpasswd
+ ---> Using cache
+ ---> de65a13538b4
+Step 6 : RUN set -x     && apt-get update --quiet     && apt-get install --quiet --yes --no-install-recommends libtcnative-1 xmlstarlet     && apt-get clean     && mkdir -p                     "${JIRA_HOME}"     && chmod -R 700                 "${JIRA_HOME}"     && chown -R atlassian:atlassian "${JIRA_HOME}"     && mkdir -p                     "${JIRA_INSTALL}/conf/Catalina"     && curl -Ls                     "http://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-${JIRA_VERSION}.tar.gz" | tar -xz --directory "${JIRA_INSTALL}" --strip-components=1 --no-same-owner     && chmod -R 700                 "${JIRA_INSTALL}/conf"     && chmod -R 700                 "${JIRA_INSTALL}/logs"     && chmod -R 700                 "${JIRA_INSTALL}/temp"     && chmod -R 700                 "${JIRA_INSTALL}/work"     && chown -R atlassian:atlassian "${JIRA_INSTALL}/conf"     && chown -R atlassian:atlassian "${JIRA_INSTALL}/logs"     && chown -R atlassian:atlassian "${JIRA_INSTALL}/temp"     && chown -R atlassian:atlassian "${JIRA_INSTALL}/work"     && echo -e                      "\njira.home=$JIRA_HOME" >> "${JIRA_INSTALL}/atlassian-jira/WEB-INF/classes/jira-application.properties"
+ ---> Using cache
+ ---> b5dd20fec890
+Step 7 : RUN curl -Ls "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.36.tar.gz" | tar -xz --directory "${JIRA_INSTALL}/lib/" --strip-components=1 --no-same-owner
+ ---> Using cache
+ ---> c90009bc344b
+Step 8 : USER atlassian:atlassian
+ ---> Using cache
+ ---> f1ff2182e7f1
+Step 9 : EXPOSE 8080
+ ---> Using cache
+ ---> 1b5f60bfbc9a
+Step 10 : VOLUME /var/atlassian/jira
+ ---> Using cache
+ ---> 9a433219133e
+Step 11 : WORKDIR ${JIRA_HOME}
+ ---> Using cache
+ ---> d2cf4c5a61f5
+Step 12 : CMD /opt/atlassian/jira/bin/start-jira.sh -fg
+ ---> Using cache
+ ---> 0a4645f00048
+Successfully built 0a4645f00048

@@ -1,0 +1,80 @@
+Sending build context to Docker daemon 4.608 kB
+Sending build context to Docker daemon 
+Step 0 : FROM library/mysql:5.6
+5.6: Pulling from docker.io/mysql
+9d3ceacde91b: Pulling fs layer
+bbe78c1a5a53: Pulling fs layer
+69eb5d4d54b3: Pulling fs layer
+f5f6385330c0: Pulling fs layer
+f4b6375ef02f: Pulling fs layer
+d3bb5852905f: Pulling fs layer
+208035cccd5b: Pulling fs layer
+62018351d120: Pulling fs layer
+5d9d413283ba: Pulling fs layer
+b417bf90111e: Pulling fs layer
+f04da4e5043b: Pulling fs layer
+98c3dff0ac55: Pulling fs layer
+ac704964d647: Pulling fs layer
+35351af721e3: Pulling fs layer
+15a3cddfc178: Pulling fs layer
+7eee2d462c8f: Pulling fs layer
+7eee2d462c8f: Pulling fs layer
+7eee2d462c8f: Layer already being pulled by another client. Waiting.
+62018351d120: Verifying Checksum
+62018351d120: Download complete
+bbe78c1a5a53: Verifying Checksum
+bbe78c1a5a53: Download complete
+f5f6385330c0: Verifying Checksum
+f5f6385330c0: Download complete
+98c3dff0ac55: Verifying Checksum
+98c3dff0ac55: Download complete
+5d9d413283ba: Verifying Checksum
+5d9d413283ba: Download complete
+ac704964d647: Verifying Checksum
+ac704964d647: Download complete
+69eb5d4d54b3: Verifying Checksum
+69eb5d4d54b3: Download complete
+15a3cddfc178: Verifying Checksum
+15a3cddfc178: Download complete
+35351af721e3: Verifying Checksum
+35351af721e3: Download complete
+f04da4e5043b: Verifying Checksum
+f04da4e5043b: Download complete
+7eee2d462c8f: Verifying Checksum
+7eee2d462c8f: Download complete
+7eee2d462c8f: Download complete
+208035cccd5b: Verifying Checksum
+208035cccd5b: Download complete
+d3bb5852905f: Verifying Checksum
+d3bb5852905f: Download complete
+f4b6375ef02f: Verifying Checksum
+f4b6375ef02f: Download complete
+b417bf90111e: Verifying Checksum
+b417bf90111e: Download complete
+9d3ceacde91b: Verifying Checksum
+9d3ceacde91b: Download complete
+9d3ceacde91b: Pull complete
+bbe78c1a5a53: Pull complete
+69eb5d4d54b3: Pull complete
+f5f6385330c0: Pull complete
+f4b6375ef02f: Pull complete
+d3bb5852905f: Pull complete
+208035cccd5b: Pull complete
+62018351d120: Pull complete
+5d9d413283ba: Pull complete
+b417bf90111e: Pull complete
+f04da4e5043b: Pull complete
+98c3dff0ac55: Pull complete
+ac704964d647: Pull complete
+35351af721e3: Pull complete
+15a3cddfc178: Pull complete
+7eee2d462c8f: Pull complete
+7eee2d462c8f: Already exists
+docker.io/mysql:5.6: The image you are pulling has been verified. Important: image verification is a tech preview feature and should not be relied on to provide security.
+Digest: sha256:cc9b7e0cecd3b6f3c5aef9e9a0523ab1f2e1bfdd820ff7b7d963bc9b4503493a
+Status: Downloaded newer image for docker.io/mysql:5.6
+ ---> 7eee2d462c8f
+Step 1 : COPY my.cnf /etc/mysql/my.cnf
+ ---> 1bfcc7858364
+Removing intermediate container 2fdad43dd401
+Successfully built 1bfcc7858364

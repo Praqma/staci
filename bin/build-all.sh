@@ -9,11 +9,7 @@ images=$(ls $STACI_HOME/images)
 
 # Lets build all the found images
 for image in $images; do
-  echo "-- Building : $image --"
-  docker build -t staci/$image:$version $STACI_HOME/images/$image/context/ &
-  echo "
-"
+  echo " - Building : $image -- please wait..."
+  docker build -t staci/$image:$version $STACI_HOME/images/$image/context/ > $STACI_HOME/logs/"$image".log 2>&1 &
 done
-
 wait
-

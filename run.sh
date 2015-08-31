@@ -22,9 +22,16 @@ echo "
 source setEnv.sh
 source $STACI_HOME/functions/tools.f
 
-# Find location for persistant container data
+# Find out, if we should create a cluster or not
+cluster=$(getProperty "createCluster")
+
+# Show directory for data
 volume_dir=$(getProperty "volume_dir")
 echo " - Using $volume_dir for persistance"
+
+# Show backup folder
+backup_folder=$(getProperty "backup_folder")
+echo " - Using $backup_folder for backup"
 
 # Create folders for persistant container data, if not existing
 if [ ! -d "$volume_dir" ]; then
@@ -35,9 +42,6 @@ if [ ! -d "$volume_dir" ]; then
   mkdir "$volume_dir/atlassiandb"
   echo " - Created $volume_dir folder."
 fi
-
-# Find out, if we should create a cluster or not
-cluster=$(getProperty "createCluster")
 
 # Check if we have a DOCKER_HOST variable
 if [ -z "$DOCKER_HOST" ] && [ "$cluster" == 0 ]; then
@@ -58,10 +62,13 @@ if [ ! -z "$DOCKER_HOST" ]; then
    echo " - Deploying on $DOCKER_HOST"
 fi
 
+read -p "Press [Enter] key to continue..."
+
 if [ "$cluster" == 1 ]; then
-   echo " - Deploying on cluster"
+   echo " - Deploying on cluster $provider_type"
    source ./bin/createSwarm.sh
 fi 
+
 
 echo "Building images"
 ./bin/build-all.sh
@@ -77,4 +84,11 @@ fi
 
 # Start the containers with docker-compose
 echo -n " - Starting containers, using docker-compose : "
-docker-compose -f ./compose/docker-compose.yml up 
+docker-compose -f ./compose/docker-compose.yml up -d
+
+echo '
+ - To view log, exec "docker-compose log"
+ - To stop, exec "./stop.sh"
+ - To start again later, exec "./start.sh"
+
+'

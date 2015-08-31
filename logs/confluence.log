@@ -1,0 +1,38 @@
+Sending build context to Docker daemon 4.608 kB
+Sending build context to Docker daemon 
+Step 0 : FROM airdock/oracle-jdk:1.8
+ ---> 0753a3a7c63a
+Step 1 : ENV CONF_HOME /var/atlassian/confluence
+ ---> Using cache
+ ---> ac0580b3f88c
+Step 2 : ENV CONF_INSTALL /opt/atlassian/confluence
+ ---> Using cache
+ ---> 83134f8744c5
+Step 3 : ENV CONF_VERSION @@VERSION@@
+ ---> Using cache
+ ---> d1c4a1945462
+Step 4 : RUN useradd -u 1000 -ms /bin/bash atlassian
+ ---> Using cache
+ ---> 9b32fb12743f
+Step 5 : RUN echo "atlassian:praqma" | chpasswd
+ ---> Using cache
+ ---> 2df7f48f1ba0
+Step 6 : RUN set -x     && apt-get update --quiet     && apt-get install --quiet --yes --no-install-recommends libtcnative-1 xmlstarlet     && apt-get clean     && mkdir -p                "${CONF_HOME}"     && chmod -R 700            "${CONF_HOME}"     && chown atlassian:atlassian     "${CONF_HOME}"     && mkdir -p                "${CONF_INSTALL}/conf"     && curl -Ls                "http://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-5.9.0-OD-58-008.tar.gz" | tar -xz --directory "${CONF_INSTALL}" --strip-components=1 --no-same-owner     && chmod -R 700            "${CONF_INSTALL}/conf"     && chmod -R 700            "${CONF_INSTALL}/temp"     && chmod -R 700            "${CONF_INSTALL}/logs"     && chmod -R 700            "${CONF_INSTALL}/work"     && chown -R atlassian:atlassian  "${CONF_INSTALL}/conf"     && chown -R atlassian:atlassian  "${CONF_INSTALL}/temp"     && chown -R atlassian:atlassian  "${CONF_INSTALL}/logs"     && chown -R atlassian:atlassian  "${CONF_INSTALL}/work"     && echo -e                 "\nconfluence.home=$CONF_HOME" >> "${CONF_INSTALL}/confluence/WEB-INF/classes/confluence-init.properties"     && xmlstarlet              ed --inplace         --delete               "Server/@debug"         --delete               "Server/Service/Connector/@debug"         --delete               "Server/Service/Connector/@useURIValidationHack"         --delete               "Server/Service/Connector/@minProcessors"         --delete               "Server/Service/Connector/@maxProcessors"         --delete               "Server/Service/Engine/@debug"         --delete               "Server/Service/Engine/Host/@debug"         --delete               "Server/Service/Engine/Host/Context/@debug"                                "${CONF_INSTALL}/conf/server.xml"
+ ---> Using cache
+ ---> d826281eb0a5
+Step 7 : USER atlassian:atlassian
+ ---> Using cache
+ ---> c7fe3db5754c
+Step 8 : EXPOSE 8090
+ ---> Using cache
+ ---> a26b0c46e9c4
+Step 9 : VOLUME /var/atlassian/confluence
+ ---> Using cache
+ ---> 5d77e43e9eb6
+Step 10 : WORKDIR ${CONF_HOME}
+ ---> Using cache
+ ---> bce99d554fa4
+Step 11 : CMD /opt/atlassian/confluence/bin/start-confluence.sh -fg
+ ---> Using cache
+ ---> 6ba4f328b310
+Successfully built 6ba4f328b310

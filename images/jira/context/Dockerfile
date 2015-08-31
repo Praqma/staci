@@ -31,6 +31,10 @@ RUN set -x \
     && chown -R atlassian:atlassian "${JIRA_INSTALL}/work" \
     && echo -e                      "\njira.home=$JIRA_HOME" >> "${JIRA_INSTALL}/atlassian-jira/WEB-INF/classes/jira-application.properties"
 
+# Getting the MySQL driver
+RUN curl -Ls "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.36.tar.gz" | tar -xz --directory "${JIRA_INSTALL}/lib/" --strip-components=1 --no-same-owner
+
+
 # Use the default unprivileged account. This could be considered bad practice
 # on systems where multiple processes end up being executed by 'daemon' but
 # here we only ever run one process anyway.
