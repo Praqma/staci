@@ -1,4 +1,4 @@
 #! /bin/bash
 
-# we stop all containers
+# we start all containers
 docker-compose -f ./compose/docker-compose.yml start

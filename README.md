@@ -14,7 +14,7 @@
 pull the repository (git clone https://github.com/Praqma/staci.git)
 cd staci
 export DOCKER_HOST=YOUR-IP:2375
-./run.sh
+./install.sh
 ```
 
 If you want to change the behavour of STACI, edit the file ./bin/staci.properties
