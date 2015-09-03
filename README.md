@@ -20,60 +20,10 @@ export DOCKER_HOST=YOUR-IP:2375
 If you want to change the behavour of STACI, edit the file ./bin/staci.properties
 
 ## Setting up MySQL for JIRA
-run a mysql container to get a mysql-client
-```
-docker run -it --link compose_atlassiandb_1:mysql  mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p'
-enter mysql root password "pass_word" (found in ./bin/generateCompose.sh if changed)
-
-CREATE USER 'jiradbuser'@'%' IDENTIFIED BY 'jirapass';
-CREATE DATABASE jiradb CHARACTER SET utf8 COLLATE utf8_bin;
-GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER,INDEX on jiradb.* TO 'jiradbuser'@'%';
-FLUSH PRIVILEGES;
-```
-
-Use the folloing when setup Jira DB connection
-- Database Type : MySQL
-- Hostname : 192.168.0.175  (docker host ip)
-- Port : 3306
-- Database : jiradb
-- Username : jiradbuser
-- Password : jirapass
+This is now done with the script ./bin/init-mysql.sh
 
 ## Setting up MySQL for Confluence
-run a mysql container to get a mysql-client
-```
-docker run -it --link compose_atlassiandb_1:mysql  mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p'
-enter mysql root password "pass_word" (found in ./bin/generateCompose.sh if changed)
-
-CREATE DATABASE confluence CHARACTER SET utf8 COLLATE utf8_bin;
-GRANT ALL PRIVILEGES ON confluence.* TO 'confluenceuser'@'%' IDENTIFIED BY 'confluencepass';
-FLUSH PRIVILEGES;
-```
-
-Use the folloing when setup Confluence DB connection
-- Database Type : MySQL
-- choose Direct connect
-- Driver Class Name : com.mysql.jdbc.Driver
-- Database URL : jdbc:mysql://192.168.0.175/confluence?sessionVariables=storage_engine%3DInnoDB
-- User Name : confluenceuser
-- Password : confluencepass
+This is now done with the script ./bin/init-mysql.sh
 
 ## Setting up MySQL for Bamboo
-run a mysql container to get a mysql-client
-```
-docker run -it --link compose_atlassiandb_1:mysql  mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p'
-enter mysql root password "pass_word" (found in ./bin/generateCompose.sh if changed)
-
-CREATE DATABASE bamboo CHARACTER SET utf8 COLLATE utf8_bin;
-GRANT ALL PRIVILEGES ON bamboo.* TO 'bamboouser'@'%' IDENTIFIED BY 'bamboopass';
-FLUSH PRIVILEGES;
-```
-
-Use the folloing when setup Bamboo DB connection
-- Install type : Production install
-- Select database : External MySQL
-- Connection : Direct JDBC
-- Database URL : jdbc:mysql://192.168.0.175/bamboo?autoReconnect=true
-- User name : bamboouser
-- Password : bamboopass
-- Overwrite Existing data : Yes, if you want
+This is now done with the script ./bin/init-mysql.sh
