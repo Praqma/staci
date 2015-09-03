@@ -87,6 +87,11 @@ echo -n " - Starting containers, using docker-compose :
 "
 docker-compose -f ./compose/docker-compose.yml up -d
 
+sleep 10
+
+# Setup database
+./bin/init-mysql.sh
+
 echo '
  - To view log, exec "docker-compose log"
  - To stop, exec "./stop.sh"

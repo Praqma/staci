@@ -7,3 +7,8 @@ function getProperty(){
     local property=$1
     echo $(cat $STACI_HOME/bin/staci.properties|grep "$property"|cut -d":" -f2)
 }
+
+function getContainerIP(){
+    containerName=$1
+    docker inspect --format '{{ .NetworkSettings.IPAddress }}' $containerName
+}

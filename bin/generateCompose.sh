@@ -17,6 +17,7 @@ if [ "$start_jira" == "1" ]; then
 cat << EOF
 jira:
   image: staci/jira:$version
+  container_name: jira
   hostname: jira
   expose:
     - "8080"
@@ -34,6 +35,7 @@ if [ "$start_confluence" == "1" ]; then
 cat << EOF
 confluence:
   image: staci/confluence:$version
+  container_name: confluence
   hostname: confluence
   expose:
     - "8090"
@@ -49,6 +51,7 @@ if [ "$start_bamboo" == "1" ]; then
 cat << EOF
 bamboo:
   image: staci/bamboo:$version
+  container_name: bamboo
   hostname: bamboo
   expose:
     - "8085"
@@ -66,6 +69,7 @@ if [ "$start_mysql" == "1" ]; then
 cat << EOF
 atlassiandb:
   image: staci/atlassiandb:$version
+  container_name: atlassiandb
   hostname: atlassiandb
   expose:
     - "3306"
