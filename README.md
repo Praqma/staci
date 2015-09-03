@@ -1,4 +1,4 @@
-# Support Ticketing and Continous Integration
+# Support Tracking and Continous Integration
 
 ## Important information
 - Remember to turn off SE-LINUX and APPAMOR.
