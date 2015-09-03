@@ -8,6 +8,7 @@
 ##
 
 source $STACI_HOME/functions/tools.f
+docker_host_ip=$(echo $DOCKER_HOST | grep -o '[0-9]\+[.][0-9]\+[.][0-9]\+[.][0-9]\+')
 
 function exec_sql(){
    local pw=$1
@@ -35,7 +36,7 @@ if [ "$start_jira" == "1" ]; then
 
    echo "*** Use the following to setup Jira db connection ***
 - Database Type : MySQL
-- Hostname : 192.168.0.175  (docker host ip)
+- Hostname : $docker_host_ip
 - Port : 3306
 - Database : $jira_database
 - Username : $jira_username
@@ -58,7 +59,7 @@ if [ "$start_confluence" == "1" ]; then
 - Database Type : MySQL
 - Connection : Direct JDBC
 - Driver Class Name : com.mysql.jdbc.Driver
-- Database URL : jdbc:mysql://192.168.0.175/$confluence_database?sessionVariables=storage_engine%3DInnoDB&useUnicode=true&characterEncoding=utf8
+- Database URL : jdbc:mysql://$docker_host_ip/$confluence_database?sessionVariables=storage_engine%3DInnoDB&useUnicode=true&characterEncoding=utf8
 - User Name : $confluence_username
 - Password : $confluence_password
    "
@@ -78,7 +79,7 @@ if [ "$start_bamboo" == "1" ]; then
 - Install type : Production install
 - Select database : External MySQL
 - Connection : Direct JDBC
-- Database URL : jdbc:mysql://192.168.0.175/$bamboo_database?autoReconnect=true
+- Database URL : jdbc:mysql://$docker_host_ip/$bamboo_database?autoReconnect=true
 - User name : $bamboo_username
 - Password : $bamboo_password
 - Overwrite Existing data : Yes, if you want
