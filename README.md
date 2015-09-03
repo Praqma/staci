@@ -8,7 +8,7 @@
 ## TO-DO's
 - Create a guideline for how to use Atlassian tools in Docker. Never use localhost, always use the dockerhost ip
 - Testing, testing and testing
-- Swarm support. 
+- Cluster / Swarm / Mesos support. 
 
 ## Preperation
 - Create a folder structure in /data where a user with uid has full read-write access. 
