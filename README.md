@@ -4,6 +4,7 @@
 - Remember to turn off SE-LINUX and APPAMOR.
 - Application linking does now yet work. Confluence looses its users, when administrated from Jira.
 - Setting up MySQL is now done with the script ./bin/init-mysql.sh and ran automaticly by install.sh
+- You need to install mysql client. I'm working on using a doker image instead.
 
 ## Preperation
 - Create a folder structure in /data where a user with uid has full read-write access. 
