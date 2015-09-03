@@ -3,6 +3,7 @@
 ## Important information
 - Remember to turn off SE-LINUX and APPAMOR.
 - Application linking does now yet work. Confluence looses its users, when administrated from Jira.
+- This is now done with the script ./bin/init-mysql.sh and ran automaticly by install.sh
 
 ## Preperation
 - Create a folder structure in /data where a user with uid has full read-write access. 
@@ -18,12 +19,3 @@ export DOCKER_HOST=YOUR-IP:2375
 ```
 
 If you want to change the behavour of STACI, edit the file ./bin/staci.properties
-
-## Setting up MySQL for JIRA
-This is now done with the script ./bin/init-mysql.sh
-
-## Setting up MySQL for Confluence
-This is now done with the script ./bin/init-mysql.sh
-
-## Setting up MySQL for Bamboo
-This is now done with the script ./bin/init-mysql.sh
