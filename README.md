@@ -6,7 +6,7 @@
 - MySQL client installed
 
 ## Important information
-- Remember to turn off SE-LINUX and APPAMOR.
+- Remember to turn off SE-LINUX and Apparmor.
 - Setting up MySQL is now done with the script ./bin/init-mysql.sh and ran automaticly by install.sh
 - You need to install mysql client. I'm working on using a doker image instead.
 
