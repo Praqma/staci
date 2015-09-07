@@ -1,5 +1,10 @@
 # Support Tracking and Continous Integration
 
+## Requirements
+- Docker version 1.8.1
+- Docker-compose version: 1.4.0
+- MySQL client installed
+
 ## Important information
 - Remember to turn off SE-LINUX and APPAMOR.
 - Setting up MySQL is now done with the script ./bin/init-mysql.sh and ran automaticly by install.sh
