@@ -5,7 +5,7 @@ source $STACI_HOME/functions/tools.f
 version=$(getProperty "imageVersion")
 
 # Here we will find all containers
-images=$(ls $STACI_HOME/images)
+images=$(cd $STACI_HOME/images/;echo */)
 
 # Lets build all the found images
 for image in $images; do
