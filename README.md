@@ -1,9 +1,13 @@
 # Support Tracking and Continous Integration
 
+## Requirements
+- Docker version 1.8.1
+- Docker-compose version: 1.4.0
+- MySQL client installed
+
 ## Important information
-- Remember to turn off SE-LINUX and APPAMOR.
+- Remember to turn off SE-LINUX and Apparmor.
 - Setting up MySQL is now done with the script ./bin/init-mysql.sh and ran automaticly by install.sh
-- You need to install mysql client. I'm working on using a doker image instead.
 
 ## TO-DO's
 - Create a guideline for how to use Atlassian tools in Docker. Never use localhost, always use the dockerhost ip
