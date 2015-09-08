@@ -48,6 +48,9 @@ EXPOSE 8080
 # directory due to eg. logs.
 VOLUME ["/var/atlassian/jira"]
 
+# Fix Issue #1  -- https://github.com/Praqma/staci/issues/1
+COPY context.xml /opt/atlassian/jira/conf/context.xml
+
 # Set the default working directory as the installation directory.
 WORKDIR ${JIRA_HOME}
 

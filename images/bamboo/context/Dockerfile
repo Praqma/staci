@@ -97,6 +97,9 @@ VOLUME ["${BAMBOO_HOME}"]
 #      HTTP MASTER
 EXPOSE 8085 54663
 
+# Fix Issue #1  -- https://github.com/Praqma/staci/issues/1
+COPY context.xml /opt/atlassian/bamboo/conf/context.xml
+
 WORKDIR ${BAMBOO_INSTALL}
 
 ENTRYPOINT ["/srv/bamboo.sh"]
