@@ -49,7 +49,7 @@ EXPOSE 8080
 VOLUME ["/var/atlassian/jira"]
 
 # Fix Issue #1  -- https://github.com/Praqma/staci/issues/1
-COPY context.xml /opt/atlassian/jira/conf/context.xml
+RUN sed -i -e 's/<Context>/<Context sessionCookieName="JIRASESSIONID">/g' /opt/atlassian/jira/conf/context.xml
 
 # Set the default working directory as the installation directory.
 WORKDIR ${JIRA_HOME}

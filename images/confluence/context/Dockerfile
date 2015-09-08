@@ -57,7 +57,7 @@ EXPOSE 8090
 VOLUME ["/var/atlassian/confluence"]
 
 # Fix Issue #1  -- https://github.com/Praqma/staci/issues/1
-COPY context.xml /opt/atlassian/confluence/conf/context.xml
+RUN sed -i -e 's/<Context>/<Context sessionCookieName="CONFLUENCESESSIONID">/g' /opt/atlassian/confluence/conf/context.xml
 
 # Set the default working directory as the Confluence home directory.
 WORKDIR ${CONF_HOME}
