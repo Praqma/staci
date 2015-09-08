@@ -34,6 +34,9 @@ RUN set -x \
 # Getting the MySQL driver
 RUN curl -Ls "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.36.tar.gz" | tar -xz --directory "${JIRA_INSTALL}/lib/" --strip-components=1 --no-same-owner
 
+# Fix Issue #2  -- https://github.com/Praqma/staci/issues/2
+COPY setContextPath.sh /tmp/setContextPath.sh
+RUN /tmp/setContextPath.sh
 
 # Use the default unprivileged account. This could be considered bad practice
 # on systems where multiple processes end up being executed by 'daemon' but
