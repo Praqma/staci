@@ -15,8 +15,8 @@
 - Cluster / Swarm / Mesos support. 
 
 ## Preperation
-- Create a folder structure in /data/atlassian where a user with uid has full read-write access. 
-- Create a jira, atlassiandb, confluence and bamboo folder inside this folder with same rights. 
+- Create a folder structure in /data/atlassian where a user with uid 1000 has full read-write access. 
+- Create a jira, atlassiandb, confluence, bamboo and backup folder inside /data/atlassian with same rights. 
 - You can specify another folder in ./bin/staci.properties instead of /data/atlassian (look for volume_dir=/data)
 
 ## Getting started
