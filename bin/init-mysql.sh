@@ -13,7 +13,7 @@ docker_host_ip=$(echo $DOCKER_HOST | grep -o '[0-9]\+[.][0-9]\+[.][0-9]\+[.][0-9
 function exec_sql(){
    local pw=$1
    local sqlcmd=$2
-   mySqlIp=$(getContainerIP atlassiandb)
+   mySqlIp=$docker_host_ip
    mysql --host="$mySqlIp" --port="3306" --user=root --password=$pw -e "$sqlcmd"
 }
 
