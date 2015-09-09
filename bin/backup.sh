@@ -24,9 +24,12 @@ fi
 # Create new backupfolder, with date
 backup_dir=$backup_folder/$(date +"%m_%d_%Y")
 mkdir $backup_dir
-echo " - Taking backup of $volume_dir to $backup_dir."
+
+echo " - Taking backup of staci.properties"
+cp $STACI_HOME/bin/staci.properties $backup_dir/staci.properties
 
 # Do backup
+echo " - Taking backup of $volume_dir to $backup_dir."
 cd $volume_dir
 
 if [ "$start_jira" == "1" ]; then

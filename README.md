@@ -15,9 +15,9 @@
 - Cluster / Swarm / Mesos support. 
 
 ## Preperation
-- Create a folder structure in /data where a user with uid has full read-write access. 
-- Create a jira, atlassiandb, confluence and bamboo folder inside this folder with same rights. 
-- You can specify another folder in ./bin/staci.properties instead of /data (look for volume_dir=/data)
+- Create a folder structure in /data/atlassian where a user with uid 1000 has full read-write access. 
+- Create a jira, atlassiandb, confluence, bamboo and backup folder inside /data/atlassian with same rights. 
+- You can specify another folder in ./bin/staci.properties instead of /data/atlassian (look for volume_dir=/data)
 
 ## Getting started
 ```
@@ -31,3 +31,7 @@ If you want to change the behavour of STACI, edit the file ./bin/staci.propertie
 
 ## Taking backup of containers
 The containers has consistant data in /data/atlassian/ (default, edit staci.properties). You can take a backup by executing the script ./bin/backup.sh. This will tar-gz the volumes to /data/atlassian/backup/[date]. 
+
+## Future
+Atlassian STASH can be found here, and easely added.
+https://hub.docker.com/r/cptactionhank/atlassian-stash/

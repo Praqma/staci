@@ -43,6 +43,10 @@ RUN set -x \
 # Getting the MySQL driver
 RUN curl -Ls "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.36.tar.gz" | tar -xz --directory "${CONF_INSTALL}/confluence/WEB-INF/lib/" --strip-components=1 --no-same-owner
 
+# Fix Issue #2  -- https://github.com/Praqma/staci/issues/2
+COPY setContextPath.sh /tmp/setContextPath.sh
+RUN /tmp/setContextPath.sh
+
 # Use the default unprivileged account. This could be considered bad practice
 # on systems where multiple processes end up being executed by 'daemon' but
 # here we only ever run one process anyway.
@@ -55,6 +59,9 @@ EXPOSE 8090
 # home directory needs to be persisted as well as parts of the installation
 # directory due to eg. logs.
 VOLUME ["/var/atlassian/confluence"]
+
+# Fix Issue #1  -- https://github.com/Praqma/staci/issues/1
+RUN sed -i -e 's/<Context>/<Context sessionCookieName="CONFLUENCESESSIONID">/g' /opt/atlassian/confluence/conf/context.xml
 
 # Set the default working directory as the Confluence home directory.
 WORKDIR ${CONF_HOME}

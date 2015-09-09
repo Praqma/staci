@@ -90,12 +90,19 @@ RUN set -x \
 # Getting the MySQL driver
 RUN curl -Ls "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.36.tar.gz" | tar -xz --directory "${BAMBOO_INSTALL}/lib/" --strip-components=1 --no-same-owner
 
+# Fix Issue #2  -- https://github.com/Praqma/staci/issues/2
+COPY setContextPath.sh /tmp/setContextPath.sh
+RUN /tmp/setContextPath.sh
+
 USER ${BAMBOO_USER}:${BAMBOO_GROUP}
 
 VOLUME ["${BAMBOO_HOME}"]
 
 #      HTTP MASTER
 EXPOSE 8085 54663
+
+# Fix Issue #1  -- https://github.com/Praqma/staci/issues/1
+RUN sed -i -e 's/<Context>/<Context sessionCookieName="BAMBOOSESSIONID">/g' /opt/atlassian/bamboo/conf/context.xml
 
 WORKDIR ${BAMBOO_INSTALL}
 

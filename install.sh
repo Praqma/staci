@@ -10,7 +10,7 @@
 echo "
 ##                                                                            ##
 #                                                                              #
-#  Starting STACI - Support, Ticketing and Continous Integration.              #
+#  Starting STACI - Support Tracking and Continous Integration.                #
 #                                                                              #
 #  - If you need to build images, use ./bin/build-all.sh                       #
 #  - If you need to push images to docker hub, use ./bin/push-to-dockerhub.sh  #
@@ -62,7 +62,8 @@ if [ ! -z "$DOCKER_HOST" ]; then
    echo " - Deploying on $DOCKER_HOST"
 fi
 
-read -p "Press [Enter] key to continue..."
+read -p "
+ - Press [Enter] key to continue..."
 
 if [ "$cluster" == 1 ]; then
    echo " - Deploying on cluster $provider_type"
@@ -70,7 +71,8 @@ if [ "$cluster" == 1 ]; then
 fi 
 
 
-echo "Building images"
+echo "
+ - Building images"
 ./bin/build-all.sh
 
 # Generate a new compose yml, and put it in the compose folder
@@ -87,7 +89,8 @@ echo -n " - Starting containers, using docker-compose :
 "
 docker-compose -f ./compose/docker-compose.yml up -d
 
-sleep 10
+# TODO: Need to wait for MySQL to start, before continuing, instead of sleep
+sleep 20
 
 # Setup database
 ./bin/init-mysql.sh
