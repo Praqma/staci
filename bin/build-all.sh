@@ -17,7 +17,7 @@ bambooContextPath=$(getProperty "bamboo_contextpath")
 
 # Set context path and build Jira
 if [ ! -z "$jiraContextPath" ] && [ "$start_jira" == "1" ]; then
-  echo " - building Jira"
+  echo " --- Jira"
   jiraContextPath='\'$jiraContextPath
   echo "sed -i -e 's/<Context path=\"\"/<Context path=\"$jiraContextPath\"/g' /opt/atlassian/jira/conf/server.xml" > $STACI_HOME/images/jira/context/setContextPath.sh
   chmod u+x $STACI_HOME/images/jira/context/setContextPath.sh
@@ -26,7 +26,7 @@ fi
 
 # Set context path and build Confluence
 if [ ! -z "$confluenceContextPath" ] && [ "$start_confluence" == "1" ]; then
-  echo " - building confluence"
+  echo " --- Confluence"
   confluenceContextPath='\'$confluenceContextPath
   echo "sed -i -e 's/<Context path=\"\"/<Context path=\"$confluenceContextPath\"/g' /opt/atlassian/confluence/conf/server.xml" > $STACI_HOME/images/confluence/context/setContextPath.sh
   chmod u+x $STACI_HOME/images/confluence/context/setContextPath.sh
@@ -35,7 +35,7 @@ fi
 
 # Set context path and build Bamboo
 if [ ! -z "$bambooContextPath" ] && [ "$start_bamboo" == "1" ]; then
-  echo " - building bamboo"
+  echo " --- Bamboo"
   bambooContextPath='\'$bambooContextPath
   echo "sed -i -e 's/<Context path=\"\"/<Context path=\"$bambooContextPath\"/g' /opt/atlassian/bamboo/conf/server.xml" > $STACI_HOME/images/bamboo/context/setContextPath.sh
   chmod u+x $STACI_HOME/images/bamboo/context/setContextPath.sh
@@ -44,8 +44,8 @@ fi
 
 # Build mysql database as atlassiandb
 if [ "$start_mysql" == "1" ]; then
-  echo " - building mysql"
-  docker build -t staci/atlassiandb:$version $STACI_HOME/images/atlassiandb/context/ > $STACI_HOME/logs/atlassiandb.build.log 2>&1 &
+  echo " --- Mysql"
+  docker build -t staci/atlassiandb:$version $STACI_HOME/images/mysql/context/ > $STACI_HOME/logs/atlassiandb.build.log 2>&1 &
 fi
 
 wait
