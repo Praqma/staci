@@ -1,8 +1,0 @@
-Sending build context to Docker daemon 4.608 kB
-Sending build context to Docker daemon 
-Step 0 : FROM library/mysql:5.6
- ---> 7eee2d462c8f
-Step 1 : COPY my.cnf /etc/mysql/my.cnf
- ---> Using cache
- ---> 1bfcc7858364
-Successfully built 1bfcc7858364
