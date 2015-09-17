@@ -6,7 +6,7 @@ ENV JIRA_HOME     /var/atlassian/jira
 ENV JIRA_INSTALL  /opt/atlassian/jira
 ENV JIRA_VERSION  6.4.10
 
-# Add luci user and set password
+# Add staci user and set password
 RUN useradd -u 1000 -ms /bin/bash atlassian
 RUN echo "atlassian:praqma" | chpasswd
 
