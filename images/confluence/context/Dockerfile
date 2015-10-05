@@ -1,4 +1,4 @@
-FROM airdock/oracle-jdk:1.8
+FROM staci/base:0.1
 
 # Setup useful environment variables
 ENV CONF_HOME     /var/atlassian/confluence
@@ -12,9 +12,6 @@ RUN echo "atlassian:praqma" | chpasswd
 # Install Atlassian Confluence and helper tools and setup initial home
 # directory structure.
 RUN set -x \
-    && apt-get update --quiet \
-    && apt-get install --quiet --yes --no-install-recommends libtcnative-1 xmlstarlet \
-    && apt-get clean \
     && mkdir -p                "${CONF_HOME}" \
     && chmod -R 700            "${CONF_HOME}" \
     && chown atlassian:atlassian     "${CONF_HOME}" \

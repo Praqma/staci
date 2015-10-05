@@ -1,21 +1,18 @@
 #FROM java:8
-FROM airdock/oracle-jdk:1.8
-
-# Configuration variables.
-ENV JIRA_HOME     /var/atlassian/jira
-ENV JIRA_INSTALL  /opt/atlassian/jira
-ENV JIRA_VERSION  6.4.10
+FROM staci/base:0.1
 
 # Add staci user and set password
 RUN useradd -u 1000 -ms /bin/bash atlassian
 RUN echo "atlassian:praqma" | chpasswd
 
+# Configuration variables.
+ENV JIRA_HOME     /var/atlassian/jira
+ENV JIRA_INSTALL  /opt/atlassian/jira
+ENV JIRA_VERSION  6.4.12
+
 # Install Atlassian JIRA and helper tools and setup initial home
 # directory structure.
 RUN set -x \
-    && apt-get update --quiet \
-    && apt-get install --quiet --yes --no-install-recommends libtcnative-1 xmlstarlet \
-    && apt-get clean \
     && mkdir -p                     "${JIRA_HOME}" \
     && chmod -R 700                 "${JIRA_HOME}" \
     && chown -R atlassian:atlassian "${JIRA_HOME}" \
