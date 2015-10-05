@@ -3,7 +3,11 @@ FROM staci/base:0.1
 # Setup useful environment variables
 ENV CONF_HOME     /var/atlassian/confluence
 ENV CONF_INSTALL  /opt/atlassian/confluence
-ENV CONF_VERSION  @@VERSION@@
+ENV CONF_VERSION  5.8.10
+
+# Define memory usage for tomcat
+ENV Xms		  512m
+ENV Xmx		  2048m
 
 # Add luci user and set password
 RUN useradd -u 1000 -ms /bin/bash atlassian
@@ -16,7 +20,7 @@ RUN set -x \
     && chmod -R 700            "${CONF_HOME}" \
     && chown atlassian:atlassian     "${CONF_HOME}" \
     && mkdir -p                "${CONF_INSTALL}/conf" \
-    && curl -Ls                "http://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-5.9.0-OD-58-008.tar.gz" | tar -xz --directory "${CONF_INSTALL}" --strip-components=1 --no-same-owner \
+    && curl -Ls                "http://www.atlassian.com/software/confluence/downloads/binary/atlassian-confluence-${CONF_VERSION}.tar.gz" | tar -xz --directory "${CONF_INSTALL}" --strip-components=1 --no-same-owner \
     && chmod -R 700            "${CONF_INSTALL}/conf" \
     && chmod -R 700            "${CONF_INSTALL}/temp" \
     && chmod -R 700            "${CONF_INSTALL}/logs" \
@@ -35,7 +39,8 @@ RUN set -x \
         --delete               "Server/Service/Engine/@debug" \
         --delete               "Server/Service/Engine/Host/@debug" \
         --delete               "Server/Service/Engine/Host/Context/@debug" \
-                               "${CONF_INSTALL}/conf/server.xml"
+                               "${CONF_INSTALL}/conf/server.xml" \
+    && sed -ri "s/-Xms1024m -Xmx1024m/-Xms${Xms} -Xmx${Xmx}/" $CONF_INSTALL/bin/setenv.sh
 
 # Getting the MySQL driver
 RUN curl -Ls "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.36.tar.gz" | tar -xz --directory "${CONF_INSTALL}/confluence/WEB-INF/lib/" --strip-components=1 --no-same-owner
