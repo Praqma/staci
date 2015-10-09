@@ -21,6 +21,7 @@ function exec_sql(){
 start_jira=$(getProperty "start_jira")
 start_confluence=$(getProperty "start_confluence")
 start_bamboo=$(getProperty "start_bamboo")
+start_crowd=$(getProperty "start_crowd")
 mysql_root_pass=$(getProperty "mysql_root_pass")
 
 if [ "$start_jira" == "1" ]; then
@@ -82,6 +83,27 @@ if [ "$start_bamboo" == "1" ]; then
 - Database URL : jdbc:mysql://$docker_host_ip/$bamboo_database?autoReconnect=true
 - User name : $bamboo_username
 - Password : $bamboo_password
+- Overwrite Existing data : Yes, if you want
+   "
+fi
+
+if [ "$start_crowd" == "1" ]; then
+   echo " - Setting up MySQL for Crowd"
+   crowd_username=$(getProperty "crowd_username")
+   crowd_password=$(getProperty "crowd_password")
+   crowd_database=$(getProperty "crowd_database_name")
+
+   exec_sql $mysql_root_pass "create database $crowd_database character set utf8 collate utf8_bin;"
+   exec_sql $mysql_root_pass "GRANT ALL PRIVILEGES ON $crowd_database.* TO '$crowd_username'@'%' IDENTIFIED BY '$crowd_password';"
+   exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
+
+   echo " *** Use the following to setup Crowd db connection ***
+- Install type : New installation
+- Database type : JDBC connection
+- Database : MySQL
+- Database URL : jdbc:mysql://$docker_host_ip/$crowd_database?autoReconnect=true&characterEncoding=utf8&useUnicode=true
+- User name : $crowd_username
+- Password : $crowd_password
 - Overwrite Existing data : Yes, if you want
    "
 fi

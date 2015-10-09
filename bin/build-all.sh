@@ -9,6 +9,7 @@ start_mysql=$(getProperty "start_mysql")
 start_jira=$(getProperty "start_jira")
 start_confluence=$(getProperty "start_confluence")
 start_bamboo=$(getProperty "start_bamboo")
+start_crowd=$(getProperty "start_crowd")
 
 # Get context path for each application
 jiraContextPath=$(getProperty "jira_contextpath")
@@ -50,6 +51,12 @@ fi
 if [ "$start_mysql" == "1" ]; then
   echo " ----- Mysql"
   docker build -t staci/atlassiandb:$version $STACI_HOME/images/mysql/context/ > $STACI_HOME/logs/atlassiandb.build.log 2>&1 &
+fi
+
+# Build Crowd
+if [ "$start_crowd" == "1" ]; then
+  echo " ----- Crowd"
+  docker build -t staci/crowd:$version $STACI_HOME/images/crowd/context/ > $STACI_HOME/logs/crowd.build.log 2>&1 &
 fi
 
 wait
