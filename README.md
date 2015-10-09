@@ -35,4 +35,3 @@ The containers has consistant data in /data/atlassian/ (default, edit staci.prop
 ## Future
 Atlassian STASH and Crowd can be found here, and easely added.
 - https://hub.docker.com/r/cptactionhank/atlassian-stash/
-- https://hub.docker.com/r/nkatsaros/atlassian-crowd/
