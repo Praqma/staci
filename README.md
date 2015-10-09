@@ -33,5 +33,6 @@ If you want to change the behavour of STACI, edit the file ./bin/staci.propertie
 The containers has consistant data in /data/atlassian/ (default, edit staci.properties). You can take a backup by executing the script ./bin/backup.sh. This will tar-gz the volumes to /data/atlassian/backup/[date]. 
 
 ## Future
-Atlassian STASH can be found here, and easely added.
+Atlassian STASH and Crowd can be found here, and easely added.
 https://hub.docker.com/r/cptactionhank/atlassian-stash/
+https://hub.docker.com/r/nkatsaros/atlassian-crowd/
