@@ -9,6 +9,7 @@ start_mysql=$(getProperty "start_mysql")
 start_jira=$(getProperty "start_jira")
 start_confluence=$(getProperty "start_confluence")
 start_bamboo=$(getProperty "start_bamboo")
+start_crowd=$(getProperty "start_crowd")
 
 # Get data directory
 volume_dir=$(getProperty "volume_dir")
@@ -18,12 +19,12 @@ backup_folder=$(getProperty "backup_folder")
 
 # Create folders for persistant container data, if not existing
 if [ ! -d "$backup_folder" ]; then
-  mkdir $backup_folder
+  mkdir -p $backup_folder
 fi
 
 # Create new backupfolder, with date
 backup_dir=$backup_folder/$(date +"%m_%d_%Y")
-mkdir $backup_dir
+mkdir -p $backup_dir
 
 echo " - Taking backup of staci.properties"
 cp $STACI_HOME/bin/staci.properties $backup_dir/staci.properties
@@ -45,6 +46,11 @@ fi
 if [ "$start_bamboo" == "1" ]; then
   mkdir $backup_dir/bamboo
   tar czf $backup_dir/bamboo/bamboo.tgz bamboo &
+fi
+
+if [ "$start_crowd" == "1" ]; then
+  mkdir $backup_dir/crowd
+  tar czf $backup_dir/crowd/crowd.tgz crowd &
 fi
 
 if [ "$start_mysql" == "1" ]; then
