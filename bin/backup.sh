@@ -23,7 +23,7 @@ if [ ! -d "$backup_folder" ]; then
 fi
 
 # Create new backupfolder, with date
-backup_dir=$backup_folder/$(date +"%m_%d_%Y")
+backup_dir=$backup_folder/$(date +%Y_%m_%d_%H_%M_%S)
 mkdir -p $backup_dir
 
 echo " - Taking backup of staci.properties"
