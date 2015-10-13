@@ -41,9 +41,7 @@ RUN curl -Ls "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-jav
 COPY setContextPath.sh /tmp/setContextPath.sh
 RUN /tmp/setContextPath.sh
 
-# Use the default unprivileged account. This could be considered bad practice
-# on systems where multiple processes end up being executed by 'daemon' but
-# here we only ever run one process anyway.
+# Use the user atlassian to run Jira.
 USER atlassian:atlassian
 
 # Expose default HTTP connector port.
