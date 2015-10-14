@@ -14,7 +14,7 @@ RUN  mkdir -p $CROWD_INSTALL \
   && tar xf $CROWD_INSTALL/atlassian-crowd.tar.gz -C $CROWD_INSTALL --strip-components=1 \
   && echo "crowd.home=$CROWD_HOME" > $CROWD_INSTALL/crowd-webapp/WEB-INF/classes/crowd-init.properties \
   && rm -f $CROWD_INSTALL/atlassian-crowd.tar.gz \
-  && chown -R atlassian /opt/atlassian 
+  && chown -R atlassian:atlassian /opt/atlassian 
 
 ENV Xms           512m
 ENV Xmx           1024m
@@ -26,6 +26,9 @@ RUN sed -ri "s/-Xms128m/-Xms${Xms}/" $CROWD_INSTALL/apache-tomcat/bin/setenv.sh 
 RUN curl -Ls "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.36.tar.gz" | tar -xz --directory "${CROWD_INSTALL}/apache-tomcat/lib/" --strip-components=1 --no-same-owner
 
 VOLUME /var/atlassian/crowd
+
+# Use the user atlassian to run Jira.
+USER atlassian:atlassian
 
 EXPOSE 8095
 CMD ["/opt/atlassian/crowd/apache-tomcat/bin/catalina.sh", "run"]
