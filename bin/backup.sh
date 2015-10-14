@@ -10,6 +10,7 @@ start_jira=$(getProperty "start_jira")
 start_confluence=$(getProperty "start_confluence")
 start_bamboo=$(getProperty "start_bamboo")
 start_crowd=$(getProperty "start_crowd")
+start_bitbucket=$(getProperty "start_bitbucket")
 
 # Get data directory
 volume_dir=$(getProperty "volume_dir")
@@ -51,6 +52,11 @@ fi
 if [ "$start_crowd" == "1" ]; then
   mkdir $backup_dir/crowd
   tar czf $backup_dir/crowd/crowd.tgz crowd &
+fi
+
+if [ "$start_bitbucket" == "1" ]; then
+  mkdir $backup_dir/bitbucket
+  tar czf $backup_dir/bitbucket/bitbucket.tgz bitbucket &
 fi
 
 if [ "$start_mysql" == "1" ]; then
