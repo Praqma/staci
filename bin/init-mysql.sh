@@ -22,6 +22,7 @@ start_jira=$(getProperty "start_jira")
 start_confluence=$(getProperty "start_confluence")
 start_bamboo=$(getProperty "start_bamboo")
 start_crowd=$(getProperty "start_crowd")
+start_bitbucket=$(getProperty "start_bitbucket")
 mysql_root_pass=$(getProperty "mysql_root_pass")
 
 if [ "$start_jira" == "1" ]; then
@@ -105,6 +106,27 @@ if [ "$start_crowd" == "1" ]; then
 - User name : $crowd_username
 - Password : $crowd_password
 - Overwrite Existing data : Yes, if you want
+   "
+fi
+
+if [ "$start_bitbucket" == "1" ]; then
+   echo " - Setting up MySQL for Bitbucket"
+   bitbucket_username=$(getProperty "bitbucket_username")
+   bitbucket_password=$(getProperty "bitbucket_password")
+   bitbucket_database=$(getProperty "bitbucket_database_name")
+
+   exec_sql $mysql_root_pass "CREATE DATABASE $bitbucket_database CHARACTER SET utf8 COLLATE utf8_bin;"
+   exec_sql $mysql_root_pass "GRANT ALL PRIVILEGES ON $bitbucket_database.* TO '$bitbucket_username'@'%' IDENTIFIED BY '$bitbucket_password';"
+   exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
+
+   echo " *** Use the following to setup Bitbucket db connection ***
+- Database : External
+- Database type : MySQL
+- Hostname : $docker_host_ip
+- Port : 3306
+- Database name : $bitbucket_database
+- Database username : $bitbucket_username
+- Database password : $bitbucket_password
    "
 fi
 

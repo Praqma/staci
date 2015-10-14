@@ -10,11 +10,13 @@ start_jira=$(getProperty "start_jira")
 start_confluence=$(getProperty "start_confluence")
 start_bamboo=$(getProperty "start_bamboo")
 start_crowd=$(getProperty "start_crowd")
+start_bitbucket=$(getProperty "start_bitbucket")
 
 # Get context path for each application
 jiraContextPath=$(getProperty "jira_contextpath")
 confluenceContextPath=$(getProperty "confluence_contextpath")
 bambooContextPath=$(getProperty "bamboo_contextpath")
+bitbucketContextPath=$(getProperty "bitbucket_contextpath")
 
 # Build our base image
   echo " --- Base image"
@@ -47,6 +49,15 @@ if [ ! -z "$bambooContextPath" ] && [ "$start_bamboo" == "1" ]; then
   docker build -t staci/bamboo:$version $STACI_HOME/images/bamboo/context/ > $STACI_HOME/logs/bamboo.build.log 2>&1 &
 fi
 
+# Set context path and build Bitbucket
+if [ ! -z "$bitbucketContextPath" ] && [ "$start_bitbucket" == "1" ]; then
+  echo " ----- Bitbucket"
+  bitbucketContextPath='\'$bitbucketContextPath
+  echo "sed -i -e 's/path=\"\"/path=\"$bitbucketContextPath\"/g' /opt/atlassian/bitbucket/conf/server.xml" > $STACI_HOME/images/bitbucket/context/setContextPath.sh
+  chmod u+x $STACI_HOME/images/bitbucket/context/setContextPath.sh
+  docker build -t staci/bitbucket:$version $STACI_HOME/images/bitbucket/context/ > $STACI_HOME/logs/bitbucket.build.log 2>&1 &
+fi
+
 # Build mysql database as atlassiandb
 if [ "$start_mysql" == "1" ]; then
   echo " ----- Mysql"
@@ -71,3 +82,7 @@ fi
 if [ "$start_bamboo" == "1" ]; then
   rm $STACI_HOME/images/bamboo/context/setContextPath.sh
 fi
+if [ "$start_bitbucket" == "1" ]; then
+  rm $STACI_HOME/images/bitbucket/context/setContextPath.sh
+fi
+
