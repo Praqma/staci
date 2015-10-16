@@ -1,4 +1,4 @@
-# Support Tracking and Continuous Integration
+# Support Tracking And Continuous Integration
 
 ## STACI consist of
 - Jira
