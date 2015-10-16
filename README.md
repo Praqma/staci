@@ -1,4 +1,4 @@
-# Support Tracking and Continous Integration
+# Support Tracking and Continuous Integration
 
 ## STACI consist of
 - Jira
@@ -29,6 +29,8 @@
 
 ## Getting started
 ```
+Turn off SELinux or AppAmour.
+Create data directory (eg. /data/atlassian/jira, confluence, atlassiandb and so on)
 pull the repository (git clone https://github.com/Praqma/staci.git)
 cd staci
 export DOCKER_HOST=YOUR-IP:2375
