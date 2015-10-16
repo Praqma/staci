@@ -30,7 +30,7 @@
 ## Getting started
 ```
 Turn off SELinux or AppAmour.
-Create data directory (eg. /data/atlassian/jira, confluence, atlassiandb and so on)
+Create data directory (See Preperation section)
 pull the repository (git clone https://github.com/Praqma/staci.git)
 cd staci
 export DOCKER_HOST=YOUR-IP:2375
