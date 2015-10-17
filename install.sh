@@ -70,6 +70,9 @@ if [ "$cluster" == 1 ]; then
    source ./bin/createSwarm.sh
 fi 
 
+# Generate database configuration for Jira
+# Only works with JDK 1.8+
+./bin/generate_jira_dbconfig.sh > $volume_dir/jira/dbconfig.xml
 
 echo "
  - Building images"

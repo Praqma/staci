@@ -9,8 +9,44 @@ start_mysql=$(getProperty "start_mysql")
 start_jira=$(getProperty "start_jira")
 start_confluence=$(getProperty "start_confluence")
 start_bamboo=$(getProperty "start_bamboo")
+start_crowd=$(getProperty "start_crowd")
+start_bitbucket=$(getProperty "start_bitbucket")
+
 volume_dir=$(getProperty "volume_dir")
 
+# Printing Bitbucket specific yml
+if [ "$start_bitbucket" == "1" ]; then
+cat << EOF
+bitbucket:
+  image: staci/bitbucket:$version
+  container_name: bitbucket
+  hostname: bitbucket
+  expose:
+    - "7990"
+    - "7999"
+  ports:
+    - "7990:7990"
+    - "7999:7999"
+  volumes:
+    - $volume_dir/bitbucket:/var/atlassian/bitbucket
+EOF
+fi
+
+# Printing Crowd specific yml
+if [ "$start_crowd" == "1" ]; then
+cat << EOF
+crowd:
+  image: staci/crowd:$version
+  container_name: crowd
+  hostname: crowd
+  expose:
+    - "8095"
+  ports:
+    - "8095:8095"
+  volumes:
+    - $volume_dir/crowd:/var/atlassian/crowd
+EOF
+fi
 
 # Printing Jira specific yml
 if [ "$start_jira" == "1" ]; then

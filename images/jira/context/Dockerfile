@@ -1,21 +1,22 @@
 #FROM java:8
-FROM airdock/oracle-jdk:1.8
+FROM staci/base:0.1
+
+# Add staci user and set password
+RUN useradd -u 1000 -ms /bin/bash atlassian
+RUN echo "atlassian:praqma" | chpasswd
 
 # Configuration variables.
 ENV JIRA_HOME     /var/atlassian/jira
 ENV JIRA_INSTALL  /opt/atlassian/jira
-ENV JIRA_VERSION  6.4.10
+ENV JIRA_VERSION  6.4.12
 
-# Add luci user and set password
-RUN useradd -u 1000 -ms /bin/bash atlassian
-RUN echo "atlassian:praqma" | chpasswd
+# Define memory usage for tomcat
+ENV Xms           512m
+ENV Xmx           1512m
 
 # Install Atlassian JIRA and helper tools and setup initial home
 # directory structure.
 RUN set -x \
-    && apt-get update --quiet \
-    && apt-get install --quiet --yes --no-install-recommends libtcnative-1 xmlstarlet \
-    && apt-get clean \
     && mkdir -p                     "${JIRA_HOME}" \
     && chmod -R 700                 "${JIRA_HOME}" \
     && chown -R atlassian:atlassian "${JIRA_HOME}" \
@@ -29,7 +30,9 @@ RUN set -x \
     && chown -R atlassian:atlassian "${JIRA_INSTALL}/logs" \
     && chown -R atlassian:atlassian "${JIRA_INSTALL}/temp" \
     && chown -R atlassian:atlassian "${JIRA_INSTALL}/work" \
-    && echo -e                      "\njira.home=$JIRA_HOME" >> "${JIRA_INSTALL}/atlassian-jira/WEB-INF/classes/jira-application.properties"
+    && echo -e                      "\njira.home=$JIRA_HOME" >> "${JIRA_INSTALL}/atlassian-jira/WEB-INF/classes/jira-application.properties" \
+    && sed -ri 's/JVM_MINIMUM_MEMORY="384m"/JVM_MINIMUM_MEMORY="'"${Xms}"'"/' $JIRA_INSTALL/bin/setenv.sh \
+    && sed -ri 's/JVM_MAXIMUM_MEMORY="768m"/JVM_MAXIMUM_MEMORY="'"${Xmx}"'"/' $JIRA_INSTALL/bin/setenv.sh 
 
 # Getting the MySQL driver
 RUN curl -Ls "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.36.tar.gz" | tar -xz --directory "${JIRA_INSTALL}/lib/" --strip-components=1 --no-same-owner
@@ -38,9 +41,7 @@ RUN curl -Ls "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-jav
 COPY setContextPath.sh /tmp/setContextPath.sh
 RUN /tmp/setContextPath.sh
 
-# Use the default unprivileged account. This could be considered bad practice
-# on systems where multiple processes end up being executed by 'daemon' but
-# here we only ever run one process anyway.
+# Use the user atlassian to run Jira.
 USER atlassian:atlassian
 
 # Expose default HTTP connector port.
