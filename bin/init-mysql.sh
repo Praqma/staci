@@ -37,12 +37,12 @@ if [ "$start_jira" == "1" ]; then
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
    echo "*** Use the following to setup Jira db connection ***
-- Database Type : MySQL
-- Hostname : $docker_host_ip
-- Port : 3306
-- Database : $jira_database
-- Username : $jira_username
-- Password : $jira_password
+ - Database Type : MySQL
+ - Hostname : $docker_host_ip
+ - Port : 3306
+ - Database : $jira_database
+ - Username : $jira_username
+ - Password : $jira_password
    "
 fi
 
@@ -57,13 +57,13 @@ if [ "$start_confluence" == "1" ]; then
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
    echo "*** Use the following to setup Bamboo db connection ***
-- Install type : Production install
-- Database Type : MySQL
-- Connection : Direct JDBC
-- Driver Class Name : com.mysql.jdbc.Driver
-- Database URL : jdbc:mysql://$docker_host_ip/$confluence_database?sessionVariables=storage_engine%3DInnoDB&useUnicode=true&characterEncoding=utf8
-- User Name : $confluence_username
-- Password : $confluence_password
+ - Install type : Production install
+ - Database Type : MySQL
+ - Connection : Direct JDBC
+ - Driver Class Name : com.mysql.jdbc.Driver
+ - Database URL : jdbc:mysql://$docker_host_ip/$confluence_database?sessionVariables=storage_engine%3DInnoDB&useUnicode=true&characterEncoding=utf8
+ - User Name : $confluence_username
+ - Password : $confluence_password
    "
 fi
 
@@ -78,13 +78,13 @@ if [ "$start_bamboo" == "1" ]; then
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
    echo " *** Use the following to setup Bamboo db connection ***
-- Install type : Production install
-- Select database : External MySQL
-- Connection : Direct JDBC
-- Database URL : jdbc:mysql://$docker_host_ip/$bamboo_database?autoReconnect=true
-- User name : $bamboo_username
-- Password : $bamboo_password
-- Overwrite Existing data : Yes, if you want
+ - Install type : Production install
+ - Select database : External MySQL
+ - Connection : Direct JDBC
+ - Database URL : jdbc:mysql://$docker_host_ip/$bamboo_database?autoReconnect=true
+ - User name : $bamboo_username
+ - Password : $bamboo_password
+ - Overwrite Existing data : Yes, if you want
    "
 fi
 
@@ -99,13 +99,13 @@ if [ "$start_crowd" == "1" ]; then
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
    echo " *** Use the following to setup Crowd db connection ***
-- Install type : New installation
-- Database type : JDBC connection
-- Database : MySQL
-- Database URL : jdbc:mysql://$docker_host_ip/$crowd_database?autoReconnect=true&characterEncoding=utf8&useUnicode=true
-- User name : $crowd_username
-- Password : $crowd_password
-- Overwrite Existing data : Yes, if you want
+ - Install type : New installation
+ - Database type : JDBC connection
+ - Database : MySQL
+ - Database URL : jdbc:mysql://$docker_host_ip/$crowd_database?autoReconnect=true&characterEncoding=utf8&useUnicode=true
+ - User name : $crowd_username
+ - Password : $crowd_password
+ - Overwrite Existing data : Yes, if you want
    "
 fi
 
@@ -120,13 +120,13 @@ if [ "$start_bitbucket" == "1" ]; then
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
    echo " *** Use the following to setup Bitbucket db connection ***
-- Database : External
-- Database type : MySQL
-- Hostname : $docker_host_ip
-- Port : 3306
-- Database name : $bitbucket_database
-- Database username : $bitbucket_username
-- Database password : $bitbucket_password
+ - Database : External
+ - Database type : MySQL
+ - Hostname : $docker_host_ip
+ - Port : 3306
+ - Database name : $bitbucket_database
+ - Database username : $bitbucket_username
+ - Database password : $bitbucket_password
    "
 fi
 
