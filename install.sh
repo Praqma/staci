@@ -98,6 +98,12 @@ sleep 20
 # Setup database
 ./bin/init-mysql.sh
 
+# Generate System Information html
+./bin/generateSystemInfo.sh > SystemInfo.html
+
+# Open tools and System Information websites
+# TODO: Call favorite browser
+
 echo '
  - To view log, exec "docker-compose log"
  - To stop, exec "./stop.sh"
