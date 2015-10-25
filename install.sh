@@ -92,17 +92,21 @@ echo -n " - Starting containers, using docker-compose :
 "
 docker-compose -f ./compose/docker-compose.yml up -d
 
+# Generate System Information html
+./bin/generateSystemInfo.sh > $STACI_HOME/SystemInfo.html
+
+# Open tools and System Information websites
+use_browser=$(getProperty "use_browser")
+if [ "$use_browser" == "1" ]; then
+  browser_cmd=$(getProperty "browser_cmd")
+  $browser_cmd "$STACI_HOME/SystemInfo.html" &>/dev/null & 
+fi
+
 # TODO: Need to wait for MySQL to start, before continuing, instead of sleep
 sleep 20
 
 # Setup database
 ./bin/init-mysql.sh
-
-# Generate System Information html
-./bin/generateSystemInfo.sh > SystemInfo.html
-
-# Open tools and System Information websites
-# TODO: Call favorite browser
 
 echo '
  - To view log, exec "docker-compose log"

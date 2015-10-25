@@ -154,7 +154,7 @@ if [ "$start_confluence" == "1" ]; then
 
 cat << EOF
 <div id="confluence" class="settingsdiv">
-  <b>Use the following to setup Bamboo db connection</b>
+  <b>Use the following to setup Confluence db connection</b>
   <a href="http://$docker_host_ip:8090$confluence_contextpath" target="_blank">Confluence link</a>
   <ul>
     <li>Install type : Production install</li>
