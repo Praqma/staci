@@ -14,7 +14,7 @@ echo "
 #                                                                              #
 #  - If you need to build images, use ./bin/build-all.sh                       #
 #  - If you need to push images to docker hub, use ./bin/push-to-dockerhub.sh  #
-#                                                                              #
+#      (You might want to implement it first)                                  #
 ##                                                                            ##
 "
 
@@ -107,11 +107,14 @@ if [ "$use_browser" == "1" ]; then
   $browser_cmd "$STACI_HOME/SystemInfo.html" &>/dev/null & 
 fi
 
-# TODO: Need to wait for MySQL to start, before continuing, instead of sleep
-sleep 20
+start_mysql=$(getProperty "start_mysql")
+if [ ! -z $start_mysql ];then
+  # TODO: Need to wait for MySQL to start, before continuing, instead of sleep
+  sleep 20
 
-# Setup database
-./bin/init-mysql.sh
+  # Setup database
+  ./bin/init-mysql.sh
+fi
 
 echo '
  - To view log, exec "docker-compose log"
