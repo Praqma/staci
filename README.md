@@ -6,6 +6,7 @@
 - Bamboo
 - BitBucket server
 - Crowd
+- Crucible (new)
 - MySQL
 
 ## Requirements
