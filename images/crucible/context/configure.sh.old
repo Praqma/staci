@@ -1,0 +1,36 @@
+#!/bin/bash
+
+echo "FISHEYE_HOME=${FISHEYE_HOME}"
+echo "FISHEYE_INST=${FISHEYE_INST}"
+
+CONFIG_SOURCE="${FISHEYE_HOME:?"FISHEYE_HOME not set"}/config.xml"
+CONFIG_DESTINATION="${FISHEYE_INST:?"FISHEYE_INST not set"}/config.xml"
+
+if [ -f $CONFIG_DESTINATION ]; then
+	echo "File $CONFIG_DESTINATION already exists."
+	exit 0
+fi
+
+if [ ! -f $CONFIG_SOURCE ]; then
+	echo "File $CONFIG_SOURCE doesn't exist."
+	exit 1
+fi
+
+configfile=$(cat << EOF
+<config control-bind="127.0.0.1:8059" version="1.0">
+    <web-server site-url="http://192.168.1.104:8060">
+        <http bind=":8060"/>
+    </web-server>
+    <security allow-anon="true" allow-cru-anon="true"/>
+    <repository-defaults>
+        <linker/>
+        <allow/>
+        <tarball enabled="false" maxFileCount="0"/>
+        <security allow-anon="true"/>
+    </repository-defaults>
+</config>
+EOF
+)
+
+echo "Copying config.xml to ${CONFIG_DESTINATION}..."
+echo $configfile > /opt/atlassian/crucible/config.xml

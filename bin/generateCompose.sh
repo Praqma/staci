@@ -11,6 +11,7 @@ start_confluence=$(getProperty "start_confluence")
 start_bamboo=$(getProperty "start_bamboo")
 start_crowd=$(getProperty "start_crowd")
 start_bitbucket=$(getProperty "start_bitbucket")
+start_crucible=$(getProperty "start_crucible")
 
 volume_dir=$(getProperty "volume_dir")
 
@@ -45,6 +46,22 @@ crowd:
     - "8095:8095"
   volumes:
     - $volume_dir/crowd:/var/atlassian/crowd
+EOF
+fi
+
+# Printing Crucible specific yml
+if [ "$start_crucible" == "1" ]; then
+cat << EOF
+crucible:
+  image: staci/crucible:$version
+  container_name: crucible
+  hostname: crowd
+  expose:
+    - "8060"
+  ports:
+    - "8060:8060"
+  volumes:
+    - $volume_dir/crucible:/var/atlassian/crucible
 EOF
 fi
 

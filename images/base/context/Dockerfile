@@ -8,7 +8,7 @@ RUN echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | te
 	apt-get update && \
 	echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections  && \
 	echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections  && \
-	apt-get install libapr1 libaprutil1 libtcnative-1 oracle-java8-installer oracle-java8-set-default curl vim wget nmap libtcnative-1 xmlstarlet --force-yes -y && \
+	apt-get install libapr1 libaprutil1 libtcnative-1 oracle-java8-installer oracle-java8-set-default curl vim wget unzip nmap libtcnative-1 xmlstarlet --force-yes -y && \
         apt-get clean
 
 # Define JAVA_HOME variable

@@ -11,6 +11,7 @@ start_confluence=$(getProperty "start_confluence")
 start_bamboo=$(getProperty "start_bamboo")
 start_crowd=$(getProperty "start_crowd")
 start_bitbucket=$(getProperty "start_bitbucket")
+start_crucible=$(getProperty "start_crucible")
 
 # Get context path for each application
 jiraContextPath=$(getProperty "jira_contextpath")
@@ -68,6 +69,12 @@ fi
 if [ "$start_crowd" == "1" ]; then
   echo " ----- Crowd"
   docker build -t staci/crowd:$version $STACI_HOME/images/crowd/context/ > $STACI_HOME/logs/crowd.build.log 2>&1 &
+fi
+
+# Build Crucible
+if [ "$start_crucible" == "1" ]; then
+  echo " ----- Crucible"
+  docker build -t staci/crucible:$version $STACI_HOME/images/crucible/context/ > $STACI_HOME/logs/crucible.build.log 2>&1 &
 fi
 
 wait

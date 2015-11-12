@@ -12,6 +12,7 @@ start_confluence=$(getProperty "start_confluence")
 start_bamboo=$(getProperty "start_bamboo")
 start_crowd=$(getProperty "start_crowd")
 start_bitbucket=$(getProperty "start_bitbucket")
+start_crucible=$(getProperty "start_crucible")
 
 cat << EOF
 <html>
@@ -67,6 +68,11 @@ cat << EOF
     document.getElementById('atlassiandb').style.display = 'none';
 EOF
 fi
+if [ "$start_crucible" == "1" ]; then
+cat << EOF
+    document.getElementById('crucible').style.display = 'none';
+EOF
+fi
 cat << EOF
 
     document.getElementById('info').style.display = 'none';
@@ -84,6 +90,12 @@ EOF
 if [ "$start_jira" == "1" ]; then
 cat << EOF
   <a href="#" onClick="showElement('jira');">Jira</a> |
+EOF
+fi
+
+if [ "$start_crucible" == "1" ]; then
+cat << EOF
+  <a href="#" onClick="showElement('crucible');">Crucible</a> |
 EOF
 fi
 
@@ -145,6 +157,18 @@ cat << EOF
 EOF
 fi
 
+if [ "$start_crucible" == "1" ]; then
+cat << EOF
+<div id="crucible" class="settingsdiv">
+  <b>Use the following to setup Crucible db connection</b>
+  <a href="http://$docker_host_ip:8060/" target="_blank">Crucible link</a>
+
+  <ul>
+    <li>Jira link : http://$docker_host_ip:8080$jira_contextpath</li>
+  </ul>
+</div>
+EOF
+fi
 
 if [ "$start_confluence" == "1" ]; then
    confluence_username=$(getProperty "confluence_username")

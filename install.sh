@@ -72,7 +72,12 @@ fi
 
 # Generate database configuration for Jira
 # Only works with JDK 1.8+
-./bin/generate_jira_dbconfig.sh > $volume_dir/jira/dbconfig.xml
+#./bin/generate_jira_dbconfig.sh > $volume_dir/jira/dbconfig.xml
+
+start_crucible=$(getProperty "start_crucible")
+if [ "$start_crucible" == 1 ]; then
+  ./bin/generate_crucible_config.sh > images/crucible/context/configure.sh
+fi
 
 echo "
  - Building images"
