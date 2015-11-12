@@ -1,3 +1,8 @@
+#
+# Hack :
+#  To use Jira Software : http://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-software-7.0.0-jira-7.0.0.tar.gz
+#  To use Jira Service Desk : http://www.atlassian.com/software/jira/downloads/binary/atlassian-servicedesk-3.0.0-jira-7.0.0.tar.gz
+
 #FROM java:8
 FROM staci/base:0.1
 
