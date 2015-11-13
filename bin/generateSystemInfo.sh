@@ -158,13 +158,19 @@ EOF
 fi
 
 if [ "$start_crucible" == "1" ]; then
+  crucibleContextPath=$(getProperty "crusible_contextpath")
 cat << EOF
 <div id="crucible" class="settingsdiv">
   <b>Use the following to setup Crucible db connection</b>
-  <a href="http://$docker_host_ip:8060/" target="_blank">Crucible link</a>
+  <a href="http://$docker_host_ip:8060$crucibleContextPath" target="_blank">Crucible link</a>
 
   <ul>
-    <li>Jira link : http://$docker_host_ip:8080$jira_contextpath</li>
+    <li>Crucible link : http://$docker_host_ip:8060$crucibleContextPath</li>
+EOF
+  if [ "$start_jira" == "1" ]; then
+     echo "<li>Link to Jira : http://$docker_host_ip:8080$jira_contextpath</li>"
+  fi
+cat << EOF
   </ul>
 </div>
 EOF
