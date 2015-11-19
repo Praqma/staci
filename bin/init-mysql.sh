@@ -9,12 +9,13 @@
 
 source $STACI_HOME/functions/tools.f
 docker_host_ip=$(echo $DOCKER_HOST | grep -o '[0-9]\+[.][0-9]\+[.][0-9]\+[.][0-9]\+')
+version=$(getProperty "imageVersion")
 
 function exec_sql(){
    local pw=$1
    local sqlcmd=$2
    mySqlIp=$docker_host_ip
-   mysql --host="$mySqlIp" --port="3306" --user=root --password=$pw -e "$sqlcmd"
+   docker run -it staci/atlassiandb:$version mysql --host="$mySqlIp" --port="3306" --user=root --password=$pw -e "$sqlcmd" > $STACI_HOME/logs/mysqlInit.log 2>&1
 }
 
 # Find out what to init
