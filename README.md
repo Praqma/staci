@@ -6,13 +6,13 @@
 - Bamboo
 - BitBucket server
 - Crowd
-- Crucible (new)
+- Crucible
 - MySQL
 
 ## Requirements
 - Docker version 1.8.1
 - Docker-compose version: 1.4.0
-- MySQL client installed
+- ~~MySQL client installed~~
 
 ## Important information
 - Remember to turn off SE-LINUX and Apparmor.
