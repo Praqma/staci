@@ -23,6 +23,7 @@ start_confluence=$(getProperty "start_confluence")
 start_bamboo=$(getProperty "start_bamboo")
 start_crowd=$(getProperty "start_crowd")
 start_bitbucket=$(getProperty "start_bitbucket")
+start_crucible=$(getProperty "start_crucible")
 mysql_root_pass=$(getProperty "mysql_root_pass")
 
 if [ "$start_jira" == "1" ]; then
@@ -130,3 +131,23 @@ if [ "$start_bitbucket" == "1" ]; then
    "
 fi
 
+if [ "$start_crucible" == "1" ]; then
+   echo " - Setting up MySQL for Crucible"
+   crucible_username=$(getProperty "crucible_username")
+   crucible_password=$(getProperty "crucible_password")
+   crucible_database=$(getProperty "crucible_database_name")
+
+   exec_sql $mysql_root_pass "CREATE DATABASE $crucible_database CHARACTER SET utf8 COLLATE utf8_bin;"
+   exec_sql $mysql_root_pass "GRANT ALL PRIVILEGES ON $crucible_database.* TO '$crucible_username'@'%' IDENTIFIED BY '$crucible_password';"
+   exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
+
+   echo " *** Use the following to setup Bitbucket db connection ***
+ - Database : External
+ - Database type : MySQL
+ - Hostname : $docker_host_ip
+ - Port : 3306
+ - Database name : $crucible_database
+ - Database username : $crucible_username
+ - Database password : $crucible_password
+   "
+fi

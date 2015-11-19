@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source $STACI_HOME/functions/tools.f
 
 # Set version of images

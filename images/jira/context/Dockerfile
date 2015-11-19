@@ -26,7 +26,7 @@ RUN set -x \
     && chmod -R 700                 "${JIRA_HOME}" \
     && chown -R atlassian:atlassian "${JIRA_HOME}" \
     && mkdir -p                     "${JIRA_INSTALL}/conf/Catalina" \
-    && curl -Ls                     "http://www.atlassian.com/software/jira/downloads/binary/atlassian-servicedesk-3.0.0-jira-7.0.0.tar.gz" | tar -xz --directory "${JIRA_INSTALL}" --strip-components=1 --no-same-owner \
+    && curl -Ls                     "http://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-software-7.0.0-jira-7.0.0.tar.gz" | tar -xz --directory "${JIRA_INSTALL}" --strip-components=1 --no-same-owner \
     && chmod -R 700                 "${JIRA_INSTALL}/logs" \
     && chmod -R 700                 "${JIRA_INSTALL}/temp" \
     && chmod -R 700                 "${JIRA_INSTALL}/work" \

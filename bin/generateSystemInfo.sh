@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source $STACI_HOME/functions/tools.f
 docker_host_ip=$(echo $DOCKER_HOST | grep -o '[0-9]\+[.][0-9]\+[.][0-9]\+[.][0-9]\+')
 
@@ -133,7 +133,7 @@ cat << EOF
 </div>
 
 <div id="info" class="settingsdiv">
-  <p><b>Welcome to your Atlassian tools stack.</b><br><br>Here you will find all the information you need, to set up your software.</p><br><br>
+  <b>Welcome to your Atlassian tools stack.</b><br><br>Here you will find all the information you need, to set up your software.<br>
 </div>
 EOF
 if [ "$start_jira" == "1" ]; then
