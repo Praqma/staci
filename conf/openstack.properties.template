@@ -1,0 +1,31 @@
+# Enviroment variables for setting op OpenStack connection
+# through Docker-Machine.
+#
+
+# Openstack informations. Get them from your Standard-openrc.sh file.
+# On Zetta.io, it can be fetch here : 
+# https://dashboard.zetta.io/project/access_and_security/api_access/openrc/
+#
+openstack_OS_AUTH_URL:https://identity.api.zetta.io/v3
+openstack_OS_REGION_NAME:no-osl1
+openstack_OS_PROJECT_ID:projectid
+openstack_OS_PROJECT_NAME:Standard
+openstack_OS_PROJECT_DOMAIN_ID:projectdomainid
+openstack_OS_USER_DOMAIN_ID:domainid
+openstack_OS_IDENTITY_API_VERSION:3
+openstack_OS_USERNAME:username
+openstack_OS_PASSWORD:password
+openstack_OS_TENANT_NAME:Standard
+openstack_OS_DOMAIN_NAME:domainname
+
+# Input variables to Docker-Machine
+openstack_sec_groups:default,DockerAPI,Atlassian
+openstack_ssh_user:ubuntu
+openstack_floating_ip_pool:Public
+openstack_flavor_id:7
+openstack_net_id:be63ef5c-0656-42e5-9f80-8754ff9fcb23
+openstack_image_id:e12ff7e3-9638-4b27-b050-616880d832af
+
+# Name of instance. 
+openstack_instance_name:Atlassian-test
+

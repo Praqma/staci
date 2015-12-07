@@ -15,10 +15,6 @@ ENV JIRA_HOME     /var/atlassian/jira
 ENV JIRA_INSTALL  /opt/atlassian/jira
 ENV JIRA_VERSION  6.4.12
 
-# Define memory usage for tomcat
-ENV Xms           512m
-ENV Xmx           1512m
-
 # Install Atlassian JIRA and helper tools and setup initial home
 # directory structure.
 RUN set -x \
@@ -26,18 +22,12 @@ RUN set -x \
     && chmod -R 700                 "${JIRA_HOME}" \
     && chown -R atlassian:atlassian "${JIRA_HOME}" \
     && mkdir -p                     "${JIRA_INSTALL}/conf/Catalina" \
-    && curl -Ls                     "http://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-software-7.0.0-jira-7.0.0.tar.gz" | tar -xz --directory "${JIRA_INSTALL}" --strip-components=1 --no-same-owner \
+    && curl -Ls                     "http://www.atlassian.com/software/jira/downloads/binary/atlassian-servicedesk-3.0.0-jira-7.0.0.tar.gz" | tar -xz --directory "${JIRA_INSTALL}" --strip-components=1 --no-same-owner \
     && chmod -R 700                 "${JIRA_INSTALL}/logs" \
     && chmod -R 700                 "${JIRA_INSTALL}/temp" \
     && chmod -R 700                 "${JIRA_INSTALL}/work" \
-    && chown -R atlassian:atlassian "${JIRA_INSTALL}/conf" \
-    && chown -R atlassian:atlassian "${JIRA_INSTALL}/logs" \
-    && chown -R atlassian:atlassian "${JIRA_INSTALL}/temp" \
-    && chown -R atlassian:atlassian "${JIRA_INSTALL}/work" \
-    && echo -e                      "\njira.home=$JIRA_HOME" >> "${JIRA_INSTALL}/atlassian-jira/WEB-INF/classes/jira-application.properties" \
-    && sed -ri 's/JVM_MINIMUM_MEMORY="384m"/JVM_MINIMUM_MEMORY="'"${Xms}"'"/' $JIRA_INSTALL/bin/setenv.sh \
-    && sed -ri 's/JVM_MAXIMUM_MEMORY="768m"/JVM_MAXIMUM_MEMORY="'"${Xmx}"'"/' $JIRA_INSTALL/bin/setenv.sh 
-
+    && chown -R atlassian:atlassian "${JIRA_INSTALL}" \
+    && echo -e                      "\njira.home=$JIRA_HOME" >> "${JIRA_INSTALL}/atlassian-jira/WEB-INF/classes/jira-application.properties" 
 # Getting the MySQL driver
 RUN curl -Ls "http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.36.tar.gz" | tar -xz --directory "${JIRA_INSTALL}/lib/" --strip-components=1 --no-same-owner
 
@@ -57,7 +47,7 @@ EXPOSE 8080
 VOLUME ["/var/atlassian/jira"]
 
 # Fix Issue #1  -- https://github.com/Praqma/staci/issues/1
-RUN sed -i -e 's/<Context>/<Context sessionCookieName="JIRASESSIONID">/g' /opt/atlassian/jira/conf/context.xml
+#RUN sed -i -e 's/<Context>/<Context sessionCookieName="JIRASESSIONID">/g' /opt/atlassian/jira/conf/context.xml
 
 # Set the default working directory as the installation directory.
 WORKDIR ${JIRA_HOME}

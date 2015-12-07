@@ -24,6 +24,7 @@ source $STACI_HOME/functions/tools.f
 
 # Find out, if we should create a cluster or not
 cluster=$(getProperty "createCluster")
+provider_type=$(getProperty "provider_type")
 
 # Show directory for data
 volume_dir=$(getProperty "volume_dir")
@@ -67,7 +68,12 @@ read -p "
 
 if [ "$cluster" == 1 ]; then
    echo " - Deploying on cluster $provider_type"
-   source ./bin/createSwarm.sh
+   if [ "$provider_type" == "virtualbox" ];then
+     source ./bin/createSwarm.sh
+   fi
+   if [ "$provider_type" == "openstack" ];then
+     source ./bin/openstack.sh
+   fi
 fi 
 
 # Generate database configuration for Jira

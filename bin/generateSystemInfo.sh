@@ -14,6 +14,7 @@ start_crowd=$(getProperty "start_crowd")
 start_bitbucket=$(getProperty "start_bitbucket")
 start_crucible=$(getProperty "start_crucible")
 
+atlassiandb_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' atlassiandb)
 cat << EOF
 <html>
 <style>
@@ -147,7 +148,7 @@ cat << EOF
   <a href="http://$docker_host_ip:8080$jira_contextpath" target="_blank">Jira link</a>
   <ul>
     <li>Database Type : MySQL</li>
-    <li>Hostname : $docker_host_ip</li>
+    <li>Hostname : $atlassiandb_ip</li>
     <li>Port : 3306</li>
     <li>Database : $jira_database</li>
     <li>Username : $jira_username</li>
@@ -191,7 +192,7 @@ cat << EOF
     <li>Database Type : MySQL</li>
     <li>Connection : Direct JDBC</li>
     <li>Driver Class Name : com.mysql.jdbc.Driver</li>
-    <li>Database URL : jdbc:mysql://$docker_host_ip/$confluence_database?sessionVariables=storage_engine%3DInnoDB&useUnicode=true&characterEncoding=utf8</li>
+    <li>Database URL : jdbc:mysql://$atlassiandb_ip/$confluence_database?sessionVariables=storage_engine%3DInnoDB&useUnicode=true&characterEncoding=utf8</li>
     <li>User Name : $confluence_username</li>
     <li>Password : $confluence_password</li>
   </ul>
@@ -212,7 +213,7 @@ cat << EOF
     <li>install type : Production install</li>
     <li>Select database : External MySQL</li>
     <li>Connection : Direct JDBC</li>
-    <li>Database URL : jdbc:mysql://$docker_host_ip/$bamboo_database?autoReconnect=true</li>
+    <li>Database URL : jdbc:mysql://$atlassiandb_ip/$bamboo_database?autoReconnect=true</li>
     <li>User name : $bamboo_username</li>
     <li>Password : $bamboo_password</li>
     <li>Overwrite Existing data : Yes, if you want</li>
@@ -233,7 +234,7 @@ cat << EOF
   <ul>
     <li>Database : External</li>
     <li>Database type : MySQL</li>
-    <li>Hostname : $docker_host_ip</li>
+    <li>Hostname : $atlassiandb_ip</li>
     <li>Port : 3306</li>
     <li>Database name : $bitbucket_database</li>
     <li>Database username : $bitbucket_username</li>
@@ -256,7 +257,7 @@ cat << EOF
     <li>Install type : New installation</li>
     <li>Database type : JDBC connection</li>
     <li>Database : MySQL</li>
-    <li>Database URL : jdbc:mysql://$docker_host_ip/$crowd_database?autoReconnect=true&characterEncoding=utf8&useUnicode=true</li>
+    <li>Database URL : jdbc:mysql://$atlassiandb_ip/$crowd_database?autoReconnect=true&characterEncoding=utf8&useUnicode=true</li>
     <li>User name : $crowd_username</li>
     <li>Password : $crowd_password</li>
     <li>Overwrite Existing data : Yes, if you want</li>
@@ -271,7 +272,7 @@ cat << EOF
 <div id="atlassiandb" class="settingsdiv">
   <b>Information about the database</b>
   <ul>
-    <li>Hostname : $docker_host_ip</li>
+    <li>Hostname : $atlassiandb_ip</li>
     <li>User name : root</li>
     <li>Password : $mysql_root_pass</li>
   </ul>

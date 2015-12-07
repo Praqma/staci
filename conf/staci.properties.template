@@ -7,7 +7,7 @@ createCluster:0
 # What to start
 start_mysql:1
 start_jira:1
-start_confluence:0
+start_confluence:1
 start_bamboo:0
 start_crowd:0
 start_bitbucket:1
@@ -28,7 +28,7 @@ provider_type:none
 backup_folder:/data/atlassian/backup
 
 # Crucible section
-crusible_contextpath:/crusible
+crusible_contextpath:/crucible
 crucible_username:crucibledbuser
 crucible_password:cruciblepass
 crucible_database_name:crucibledb
