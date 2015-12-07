@@ -37,9 +37,9 @@ if [ "$start_jira" == "1" ]; then
    jira_password=$(getProperty "jira_password")
    jira_database=$(getProperty "jira_database_name")
 
-   exec_sql $mysql_root_pass "CREATE USER '$jira_username'@'%' IDENTIFIED BY '$jira_password';"
-   exec_sql $mysql_root_pass "CREATE DATABASE $jira_database CHARACTER SET utf8 COLLATE utf8_bin;"
-   exec_sql $mysql_root_pass "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER,INDEX on $jira_database.* TO '$jira_username'@'%';"
+#   exec_sql $mysql_root_pass "CREATE USER '$jira_username'@'%' IDENTIFIED BY '$jira_password';"
+   exec_sql $mysql_root_pass "CREATE DATABASE IF NOT EXISTS $jira_database CHARACTER SET utf8 COLLATE utf8_bin;"
+   exec_sql $mysql_root_pass "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER,INDEX on $jira_database.* TO '$jira_username'@'%' IDENTIFIED BY '$jira_password';"
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
    echo "*** Use the following to setup Jira db connection ***
@@ -58,7 +58,7 @@ if [ "$start_confluence" == "1" ]; then
    confluence_password=$(getProperty "confluence_password")
    confluence_database=$(getProperty "confluence_database_name")
 
-   exec_sql $mysql_root_pass "CREATE DATABASE $confluence_database CHARACTER SET utf8 COLLATE utf8_bin;"
+   exec_sql $mysql_root_pass "CREATE DATABASE IF NOT EXISTS $confluence_database CHARACTER SET utf8 COLLATE utf8_bin;"
    exec_sql $mysql_root_pass "GRANT ALL PRIVILEGES ON $confluence_database.* TO '$confluence_username'@'%' IDENTIFIED BY '$confluence_password';"
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
@@ -79,7 +79,7 @@ if [ "$start_bamboo" == "1" ]; then
    bamboo_password=$(getProperty "bamboo_password")
    bamboo_database=$(getProperty "bamboo_database_name")
 
-   exec_sql $mysql_root_pass "CREATE DATABASE $bamboo_database CHARACTER SET utf8 COLLATE utf8_bin;"
+   exec_sql $mysql_root_pass "CREATE DATABASE IF NOT EXISTS $bamboo_database CHARACTER SET utf8 COLLATE utf8_bin;"
    exec_sql $mysql_root_pass "GRANT ALL PRIVILEGES ON $bamboo_database.* TO '$bamboo_username'@'%' IDENTIFIED BY '$bamboo_password';"
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
@@ -100,7 +100,7 @@ if [ "$start_crowd" == "1" ]; then
    crowd_password=$(getProperty "crowd_password")
    crowd_database=$(getProperty "crowd_database_name")
 
-   exec_sql $mysql_root_pass "create database $crowd_database character set utf8 collate utf8_bin;"
+   exec_sql $mysql_root_pass "create database IF NOT EXISTS $crowd_database character set utf8 collate utf8_bin;"
    exec_sql $mysql_root_pass "GRANT ALL PRIVILEGES ON $crowd_database.* TO '$crowd_username'@'%' IDENTIFIED BY '$crowd_password';"
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
@@ -121,7 +121,7 @@ if [ "$start_bitbucket" == "1" ]; then
    bitbucket_password=$(getProperty "bitbucket_password")
    bitbucket_database=$(getProperty "bitbucket_database_name")
 
-   exec_sql $mysql_root_pass "CREATE DATABASE $bitbucket_database CHARACTER SET utf8 COLLATE utf8_bin;"
+   exec_sql $mysql_root_pass "CREATE DATABASE IF NOT EXISTS $bitbucket_database CHARACTER SET utf8 COLLATE utf8_bin;"
    exec_sql $mysql_root_pass "GRANT ALL PRIVILEGES ON $bitbucket_database.* TO '$bitbucket_username'@'%' IDENTIFIED BY '$bitbucket_password';"
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
@@ -142,7 +142,7 @@ if [ "$start_crucible" == "1" ]; then
    crucible_password=$(getProperty "crucible_password")
    crucible_database=$(getProperty "crucible_database_name")
 
-   exec_sql $mysql_root_pass "CREATE DATABASE $crucible_database CHARACTER SET utf8 COLLATE utf8_bin;"
+   exec_sql $mysql_root_pass "CREATE DATABASE IF NOT EXISTS $crucible_database CHARACTER SET utf8 COLLATE utf8_bin;"
    exec_sql $mysql_root_pass "GRANT ALL PRIVILEGES ON $crucible_database.* TO '$crucible_username'@'%' IDENTIFIED BY '$crucible_password';"
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
