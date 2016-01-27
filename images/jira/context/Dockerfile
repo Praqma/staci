@@ -13,7 +13,6 @@ RUN echo "atlassian:praqma" | chpasswd
 # Configuration variables.
 ENV JIRA_HOME     /var/atlassian/jira
 ENV JIRA_INSTALL  /opt/atlassian/jira
-ENV JIRA_VERSION  6.4.11
 
 # Install Atlassian JIRA and helper tools and setup initial home
 # directory structure.
@@ -22,7 +21,7 @@ RUN set -x \
     && chmod -R 700                 "${JIRA_HOME}" \
     && chown -R atlassian:atlassian "${JIRA_HOME}" \
     && mkdir -p                     "${JIRA_INSTALL}/conf/Catalina" \
-    && curl -Ls                     "https://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-software-7.0.9-jira-7.0.9-x64.bin" | tar -xz --directory "${JIRA_INSTALL}" --strip-components=1 --no-same-owner \
+    && curl -Ls                     "https://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-core-7.0.9.tar.gz" | tar -xz --directory "${JIRA_INSTALL}" --strip-components=1 --no-same-owner \
     && chmod -R 700                 "${JIRA_INSTALL}/logs" \
     && chmod -R 700                 "${JIRA_INSTALL}/temp" \
     && chmod -R 700                 "${JIRA_INSTALL}/work" \
