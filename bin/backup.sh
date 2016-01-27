@@ -28,7 +28,7 @@ backup_dir=$backup_folder/$(date +%Y_%m_%d_%H_%M_%S)
 mkdir -p $backup_dir
 
 echo " - Taking backup of staci.properties"
-cp $STACI_HOME/bin/staci.properties $backup_dir/staci.properties
+cp $STACI_HOME/conf/staci.properties $backup_dir/staci.properties
 
 # Do backup
 echo " - Taking backup of $volume_dir to $backup_dir."

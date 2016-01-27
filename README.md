@@ -26,7 +26,7 @@
 ## Preperation
 - Create a folder structure in /data/atlassian where a user with uid 1000 has full read-write access. 
 - Create a jira, atlassiandb, confluence, bamboo, crowd, crucible, bitbucket and backup folder inside /data/atlassian with same rights. 
-- You can specify another folder in ./bin/staci.properties instead of /data/atlassian (look for volume_dir=/data)
+- You can specify another folder in ./conf/staci.properties instead of /data/atlassian (look for volume_dir=/data)
 
 ## Getting started
 ```
@@ -38,7 +38,7 @@ export DOCKER_HOST=YOUR-IP:2375
 ./install.sh
 ```
 
-If you want to change the behavour of STACI, edit the file ./bin/staci.properties
+If you want to change the behavour of STACI, edit the file ./conf/staci.properties
 
 ## Taking backup of containers
 The containers has consistant data in /data/atlassian/ (default, edit staci.properties). You can take a backup by executing the script ./bin/backup.sh. This will tar-gz the volumes to /data/atlassian/backup/[date]. 
