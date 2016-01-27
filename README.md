@@ -13,6 +13,7 @@
 - Docker version 1.8.1
 - Docker-compose version: 1.4.0
 - ~~MySQL client installed~~
+- Docker-machine 0.5.4 if cluster is used
 
 ## Important information
 - Remember to turn off SE-LINUX and Apparmor.
