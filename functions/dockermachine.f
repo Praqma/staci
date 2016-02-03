@@ -62,8 +62,8 @@ function createSwarm(){
     # Get the node prefix
     local node_prefix=$(getProperty "clusterNodePrefix")
     
-    echo "Creating Consul discovery service. Please wait"
-    createDMInstans "$provider" "$dmflags" "0" "0" "consul-keystore"
+    echo "Creating Consul discovery service. Please wait."
+    createDMInstance "$provider" "$dmflags" "0" "0" "consul-keystore"
 
     docker $(docker-machine config consul-keystore) run -d \
         -p "8500:8500" \
@@ -74,25 +74,25 @@ function createSwarm(){
 
 
     if [ "$start_mysql" == "1" ];then
-        createDMInstans "$provider" "$dmflags" "2" "1" "$node_prefix-mysql"
+        createDMInstance "$provider" "$dmflags" "2" "1" "$node_prefix-mysql"
     fi
     if [ "$start_jira" == "1" ];then
-       createDMInstans "$provider" "$dmflags" "1" "1" "$node_prefix-jira"
+       createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix-jira"
     fi
     if [ "$start_confluence" == "1" ];then
-        createDMInstans "$provider" "$dmflags" "1" "1" "$node_prefix-confluence"
+        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix-confluence"
     fi
     if [ "$start_bamboo" == "1" ];then
-        createDMInstans "$provider" "$dmflags" "1" "1" "$node_prefix-bamboo"
+        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix-bamboo"
     fi
     if [ "$start_crowd" == "1" ];then
-        createDMInstans "$provider" "$dmflags" "1" "1" "$node_prefix-crowd"
+        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix-crowd"
     fi
     if [ "$start_bitbucket" == "1" ];then
-        createDMInstans "$provider" "$dmflags" "1" "1" "$node_prefix-bitbucket"
+        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix-bitbucket"
     fi
     if [ "$start_crucible" == "1" ];then
-        createDMInstans "$provider" "$dmflags" "1" "1" "$node_prefix-crucible"
+        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix-crucible"
     fi
 
 # Create overlay network
@@ -101,7 +101,7 @@ docker network create --driver overlay my-net
 
 }
 
-function createDMInstans(){
+function createDMInstance(){
     local dmprovider=$1
     local dmflags=$2
     local dmname=$5
@@ -126,7 +126,7 @@ function createDMInstans(){
        swarm="--swarm --swarm-master --swarm-discovery=$discoveryservice"
     fi
 
-    echo "Creating instans $dmname via $provider - tail -f $STACI_HOME/logs/$provider.$dmname.log"
+    echo "Creating instance $dmname via $provider - tail -f $STACI_HOME/logs/$provider.$dmname.log"
     docker-machine --debug create -d $dmprovider $dmflags $swarm $cluster $dmname  > $STACI_HOME/logs/$provider.$dmname.log 2>&1
 
 }
