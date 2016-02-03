@@ -1,11 +1,18 @@
 #! /bin/bash
 
-function getVirtualboxFlags(){
-  echo ""
+function getVirtualBoxFlags(){
+  # Get information from property file
+  local memory=$(getVirtualBoxProperty "virtualbox_memory")
+
+  local flags=" \
+        --virtualbox-memory $memory \
+  "
+
+  echo $flags
 }
 
 function getOpenStackFlags(){
-  # Get informations from propertyfile
+  # Get information from propertyfile
   local username=$(getOpenStackProperty "openstack_OS_USERNAME")
   local password=$(getOpenStackProperty "openstack_OS_PASSWORD")
   local domain_name=$(getOpenStackProperty "openstack_OS_DOMAIN_NAME")
@@ -42,7 +49,7 @@ function getDMFlags(){
     elif [ $provider == "openstack" ];then
         getOpenStackFlags
     elif [ $provider == "virtualbox" ];then
-        getVirtualboxFlags
+        getVirtualBoxFlags
     fi
 }
 
@@ -61,7 +68,7 @@ function createSwarm(){
 
     # Get the node prefix
     local node_prefix=$(getProperty "clusterNodePrefix")
-    
+
     echo "Creating Consul discovery service. Please wait."
     createDMInstance "$provider" "$dmflags" "0" "0" "consul-keystore"
 

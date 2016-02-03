@@ -1,7 +1,7 @@
 ##
 #
 # This script will generate a docker-compose yml file
-# to ensure correct version being used, and then starts 
+# to ensure correct version being used, and then starts
 # the containers.
 #
 ##
@@ -46,7 +46,7 @@ fi
 
 # Check if we have a DOCKER_HOST variable
 if [ -z "$DOCKER_HOST" ] && [ "$cluster" == 0 ]; then
-   echo " - Cant find a valid DOCKER_HOST variable, and cluster is OFF."
+   echo " - Can't find a valid DOCKER_HOST variable, and cluster is OFF."
    echo " - Exiting....
 "
    exit
@@ -74,7 +74,7 @@ if [ "$cluster" == 1 ]; then
    if [ "$provider_type" == "openstack" ];then
      source ./bin/openstack.sh
    fi
-fi 
+fi
 
 # Generate database configuration for Jira
 # Only works with JDK 1.8+
@@ -99,7 +99,7 @@ else
 fi
 
 # Start the containers with docker-compose
-echo -n " - Starting containers, using docker-compose : 
+echo -n " - Starting containers, using docker-compose :
 "
 docker-compose -f ./compose/docker-compose.yml up -d
 
@@ -110,7 +110,7 @@ docker-compose -f ./compose/docker-compose.yml up -d
 use_browser=$(getProperty "use_browser")
 if [ "$use_browser" == "1" ]; then
   browser_cmd=$(getProperty "browser_cmd")
-  $browser_cmd "$STACI_HOME/SystemInfo.html" &>/dev/null & 
+  $browser_cmd "$STACI_HOME/SystemInfo.html" &>/dev/null &
 fi
 
 start_mysql=$(getProperty "start_mysql")

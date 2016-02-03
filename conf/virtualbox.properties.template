@@ -1,0 +1,6 @@
+# Environment variables for setting up VirtualBox connections
+# through Docker-Machine.
+#
+
+# Input variables to Docker-Machine
+virtualbox_memory:1024
