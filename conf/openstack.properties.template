@@ -1,9 +1,9 @@
-# Enviroment variables for setting op OpenStack connection
+# Environment variables for setting op OpenStack connection
 # through Docker-Machine.
 #
 
-# Openstack informations. Get them from your Standard-openrc.sh file.
-# On Zetta.io, it can be fetch here : 
+# Openstack information. Get them from your Standard-openrc.sh file.
+# On Zetta.io, it can be fetched here : 
 # https://dashboard.zetta.io/project/access_and_security/api_access/openrc/
 #
 openstack_OS_AUTH_URL:https://identity.api.zetta.io/v3

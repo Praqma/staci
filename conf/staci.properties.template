@@ -17,10 +17,10 @@ start_crucible:1
 browser_cmd:/usr/bin/google-chrome
 use_browser:1
 
-# Persistant home folder for STACI
+# Persistent home folder for STACI
 volume_dir:/data/atlassian
 
-# Choose witch cluster provider to use
+# Choose which cluster provider to use
 # [none, virtualbox, mesos, openstack]
 provider_type:none
 
