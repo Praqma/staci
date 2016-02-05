@@ -3,9 +3,12 @@
 function getVirtualBoxFlags(){
   # Get information from property file
   local memory=$(getVirtualBoxProperty "virtualbox_memory")
-
+  local cpu_count=$(getVirtualBoxProperty "virtualbox_cpu_count")
+  local disk_size=$(getVirtualBoxProperty "virtualbox_disk_size")
   local flags=" \
         --virtualbox-memory $memory \
+        --virtualbox-cpu-count $cpu_count \
+        --virtualbox-disk-size $disk_size \
   "
 
   echo $flags
@@ -134,6 +137,7 @@ function createDMInstance(){
     fi
 
     echo "Creating instance $dmname via $provider - tail -f $STACI_HOME/logs/$provider.$dmname.log"
+
     docker-machine --debug create -d $dmprovider $dmflags $swarm $cluster $dmname  > $STACI_HOME/logs/$provider.$dmname.log 2>&1
 
 }
