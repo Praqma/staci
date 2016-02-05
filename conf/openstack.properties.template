@@ -16,6 +16,7 @@ openstack_OS_IDENTITY_API_VERSION:3
 openstack_OS_USERNAME:username
 openstack_OS_PASSWORD:password
 openstack_OS_TENANT_NAME:Standard
+openstack_OS_TENANT_ID:bceffc437a324a64ac708205dcad8208
 openstack_OS_DOMAIN_NAME:domainname
 
 # Input variables to Docker-Machine

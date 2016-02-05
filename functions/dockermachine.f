@@ -21,6 +21,7 @@ function getOpenStackFlags(){
   local domain_name=$(getOpenStackProperty "openstack_OS_DOMAIN_NAME")
   local auth_url=$(getOpenStackProperty "openstack_OS_AUTH_URL")
   local tenant_name=$(getOpenStackProperty "openstack_OS_TENANT_NAME")
+  local tenant_id=$(getOpenStackProperty "openstack_OS_TENANT_ID")
   local sec_groups=$(getOpenStackProperty "openstack_sec_groups")
   local ssh_user=$(getOpenStackProperty "openstack_ssh_user")
   local floating_ip_pool=$(getOpenStackProperty "openstack_floating_ip_pool")
@@ -32,7 +33,7 @@ function getOpenStackFlags(){
         --openstack-username $username \
         --openstack-password $password \
         --openstack-domain-name $domain_name \
-        --openstack-tenant-name $tenant_name \
+        --openstack-tenant-id $tenant_id \
         --openstack-auth-url $auth_url \
         --openstack-flavor-id $flavor_id \
         --openstack-image-id $image_id  \
@@ -137,7 +138,12 @@ function createDMInstance(){
     fi
 
     echo "Creating instance $dmname via $provider - tail -f $STACI_HOME/logs/$provider.$dmname.log"
+    echo "
 
+docker-machine --debug create -d $dmprovider $dmflags $swarm $cluster $dmname
+
+
+"
     docker-machine --debug create -d $dmprovider $dmflags $swarm $cluster $dmname  > $STACI_HOME/logs/$provider.$dmname.log 2>&1
 
 }
