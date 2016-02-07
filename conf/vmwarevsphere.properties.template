@@ -1,0 +1,9 @@
+# Environment variables for setting up VMware vSphere connections
+# through Docker-Machine.
+#
+
+# Input variables to Docker-Machine
+# vcenter: IP or hostname to vCenter Server or ESXi
+vmwarevsphere_vcenter:changeme
+vmwarevsphere_username:changeme
+vmwarevsphere_password:changeme
