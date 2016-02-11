@@ -40,6 +40,7 @@ password=$(getOpenStackProperty "openstack_OS_PASSWORD")
 domain_name=$(getOpenStackProperty "openstack_OS_DOMAIN_NAME")
 auth_url=$(getOpenStackProperty "openstack_OS_AUTH_URL")
 tenant_name=$(getOpenStackProperty "openstack_OS_TENANT_NAME")
+tenant_id=$(getOpenStackProperty "openstack_OS_TENANT_ID")
 sec_groups=$(getOpenStackProperty "openstack_sec_groups")
 ssh_user=$(getOpenStackProperty "openstack_ssh_user")
 floating_ip_pool=$(getOpenStackProperty "openstack_floating_ip_pool")
@@ -55,7 +56,7 @@ docker-machine create -d openstack \
 	--openstack-username $username \
 	--openstack-password $password \
 	--openstack-domain-name $domain_name \
-	--openstack-tenant-name $tenant_name \
+	--openstack-tenant-id $tenant_id \
 	--openstack-auth-url $auth_url \
 	--openstack-flavor-id $flavor_id \
 	--openstack-image-id $image_id  \
