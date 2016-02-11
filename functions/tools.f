@@ -24,6 +24,14 @@ function getVirtualBoxProperty(){
     echo $(cat $STACI_HOME/conf/virtualbox.properties | grep "$property" | cut -d ":" -f 2-)
 }
 
+# Extracts a property from a VMware vSphere property file
+#
+# 1: name of property to retrieve
+function getVmwareVsphereProperty(){
+    local property=$1
+    echo $(cat $STACI_HOME/conf/vmwarevsphere.properties | grep "$property" | cut -d ":" -f 2-)
+}
+
 function getContainerIP(){
     containerName=$1
     docker inspect --format '{{ .NetworkSettings.IPAddress }}' $containerName

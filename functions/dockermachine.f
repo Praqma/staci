@@ -14,6 +14,19 @@ function getVirtualBoxFlags(){
   echo $flags
 }
 
+function getVmwareVsphereFlags(){
+  local ip_hostname=$(getVmwareVsphereProperty "vmwarevsphere_vcenter")
+  local username=$(getVmwareVsphereProperty "vmwarevsphere_username")
+  local password=$(getVmwareVsphereProperty "vmwarevsphere_password")
+
+  local flags=" \
+        --vmwarevsphere-vcenter $ip_hostname \
+        --vmwarevsphere-username $username \
+        --vmwarevsphere-password $password \
+  "
+  echo $flags
+}
+
 function getOpenStackFlags(){
   # Get information from propertyfile
   local username=$(getOpenStackProperty "openstack_OS_USERNAME")
@@ -54,6 +67,8 @@ function getDMFlags(){
         getOpenStackFlags
     elif [ $provider == "virtualbox" ];then
         getVirtualBoxFlags
+    elif [ $provider == "vmwarevsphere" ];then
+        getVmwareVsphereFlags
     fi
 }
 

@@ -3,6 +3,8 @@
 #
 
 # Input variables to Docker-Machine
+# Memory in MB
 virtualbox_memory:1024
 virtualbox_cpu_count:2
+# Disk size in MB
 virtualbox_disk_size:1000
