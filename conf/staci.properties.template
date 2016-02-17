@@ -3,6 +3,7 @@ imageVersion:0.1
 
 # Create Cluster 0=false, 1=true
 createCluster:0
+clusterNodePrefix:praqma
 
 # What to start
 start_mysql:1
