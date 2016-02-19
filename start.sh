@@ -1,13 +1,14 @@
 #! /bin/bash
-
-# Set env
+# Sourcing env setup
 source setEnv.sh
+source $STACI_HOME/functions/tools.f
 
-# Build containers
-./bin/build-all.sh
+# Find out, if we are using a cluster or not
+cluster=$(getProperty "createCluster")
 
-# Generate compose file
-./bin/generateCompose.sh > ./compose/docker-compose.yml
+if [ "$cluster" == 1 ]; then
+   eval $(docker-machine env --swarm praqma-mysql)
+fi
 
 # we start all containers
 docker-compose -f ./compose/docker-compose.yml start

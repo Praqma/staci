@@ -75,7 +75,6 @@ fi
 
 echo "
  - Building images"
-#./bin/build-all.sh
 buildAll
 
 # Generate a new compose yml, and put it in the compose folder
@@ -90,7 +89,6 @@ fi
 # Start the containers with docker-compose
 echo -n " - Starting containers, using docker-compose :
 "
-sleep 5
 
 eval $(docker-machine env --swarm praqma-mysql)
 docker-compose -f compose/docker-compose.yml up -d > $STACI_HOME/logs/docker-compose.log 2>&1 &
