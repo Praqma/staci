@@ -10,11 +10,21 @@
 source $STACI_HOME/functions/tools.f
 docker_host_ip=$(echo $DOCKER_HOST | grep -o '[0-9]\+[.][0-9]\+[.][0-9]\+[.][0-9]\+')
 version=$(getProperty "imageVersion")
+node_prefix=$(getProperty "clusterNodePrefix")
+cluster=$(getProperty "createCluster")
 
 function exec_sql(){
    local pw=$1
    local sqlcmd=$2
-   mysql_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' atlassiandb)
+
+   # Point to cluster, if used
+   if [ "$cluster" == "1" ]; then
+      eval $(docker-machine env "$node_prefix-mysql")
+      mysql_ip=$(docker-machine ip "$node_prefix-mysql")
+   else
+      mysql_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' atlassiandb)
+   fi
+ 
    docker run -it staci/atlassiandb:$version mysql --host="$mysql_ip" --port="3306" --user=root --password=$pw -e "$sqlcmd" > $STACI_HOME/logs/mysqlInit.log 2>&1 >> $STACI_HOME/logs/mysql.log
 }
 
@@ -26,7 +36,6 @@ start_crowd=$(getProperty "start_crowd")
 start_bitbucket=$(getProperty "start_bitbucket")
 start_crucible=$(getProperty "start_crucible")
 mysql_root_pass=$(getProperty "mysql_root_pass")
-
 
 # Clear old logfile
 rm -f $STACI_HOME/logs/mysql.log
@@ -42,7 +51,7 @@ if [ "$start_jira" == "1" ]; then
    exec_sql $mysql_root_pass "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER,INDEX on $jira_database.* TO '$jira_username'@'%' IDENTIFIED BY '$jira_password';"
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
-   echo "*** Use the following to setup Jira db connection ***
+echo "
  - Database Type : MySQL
  - Hostname : $mysql_ip
  - Port : 3306
@@ -62,7 +71,7 @@ if [ "$start_confluence" == "1" ]; then
    exec_sql $mysql_root_pass "GRANT ALL PRIVILEGES ON $confluence_database.* TO '$confluence_username'@'%' IDENTIFIED BY '$confluence_password';"
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
-   echo "*** Use the following to setup Bamboo db connection ***
+echo "
  - Install type : Production install
  - Database Type : MySQL
  - Connection : Direct JDBC
@@ -83,7 +92,7 @@ if [ "$start_bamboo" == "1" ]; then
    exec_sql $mysql_root_pass "GRANT ALL PRIVILEGES ON $bamboo_database.* TO '$bamboo_username'@'%' IDENTIFIED BY '$bamboo_password';"
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
-   echo " *** Use the following to setup Bamboo db connection ***
+echo "
  - Install type : Production install
  - Select database : External MySQL
  - Connection : Direct JDBC
@@ -104,7 +113,7 @@ if [ "$start_crowd" == "1" ]; then
    exec_sql $mysql_root_pass "GRANT ALL PRIVILEGES ON $crowd_database.* TO '$crowd_username'@'%' IDENTIFIED BY '$crowd_password';"
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
-   echo " *** Use the following to setup Crowd db connection ***
+echo "
  - Install type : New installation
  - Database type : JDBC connection
  - Database : MySQL
@@ -125,7 +134,7 @@ if [ "$start_bitbucket" == "1" ]; then
    exec_sql $mysql_root_pass "GRANT ALL PRIVILEGES ON $bitbucket_database.* TO '$bitbucket_username'@'%' IDENTIFIED BY '$bitbucket_password';"
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
-   echo " *** Use the following to setup Bitbucket db connection ***
+echo "
  - Database : External
  - Database type : MySQL
  - Hostname : $mysql_ip
@@ -146,7 +155,7 @@ if [ "$start_crucible" == "1" ]; then
    exec_sql $mysql_root_pass "GRANT ALL PRIVILEGES ON $crucible_database.* TO '$crucible_username'@'%' IDENTIFIED BY '$crucible_password';"
    exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
-   echo " *** Use the following to setup Bitbucket db connection ***
+echo "
  - Database : External
  - Database type : MySQL
  - Hostname : $mysql_ip

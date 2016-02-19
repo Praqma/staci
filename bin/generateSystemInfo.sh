@@ -14,7 +14,15 @@ start_crowd=$(getProperty "start_crowd")
 start_bitbucket=$(getProperty "start_bitbucket")
 start_crucible=$(getProperty "start_crucible")
 
-atlassiandb_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' atlassiandb)
+cluster=$(getProperty "createCluster")
+
+   if [ "$cluster" == "1" ]; then
+      node_prefix=$(getProperty "clusterNodePrefix")
+      atlassiandb_ip=$(docker-machine ip "$node_prefix-mysql")
+   else
+      atlassiandb_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' atlassiandb)
+   fi
+
 cat << EOF
 <html>
 <style>
@@ -142,10 +150,17 @@ if [ "$start_jira" == "1" ]; then
    jira_password=$(getProperty "jira_password")
    jira_database=$(getProperty "jira_database_name")
    jira_contextpath=$(getProperty "jira_contextpath")
+
+   if [ "$cluster" == "1" ]; then
+      jiraip=$(docker-machine ip "$node_prefix-jira")
+   else
+      jiraip=$docker_host_ip
+   fi
+
 cat << EOF
 <div id="jira" class="settingsdiv">
   <b>Use the following to setup Jira db connection</b>
-  <a href="http://$docker_host_ip:8080$jira_contextpath" target="_blank">Jira link</a>
+  <a href="http://$jiraip:8080$jira_contextpath" target="_blank">Jira link</a>
   <ul>
     <li>Database Type : MySQL</li>
     <li>Hostname : $atlassiandb_ip</li>
@@ -160,6 +175,13 @@ fi
 
 if [ "$start_crucible" == "1" ]; then
   crucibleContextPath=$(getProperty "crusible_contextpath")
+
+   if [ "$cluster" == "1" ]; then
+      crucibleip=$(docker-machine ip "$node_prefix-crucible")
+   else
+      crucibleip=$docker_host_ip
+   fi
+
 cat << EOF
 <div id="crucible" class="settingsdiv">
   <b>Use the following to setup Crucible db connection</b>
@@ -183,6 +205,12 @@ if [ "$start_confluence" == "1" ]; then
    confluence_database=$(getProperty "confluence_database_name")
    confluence_contextpath=$(getProperty "confluence_contextpath")
 
+   if [ "$cluster" == "1" ]; then
+      confluenceip=$(docker-machine ip "$node_prefix-confluence")
+   else
+      confluenceip=$docker_host_ip
+   fi
+
 cat << EOF
 <div id="confluence" class="settingsdiv">
   <b>Use the following to setup Confluence db connection</b>
@@ -205,6 +233,13 @@ if [ "$start_bamboo" == "1" ]; then
    bamboo_password=$(getProperty "bamboo_password")
    bamboo_database=$(getProperty "bamboo_database_name")
    bamboo_contextpath=$(getProperty "bamboo_contextpath")
+
+   if [ "$cluster" == "1" ]; then
+      bambooip=$(docker-machine ip "$node_prefix-bamboo")
+   else
+      bambooip=$docker_host_ip
+   fi
+
 cat << EOF
 <div id="bamboo" class="settingsdiv">
   <b>Use the following to setup Bamboo db connection</b>
@@ -227,6 +262,13 @@ if [ "$start_bitbucket" == "1" ]; then
    bitbucket_password=$(getProperty "bitbucket_password")
    bitbucket_database=$(getProperty "bitbucket_database_name")
    bitbucket_contextpath=$(getProperty "bitbucket_contextpath")
+
+   if [ "$cluster" == "1" ]; then
+      bitbucketip=$(docker-machine ip "$node_prefix-bitbucket")
+   else
+      bitbucketip=$docker_host_ip
+   fi
+
 cat << EOF
 <div id="bitbucket" class="settingsdiv">
   <b>Use the following to setup Bitbucket db connection</b>
@@ -248,6 +290,13 @@ if [ "$start_crowd" == "1" ]; then
    crowd_username=$(getProperty "crowd_username")
    crowd_password=$(getProperty "crowd_password")
    crowd_database=$(getProperty "crowd_database_name")
+
+   if [ "$cluster" == "1" ]; then
+      crowdip=$(docker-machine ip "$node_prefix-crowd")
+   else
+      crowdip=$docker_host_ip
+   fi
+
 cat << EOF
 <div id="crowd" class="settingsdiv">
   <b>Use the following to setup Crowd db connection</b>
@@ -268,6 +317,13 @@ fi
 
 if [ "$start_mysql" == "1" ]; then
 mysql_root_pass=$(getProperty "mysql_root_pass")
+
+   if [ "$cluster" == "1" ]; then
+      mysqlip=$(docker-machine ip "$node_prefix-mysql")
+   else
+      mysqlip=$docker_host_ip
+   fi
+
 cat << EOF
 <div id="atlassiandb" class="settingsdiv">
   <b>Information about the database</b>

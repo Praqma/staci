@@ -1,3 +1,3 @@
-# Source this file before executing run.sj
+# Source this file before executing functions
 
 export STACI_HOME=$(pwd)

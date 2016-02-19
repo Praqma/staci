@@ -12,7 +12,7 @@ echo "
 #                                                                              #
 #  Starting STACI - Support Tracking and Continous Integration.                #
 #                                                                              #
-#  - If you need to build images, use ./bin/build-all.sh                       #
+#  - If you need to build images, use ./functions/build.f/buildAll             #
 #  - If you need to push images to docker hub, use ./bin/push-to-dockerhub.sh  #
 #      (You might want to implement it first)                                  #
 ##                                                                            ##
@@ -21,10 +21,11 @@ echo "
 # Sourcing env setup
 source setEnv.sh
 source $STACI_HOME/functions/tools.f
+source $STACI_HOME/functions/build.f
 
 # Find out, if we should create a cluster or not
 cluster=$(getProperty "createCluster")
-provider_type=$(getProperty "provider_type")
+#provider_type=$(getProperty "provider_type")
 
 # Show directory for data
 volume_dir=$(getProperty "volume_dir")
@@ -64,30 +65,18 @@ if [ ! -z "$DOCKER_HOST" ]; then
 fi
 
 read -p "
- - Press [Enter] key to continue..."
+ - Press [Enter] key to continue...
+"
 
 if [ "$cluster" == 1 ]; then
-   echo " - Deploying on cluster $provider_type"
-   if [ "$provider_type" == "virtualbox" ];then
-     source ./bin/createSwarm.sh
-   fi
-   if [ "$provider_type" == "openstack" ];then
-     source ./bin/openstack.sh
-   fi
-fi
-
-# Generate database configuration for Jira
-# Only works with JDK 1.8+
-#./bin/generate_jira_dbconfig.sh > $volume_dir/jira/dbconfig.xml
-
-start_crucible=$(getProperty "start_crucible")
-if [ "$start_crucible" == 1 ]; then
-  ./bin/generate_crucible_config.sh > images/crucible/context/configure.sh
+   source functions/dockermachine.f
+   createSwarm
 fi
 
 echo "
  - Building images"
-./bin/build-all.sh
+#./bin/build-all.sh
+buildAll
 
 # Generate a new compose yml, and put it in the compose folder
 echo -n " - Generating docker-compose.yml - "
@@ -101,7 +90,11 @@ fi
 # Start the containers with docker-compose
 echo -n " - Starting containers, using docker-compose :
 "
-docker-compose -f ./compose/docker-compose.yml up -d
+sleep 5
+
+eval $(docker-machine env --swarm praqma-mysql)
+docker-compose -f compose/docker-compose.yml up -d > $STACI_HOME/logs/docker-compose.log 2>&1 &
+
 
 # Generate System Information html
 ./bin/generateSystemInfo.sh > $STACI_HOME/SystemInfo.html

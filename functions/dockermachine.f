@@ -73,7 +73,9 @@ function getDMFlags(){
 }
 
 function createSwarm(){
-    local provider=$1
+    local provider=$(getProperty "provider_type")
+    echo " - Using $provider as provider..."
+    # local provider=$1
     local dmflags=$(getDMFlags $provider)
 
     # Find out what to start
@@ -88,15 +90,14 @@ function createSwarm(){
     # Get the node prefix
     local node_prefix=$(getProperty "clusterNodePrefix")
 
-    echo "Creating Consul discovery service. Please wait."
     createDMInstance "$provider" "$dmflags" "0" "0" "consul-keystore"
+
+    docker $(docker-machine config consul-keystore) pull progrium/consul:latest > $STACI_HOME/logs/consult.pull.log
 
     docker $(docker-machine config consul-keystore) run -d \
         -p "8500:8500" \
         -h "consul" \
-        progrium/consul -server -bootstrap
-
-    echo "Creating swarm. Please wait."
+        progrium/consul -server -bootstrap > $STACI_HOME/logs/consul.run.log
 
 
     if [ "$start_mysql" == "1" ];then
@@ -121,9 +122,9 @@ function createSwarm(){
         createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix-crucible"
     fi
 
-# Create overlay network
-eval $(docker-machine env --swarm "$node_prefix-mysql")
-docker network create --driver overlay my-net
+# Create overlay network - Not being used, now made by docker-compose
+# eval $(docker-machine env --swarm "$node_prefix-mysql")
+# docker network create --driver overlay my-net
 
 }
 
@@ -152,13 +153,6 @@ function createDMInstance(){
        swarm="--swarm --swarm-master --swarm-discovery=$discoveryservice"
     fi
 
-    echo "Creating instance $dmname via $provider - tail -f $STACI_HOME/logs/$provider.$dmname.log"
-    echo "
-
-docker-machine --debug create -d $dmprovider $dmflags $swarm $cluster $dmname
-
-
-"
+    echo "  - Creating instance $dmname via $provider - tail -f $STACI_HOME/logs/$provider.$dmname.log"
     docker-machine --debug create -d $dmprovider $dmflags $swarm $cluster $dmname  > $STACI_HOME/logs/$provider.$dmname.log 2>&1
-
 }
