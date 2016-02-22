@@ -90,7 +90,10 @@ fi
 echo -n " - Starting containers, using docker-compose :
 "
 
-eval $(docker-machine env --swarm praqma-mysql)
+if [ "$cluster" == 1 ]; then
+  node_prefix=$(getProperty "clusterNodePrefix")
+  eval $(docker-machine env --swarm $node_prefix-mysql)
+fi
 docker-compose -f compose/docker-compose.yml up -d > $STACI_HOME/logs/docker-compose.log 2>&1 &
 
 

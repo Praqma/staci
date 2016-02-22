@@ -86,8 +86,7 @@ function buildConfluence(){
     echo "sed -i -e 's/<Context path=\"\"/<Context path=\"$confluenceContextPath\"/g' /opt/atlassian/confluence/conf/server.xml" > $STACI_HOME/images/confluence/context/setContextPath.sh
     chmod u+x $STACI_HOME/images/confluence/context/setContextPath.sh
     echo "   - Building Confluence image"
-    docker build -t staci/confluence:$version
-    $STACI_HOME/images/confluence/context/ > $STACI_HOME/logs/confluence.build.log 2>&1 &
+    docker build -t staci/confluence:$version $STACI_HOME/images/confluence/context/ > $STACI_HOME/logs/confluence.build.log 2>&1 &
   fi
 }
 

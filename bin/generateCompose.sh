@@ -16,6 +16,8 @@ start_crucible=$(getProperty "start_crucible")
 volume_dir=$(getProperty "volume_dir")
 timezone=$(getProperty "time_zone")
 
+node_prefix=$(getProperty "clusterNodePrefix")
+
 # Printing version and header
 cat << EOF
 version: '2'
@@ -38,6 +40,8 @@ cat << EOF
       - "7999:7999"
 #  volumes:
 #    - $volume_dir/bitbucket:/var/atlassian/bitbucket
+    environment:
+      - "constraint:node==$node_prefix-bitbucket"
     networks:
       - back
 
@@ -57,6 +61,8 @@ cat << EOF
       - "8095:8095"
 #  volumes:
 #    - $volume_dir/crowd:/var/atlassian/crowd
+    environment:
+      - "constraint:node==$node_prefix-crowd"
     networks:
       - back
 EOF
@@ -75,6 +81,8 @@ cat << EOF
       - "8060:8060"
 #  volumes:
 #    - $volume_dir/crucible:/var/atlassian/crucible
+    environment:
+      - "constraint:node==$node_prefix-crucible"
     networks:
       - back
 EOF
@@ -100,7 +108,7 @@ cat << EOF
 #    - $volume_dir/jira:/var/atlassian/jira
     environment:
       - CATALINA_OPTS="-Datlassian.plugins.enable.wait=$jira_plugin_wait" "-Xmx$jira_xmx" "-Xms$jira_xms" "-Dorg.apache.catalina.SESSION_COOKIE_NAME=$jira_session_cookie_name" "-Duser.timezone=$timezone"
-      - "constraint:node==praqma-jira"
+      - "constraint:node==$node_prefix-jira"
     networks:
       - back
 EOF
@@ -108,6 +116,10 @@ fi
 
 # Printing Confluence specific yml
 if [ "$start_confluence" == "1" ]; then
+confluence_xms=$(getProperty "confluence_xms")
+confluence_xmx=$(getProperty "confluence_xmx")
+confluence_session_cookie_name=$(getProperty "confluence_session_cookie_name")
+
 cat << EOF
   confluence:
     image: staci/confluence:$version
@@ -119,6 +131,9 @@ cat << EOF
       - "8090:8090"
 #  volumes:
 #    - $volume_dir/confluence:/var/atlassian/confluence
+    environment:
+      - CATALINA_OPTS="-Xmx$confluence_xmx" "-Xms$confluence_xms" "-Dorg.apache.catalina.SESSION_COOKIE_NAME=$confluence_session_cookie_name" "-Duser.timezone=$timezone"
+      - "constraint:node==$node_prefix-confluence"
     networks:
       - back
 EOF
@@ -139,6 +154,8 @@ cat << EOF
       - "54663:54663"
 #  volumes:
 #    - $volume_dir/bamboo:/var/lib/bamboo
+    environment:
+      - "constraint:node==$node_prefix-bamboo"
     networks:
       - back
 EOF
@@ -159,8 +176,7 @@ cat << EOF
 #    - $volume_dir/atlassiandb:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=pass_word
-      - "constraint:node==praqma-mysql"
-
+      - "constraint:node==$node_prefix-mysql"
     networks:
       - back
 EOF

@@ -67,3 +67,7 @@ confluence_contextpath:/confluence
 confluence_username:confluenceuser
 confluence_password:confluencepass
 confluence_database_name:confluencedb
+confluence_xms:512m
+confluence_xmx:1512m
+confluence_session_cookie_name:confluencesession
+

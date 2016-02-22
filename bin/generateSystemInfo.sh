@@ -185,7 +185,7 @@ if [ "$start_crucible" == "1" ]; then
 cat << EOF
 <div id="crucible" class="settingsdiv">
   <b>Use the following to setup Crucible db connection</b>
-  <a href="http://$docker_host_ip:8060$crucibleContextPath" target="_blank">Crucible link</a>
+  <a href="http://$crucibleip:8060$crucibleContextPath" target="_blank">Crucible link</a>
 
   <ul>
     <li>Crucible link : http://$docker_host_ip:8060$crucibleContextPath</li>
@@ -214,7 +214,7 @@ if [ "$start_confluence" == "1" ]; then
 cat << EOF
 <div id="confluence" class="settingsdiv">
   <b>Use the following to setup Confluence db connection</b>
-  <a href="http://$docker_host_ip:8090$confluence_contextpath" target="_blank">Confluence link</a>
+  <a href="http://$confluenceip:8090$confluence_contextpath" target="_blank">Confluence link</a>
   <ul>
     <li>Install type : Production install</li>
     <li>Database Type : MySQL</li>
@@ -243,7 +243,7 @@ if [ "$start_bamboo" == "1" ]; then
 cat << EOF
 <div id="bamboo" class="settingsdiv">
   <b>Use the following to setup Bamboo db connection</b>
-  <a href="http://$docker_host_ip:8085$bamboo_contextpath" target="_blank">Bamboo link</a>
+  <a href="http://$bambooip:8085$bamboo_contextpath" target="_blank">Bamboo link</a>
   <ul>
     <li>install type : Production install</li>
     <li>Select database : External MySQL</li>
@@ -272,7 +272,7 @@ if [ "$start_bitbucket" == "1" ]; then
 cat << EOF
 <div id="bitbucket" class="settingsdiv">
   <b>Use the following to setup Bitbucket db connection</b>
-  <a href="http://$docker_host_ip:7990$bitbucket_contextpath" target="_blank">Bitbucket link</a>
+  <a href="http://$bitbucketip:7990$bitbucket_contextpath" target="_blank">Bitbucket link</a>
   <ul>
     <li>Database : External</li>
     <li>Database type : MySQL</li>
@@ -300,7 +300,7 @@ if [ "$start_crowd" == "1" ]; then
 cat << EOF
 <div id="crowd" class="settingsdiv">
   <b>Use the following to setup Crowd db connection</b>
-  <a href="http://$docker_host_ip:8095/crowd" target="_blank">Crowd link</a>
+  <a href="http://$crowdip:8095/crowd" target="_blank">Crowd link</a>
 
   <ul>
     <li>Install type : New installation</li>

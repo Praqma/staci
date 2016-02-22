@@ -6,8 +6,10 @@ source $STACI_HOME/functions/tools.f
 # Find out, if we are using a cluster or not
 cluster=$(getProperty "createCluster")
 
+
 if [ "$cluster" == 1 ]; then
-   eval $(docker-machine env --swarm praqma-mysql)
+  node_prefix=$(getProperty "clusterNodePrefix")
+  eval $(docker-machine env --swarm $node_prefix-mysql)
 fi
 
 # we stop all containers
