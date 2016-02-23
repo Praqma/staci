@@ -55,6 +55,10 @@ jira_contextpath:/jira
 jira_username:jiradbuser
 jira_password:jirapass
 jira_database_name:jiradb
+jira_xms:512m
+jira_xmx:768m
+jira_plugin_wait:300
+jira_session_cookie_name:jirasession
 
 # Bamboo section
 bamboo_contextpath:/bamboo
@@ -68,6 +72,6 @@ confluence_username:confluenceuser
 confluence_password:confluencepass
 confluence_database_name:confluencedb
 confluence_xms:512m
-confluence_xmx:1512m
+confluence_xmx:768m
 confluence_session_cookie_name:confluencesession
 
