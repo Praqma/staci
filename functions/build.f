@@ -32,7 +32,7 @@ function buildBaseImage(){
     if [ "$start_bitbucket" == "1" ]; then
       echo "   - Building base image on Bitbucket instans."
       eval $(docker-machine env "$node_prefix-bitbucket")
-      docker build -t staci/base:$version $STACI_HOME/imaes/base/context/ > $STACI_HOME/logs/base.bitbucket.build.log 2>&1 &
+      docker build -t staci/base:$version $STACI_HOME/images/base/context/ > $STACI_HOME/logs/base.bitbucket.build.log 2>&1 &
     fi
 
     if [ "$start_mysql" == "1" ]; then
