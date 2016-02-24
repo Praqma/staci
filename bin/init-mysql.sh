@@ -25,7 +25,7 @@ function exec_sql(){
       mysql_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' atlassiandb)
    fi
  
-   docker run -it staci/atlassiandb:$version mysql --host="$mysql_ip" --port="3306" --user=root --password=$pw -e "$sqlcmd" > $STACI_HOME/logs/mysqlInit.log 2>&1 >> $STACI_HOME/logs/mysql.log
+   docker run --rm staci/atlassiandb:$version mysql --host="$mysql_ip" --port="3306" --user=root --password=$pw -e "$sqlcmd" > $STACI_HOME/logs/mysqlInit.log 2>&1 >> $STACI_HOME/logs/mysql.log
 }
 
 # Find out what to init
