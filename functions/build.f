@@ -107,7 +107,7 @@ function buildBamboo(){
 function buildBitbucket(){
   if [ "$start_bitbucket" == "1" ]; then
     if [ "$cluster" == "1" ]; then
-      eval $(docker-machine env "$node_prefix-bibtucket")
+      eval $(docker-machine env "$node_prefix-bitbucket")
     fi
     bitbucketContextPath=$(getProperty "bitbucket_contextpath")
     bitbucketContextPath='\'$bitbucketContextPath
