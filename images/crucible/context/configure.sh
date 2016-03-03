@@ -2,7 +2,7 @@
 
 configfile=$(cat << EOF
 <config control-bind="127.0.0.1:8059" version="1.0">
-    <web-server context="/crusible" site-url="http://192.168.0.109:8060/crusible">
+    <web-server context="/crucible">
         <http bind=":8060"/>
     </web-server>
     <security allow-anon="true" allow-cru-anon="true"/>

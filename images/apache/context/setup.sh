@@ -1,6 +1,6 @@
 openssl req -new -newkey rsa:2048 -nodes -x509 \
     -subj "/C=DK/ST=Aarhus/L=Aarhus/OU=Praqma/O=Praqma/CN=jira.praqma.net" \
-    -keyout /etc/ssl/private/jira.key  -out /etc/ssl/certs/jira.praqma.net.crt
+    -keyout /etc/ssl/private/jira.key  -out /etc/ssl/certs/jira.crt
 
 
 echo '<IfModule mod_ssl.c>
@@ -34,8 +34,8 @@ echo '<IfModule mod_ssl.c>
 		</Proxy>
                 ProxyRequests           Off
                 ProxyPreserveHost       On
-                ProxyPass               /jira       http://home.softica.dk:8080/jira
-                ProxyPassReverse        /jira       http://home.softica.dk:8080/jira
+                ProxyPass               /jira       http://10.153.80.175:8080/jira
+                ProxyPassReverse        /jira       http://10.153.80.175:8080/jira
 
                 SSLCertificateFile    /etc/ssl/certs/jira.crt
                 SSLCertificateKeyFile /etc/ssl/private/jira.key

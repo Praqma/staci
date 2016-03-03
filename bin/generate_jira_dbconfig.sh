@@ -7,7 +7,7 @@ mysql_driver_class=$(getProperty "mysql_driver_class")
 jira_username=$(getProperty "jira_username")
 jira_password=$(getProperty "jira_password")
 jira_database_name=$(getProperty "jira_database_name")
-docker_host_ip=$(echo $DOCKER_HOST | grep -o '[0-9]\+[.][0-9]\+[.][0-9]\+[.][0-9]\+')
+docker_host_ip="atlasiandb"
 
 cat << EOF
 <?xml version="1.0" encoding="UTF-8"?>

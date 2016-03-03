@@ -8,10 +8,10 @@
 ##
 
 source $STACI_HOME/functions/tools.f
-docker_host_ip=$(echo $DOCKER_HOST | grep -o '[0-9]\+[.][0-9]\+[.][0-9]\+[.][0-9]\+')
 version=$(getProperty "imageVersion")
 node_prefix=$(getProperty "clusterNodePrefix")
 cluster=$(getProperty "createCluster")
+mysql_ip="atlassiandb"
 
 function exec_sql(){
    local pw=$1
@@ -20,12 +20,9 @@ function exec_sql(){
    # Point to cluster, if used
    if [ "$cluster" == "1" ]; then
       eval $(docker-machine env "$node_prefix-mysql")
-      mysql_ip=$(docker-machine ip "$node_prefix-mysql")
-   else
-      mysql_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' atlassiandb)
    fi
  
-   docker run --rm staci/atlassiandb:$version mysql --host="$mysql_ip" --port="3306" --user=root --password=$pw -e "$sqlcmd" > $STACI_HOME/logs/mysqlInit.log 2>&1 >> $STACI_HOME/logs/mysql.log
+   docker exec atlassiandb mysql --user=root --password=$pw -e "$sqlcmd" > $STACI_HOME/logs/mysqlInit.log 2>&1 >> $STACI_HOME/logs/mysql.log
 }
 
 # Find out what to init

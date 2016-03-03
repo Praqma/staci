@@ -17,6 +17,7 @@ volume_dir=$(getProperty "volume_dir")
 timezone=$(getProperty "time_zone")
 
 node_prefix=$(getProperty "clusterNodePrefix")
+cluster=$(getProperty "createCluster")
 
 # Printing version and header
 cat << EOF
@@ -27,6 +28,15 @@ EOF
 
 # Printing Bitbucket specific yml
 if [ "$start_bitbucket" == "1" ]; then
+ if [ "$cluster" == "1" ]; then
+  cluster_opts='    environment:
+      - "constraint:node=='$node_prefix'-bitbucket"
+    networks:
+      - back'
+ else
+  cluster_opts='    volumes:
+      - '$volume_dir'/bitbucket:/var/atlassian/bitbucket'
+ fi
 cat << EOF
   bitbucket:
     image: staci/bitbucket:$version
@@ -38,18 +48,21 @@ cat << EOF
     ports:
       - "7990:7990"
       - "7999:7999"
-#  volumes:
-#    - $volume_dir/bitbucket:/var/atlassian/bitbucket
-    environment:
-      - "constraint:node==$node_prefix-bitbucket"
-    networks:
-      - back
-
+$cluster_opts
 EOF
 fi
 
 # Printing Crowd specific yml
 if [ "$start_crowd" == "1" ]; then
+ if [ "$cluster" == "1" ]; then
+  cluster_opts='    environment:
+      - "constraint:node=='$node_prefix'-crowd"
+    networks:
+      - back'
+ else
+  cluster_opts='    volumes:
+    - '$volume_dir'/crowd:/var/atlassian/crowd'
+ fi
 cat << EOF
   crowd:
     image: staci/crowd:$version
@@ -59,32 +72,31 @@ cat << EOF
       - "8095"
     ports:
       - "8095:8095"
-#  volumes:
-#    - $volume_dir/crowd:/var/atlassian/crowd
-    environment:
-      - "constraint:node==$node_prefix-crowd"
-    networks:
-      - back
+$cluster_opts
 EOF
 fi
 
 # Printing Crucible specific yml
 if [ "$start_crucible" == "1" ]; then
+ if [ "$cluster" == "1" ]; then
+  cluster_opts='    environment:
+      - "constraint:node=='$node_prefix'-crucible"
+    networks:
+      - back'
+ else
+  cluster_opts='    volumes:
+    - '$volume_dir'/crucible:/var/atlassian/crucible'
+ fi
 cat << EOF
   crucible:
     image: staci/crucible:$version
     container_name: crucible
-    hostname: crowd
+    hostname: crucible
     expose:
       - "8060"
     ports:
       - "8060:8060"
-#  volumes:
-#    - $volume_dir/crucible:/var/atlassian/crucible
-    environment:
-      - "constraint:node==$node_prefix-crucible"
-    networks:
-      - back
+$cluster_opts
 EOF
 fi
 
@@ -95,6 +107,19 @@ jira_xmx=$(getProperty "jira_xmx")
 jira_session_cookie_name=$(getProperty "jira_session_cookie_name")
 jira_plugin_wait=$(getProperty "jira_plugin_wait")
 
+ if [ "$cluster" == "1" ]; then
+  cluster_opts='    environment:
+      - "constraint:node=='$node_prefix'-jira"
+      - CATALINA_OPTS="-Datlassian.plugins.enable.wait='$jira_plugin_wait'" "-Xmx'$jira_xmx'" "-Xms'$jira_xms'" "-Dorg.apache.catalina.SESSION_COOKIE_NAME='$jira_session_cookie_name'" "-Duser.timezone='$timezone'"
+    networks:
+      - back'
+ else
+  cluster_opts='    environment:
+      - CATALINA_OPTS="-Datlassian.plugins.enable.wait='$jira_plugin_wait'" "-Xmx'$jira_xmx'" "-Xms'$jira_xms'" "-Dorg.apache.catalina.SESSION_COOKIE_NAME='$jira_session_cookie_name'" "-Duser.timezone='$timezone'"
+    volumes:
+      - '$volume_dir'/jira:/var/atlassian/jira'
+ fi
+
 cat << EOF
   jira:
     image: staci/jira:$version
@@ -104,13 +129,7 @@ cat << EOF
       - "8080"
     ports:
       - "8080:8080"
-#  volumes:
-#    - $volume_dir/jira:/var/atlassian/jira
-    environment:
-      - CATALINA_OPTS="-Datlassian.plugins.enable.wait=$jira_plugin_wait" "-Xmx$jira_xmx" "-Xms$jira_xms" "-Dorg.apache.catalina.SESSION_COOKIE_NAME=$jira_session_cookie_name" "-Duser.timezone=$timezone"
-      - "constraint:node==$node_prefix-jira"
-    networks:
-      - back
+$cluster_opts
 EOF
 fi
 
@@ -119,6 +138,19 @@ if [ "$start_confluence" == "1" ]; then
 confluence_xms=$(getProperty "confluence_xms")
 confluence_xmx=$(getProperty "confluence_xmx")
 confluence_session_cookie_name=$(getProperty "confluence_session_cookie_name")
+
+ if [ "$cluster" == "1" ]; then
+  cluster_opts='    environment:
+      - "constraint:node=='$node_prefix'-confluence"
+      - CATALINA_OPTS="-Xmx'$confluence_xmx'" "-Xms'$confluence_xms'" "-Dorg.apache.catalina.SESSION_COOKIE_NAME='$confluence_session_cookie_name'" "-Duser.timezone='$timezone'"
+    networks:
+      - back'
+ else
+  cluster_opts='    environment:
+      - CATALINA_OPTS="-Xmx'$confluence_xmx'" "-Xms'$confluence_xms'" "-Dorg.apache.catalina.SESSION_COOKIE_NAME='$confluence_session_cookie_name'" "-Duser.timezone='$timezone'"
+    volumes:
+      - '$volume_dir'/confluence:/var/atlassian/confluence'
+ fi
 
 cat << EOF
   confluence:
@@ -129,18 +161,21 @@ cat << EOF
       - "8090"
     ports:
       - "8090:8090"
-#  volumes:
-#    - $volume_dir/confluence:/var/atlassian/confluence
-    environment:
-      - CATALINA_OPTS="-Xmx$confluence_xmx" "-Xms$confluence_xms" "-Dorg.apache.catalina.SESSION_COOKIE_NAME=$confluence_session_cookie_name" "-Duser.timezone=$timezone"
-      - "constraint:node==$node_prefix-confluence"
-    networks:
-      - back
+$cluster_opts
 EOF
 fi
 
 # Printing Bamboo specific yml
 if [ "$start_bamboo" == "1" ]; then
+ if [ "$cluster" == "1" ]; then
+  cluster_opts='    environment:
+      - "constraint:node=='$node_prefix'-bamboo"
+    networks:
+      - back'
+ else
+  cluster_opts='    volumes:
+      - '$volume_dir'/bamboo:/var/lib/bamboo'
+ fi
 cat << EOF
   bamboo:
     image: staci/bamboo:$version
@@ -152,17 +187,27 @@ cat << EOF
     ports:
       - "8085:8085"
       - "54663:54663"
-#  volumes:
-#    - $volume_dir/bamboo:/var/lib/bamboo
-    environment:
-      - "constraint:node==$node_prefix-bamboo"
-    networks:
-      - back
+$cluster_opts
 EOF
 fi
 
 # Printing database specific yml
 if [ "$start_mysql" == "1" ]; then
+mysql_root_pass=$(getProperty "mysql_root_pass")
+
+ if [ "$cluster" == "1" ]; then
+  cluster_opts='    environment:
+      - MYSQL_ROOT_PASSWORD='$mysql_root_pass'
+      - "constraint:node=='$node_prefix'-mysql"
+    networks:
+      - back'
+ else
+  cluster_opts='    environment:
+      - MYSQL_ROOT_PASSWORD='$mysql_root_pass'
+    volumes:
+      - '$volume_dir'/atlassiandb:/var/lib/mysql'
+ fi
+
 cat << EOF
   atlassiandb:
     image: staci/atlassiandb:$version
@@ -172,20 +217,16 @@ cat << EOF
       - "3306"
     ports:
       - "3306:3306"
-#  volumes:
-#    - $volume_dir/atlassiandb:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=pass_word
-      - "constraint:node==$node_prefix-mysql"
-    networks:
-      - back
+$cluster_opts
 EOF
 fi
 
 # Create network
+if [ "$cluster" == "1" ]; then
 cat << EOF
 networks:
   back:
     driver: overlay
 
 EOF
+fi

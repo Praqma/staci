@@ -46,23 +46,23 @@ if [ ! -d "$volume_dir" ]; then
 fi
 
 # Check if we have a DOCKER_HOST variable
-if [ -z "$DOCKER_HOST" ] && [ "$cluster" == 0 ]; then
-   echo " - Can't find a valid DOCKER_HOST variable, and cluster is OFF."
-   echo " - Exiting....
-"
-   exit
-fi
+#if [ -z "$DOCKER_HOST" ] && [ "$cluster" == 0 ]; then
+#   echo " - Can't find a valid DOCKER_HOST variable, and cluster is OFF."
+#   echo " - Exiting....
+#"
+#   exit
+#fi
 
-if [ ! -z "$DOCKER_HOST" ] && [ "$cluster" == 1 ]; then
-   echo " - Make up your mind ! unset DOCKER_HOST or turn cluster off."
-   echo " - Exiting....
-"
-   exit
-fi
+#if [ ! -z "$DOCKER_HOST" ] && [ "$cluster" == 1 ]; then
+#   echo " - Make up your mind ! unset DOCKER_HOST or turn cluster off."
+#   echo " - Exiting....
+#"
+#   exit
+#fi
 
-if [ ! -z "$DOCKER_HOST" ]; then
-   echo " - Deploying on $DOCKER_HOST"
-fi
+#if [ ! -z "$DOCKER_HOST" ]; then
+#   echo " - Deploying on $DOCKER_HOST"
+#fi
 
 read -p "
  - Press [Enter] key to continue...
@@ -120,5 +120,4 @@ echo '
  - To view log, exec "docker-compose log"
  - To stop, exec "./stop.sh"
  - To start again later, exec "./start.sh"
-
 '

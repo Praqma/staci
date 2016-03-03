@@ -1,6 +1,6 @@
 #!/bin/bash
 source $STACI_HOME/functions/tools.f
-docker_host_ip=$(echo $DOCKER_HOST | grep -o '[0-9]\+[.][0-9]\+[.][0-9]\+[.][0-9]\+')
+#docker_host_ip=$(echo $DOCKER_HOST | grep -o '[0-9]\+[.][0-9]\+[.][0-9]\+[.][0-9]\+')
 
 # Set version of images
 version=$(getProperty "imageVersion")
@@ -15,13 +15,14 @@ start_bitbucket=$(getProperty "start_bitbucket")
 start_crucible=$(getProperty "start_crucible")
 
 cluster=$(getProperty "createCluster")
+atlassiandb_ip=atlassiandb
 
-   if [ "$cluster" == "1" ]; then
-      node_prefix=$(getProperty "clusterNodePrefix")
-      atlassiandb_ip=$(docker-machine ip "$node_prefix-mysql")
-   else
-      atlassiandb_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' atlassiandb)
-   fi
+#   if [ "$cluster" == "1" ]; then
+#      node_prefix=$(getProperty "clusterNodePrefix")
+#      atlassiandb_ip=$(docker-machine ip "$node_prefix-mysql")
+#   else
+#      atlassiandb_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' atlassiandb)
+#   fi
 
 cat << EOF
 <html>
@@ -154,7 +155,7 @@ if [ "$start_jira" == "1" ]; then
    if [ "$cluster" == "1" ]; then
       jiraip=$(docker-machine ip "$node_prefix-jira")
    else
-      jiraip=$docker_host_ip
+      jiraip="localhost"
    fi
 
 cat << EOF
@@ -178,8 +179,10 @@ if [ "$start_crucible" == "1" ]; then
 
    if [ "$cluster" == "1" ]; then
       crucibleip=$(docker-machine ip "$node_prefix-crucible")
+      jiraip=$(docker-machine ip "$node_prefix-jira")
    else
-      crucibleip=$docker_host_ip
+      crucibleip="localhost"
+      jiraip="localhost"
    fi
 
 cat << EOF
@@ -188,10 +191,10 @@ cat << EOF
   <a href="http://$crucibleip:8060$crucibleContextPath" target="_blank">Crucible link</a>
 
   <ul>
-    <li>Crucible link : http://$docker_host_ip:8060$crucibleContextPath</li>
+    <li>Crucible link : http://$crucibleip:8060$crucibleContextPath</li>
 EOF
   if [ "$start_jira" == "1" ]; then
-     echo "<li>Link to Jira : http://$docker_host_ip:8080$jira_contextpath</li>"
+     echo "<li>Link to Jira : http://$jiraip:8080$jira_contextpath</li>"
   fi
 cat << EOF
   </ul>
@@ -208,7 +211,7 @@ if [ "$start_confluence" == "1" ]; then
    if [ "$cluster" == "1" ]; then
       confluenceip=$(docker-machine ip "$node_prefix-confluence")
    else
-      confluenceip=$docker_host_ip
+      confluenceip="localhost"
    fi
 
 cat << EOF
@@ -237,7 +240,7 @@ if [ "$start_bamboo" == "1" ]; then
    if [ "$cluster" == "1" ]; then
       bambooip=$(docker-machine ip "$node_prefix-bamboo")
    else
-      bambooip=$docker_host_ip
+      bambooip="localhost"
    fi
 
 cat << EOF
@@ -266,7 +269,7 @@ if [ "$start_bitbucket" == "1" ]; then
    if [ "$cluster" == "1" ]; then
       bitbucketip=$(docker-machine ip "$node_prefix-bitbucket")
    else
-      bitbucketip=$docker_host_ip
+      bitbucketip="localhost"
    fi
 
 cat << EOF
@@ -294,7 +297,7 @@ if [ "$start_crowd" == "1" ]; then
    if [ "$cluster" == "1" ]; then
       crowdip=$(docker-machine ip "$node_prefix-crowd")
    else
-      crowdip=$docker_host_ip
+      crowdip="localhost"
    fi
 
 cat << EOF
@@ -321,7 +324,7 @@ mysql_root_pass=$(getProperty "mysql_root_pass")
    if [ "$cluster" == "1" ]; then
       mysqlip=$(docker-machine ip "$node_prefix-mysql")
    else
-      mysqlip=$docker_host_ip
+      mysqlip="localhost"
    fi
 
 cat << EOF

@@ -1,8 +1,6 @@
 #! /bin/bash
 source $STACI_HOME/functions/tools.f
 
-docker_host_ip=$(echo $DOCKER_HOST | grep -o '[0-9]\+[.][0-9]\+[.][0-9]\+[.][0-9]\+')
-
 crucibleContextPath=$(getProperty "crusible_contextpath")
 contextPath="context=\"$crucibleContextPath\""
 
@@ -11,7 +9,7 @@ cat << EOF2
 
 configfile=\$(cat << EOF
 <config control-bind="127.0.0.1:8059" version="1.0">
-    <web-server $contextPath site-url="http://$docker_host_ip:8060$crucibleContextPath">
+    <web-server $contextPath>
         <http bind=":8060"/>
     </web-server>
     <security allow-anon="true" allow-cru-anon="true"/>

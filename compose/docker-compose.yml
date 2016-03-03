@@ -1,46 +1,37 @@
-jira:
-  image: staci/jira:0.1
-  container_name: jira
-  hostname: jira
-  expose:
-    - "8080"
-  ports:
-    - "8080:8080"
-  volumes:
-    - /data/atlassian/jira:/var/atlassian/jira
-  environment:
-    - CATALINA_OPTS="-Datlassian.plugins.enable.wait=300"
-confluence:
-  image: staci/confluence:0.1
-  container_name: confluence
-  hostname: confluence
-  expose:
-    - "8090"
-  ports:
-    - "8090:8090"
-  volumes:
-    - /data/atlassian/confluence:/var/atlassian/confluence
-bamboo:
-  image: staci/bamboo:0.1
-  container_name: bamboo
-  hostname: bamboo
-  expose:
-    - "8085"
-    - "54663"
-  ports:
-    - "8085:8085"
-    - "54663:54663"
-  volumes:
-    - /data/atlassian/bamboo:/var/lib/bamboo
-atlassiandb:
-  image: staci/atlassiandb:0.1
-  container_name: atlassiandb
-  hostname: atlassiandb
-  expose:
-    - "3306"
-  ports:
-    - "3306:3306"
-  volumes:
-    - /data/atlassian/atlassiandb:/var/lib/mysql
-  environment:
-    - MYSQL_ROOT_PASSWORD=pass_word
+version: '2'
+
+services:
+  bitbucket:
+    image: staci/bitbucket:0.1
+    container_name: bitbucket
+    hostname: bitbucket
+    expose:
+      - "7990"
+      - "7999"
+    ports:
+      - "7990:7990"
+      - "7999:7999"
+    volumes:
+      - /data/atlassian/bitbucket:/var/atlassian/bitbucket
+  crucible:
+    image: staci/crucible:0.1
+    container_name: crucible
+    hostname: crowd
+    expose:
+      - "8060"
+    ports:
+      - "8060:8060"
+    volumes:
+    - /data/atlassian/crucible:/var/atlassian/crucible
+  atlassiandb:
+    image: staci/atlassiandb:0.1
+    container_name: atlassiandb
+    hostname: atlassiandb
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=pass_word
+    volumes:
+      - /data/atlassian/atlassiandb:/var/lib/mysql
