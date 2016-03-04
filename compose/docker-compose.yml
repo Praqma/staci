@@ -11,18 +11,22 @@ services:
     ports:
       - "7990:7990"
       - "7999:7999"
-    volumes:
-      - /data/atlassian/bitbucket:/var/atlassian/bitbucket
+    environment:
+      - "constraint:node==hoeghh-bitbucket"
+    networks:
+      - back
   crucible:
     image: staci/crucible:0.1
     container_name: crucible
-    hostname: crowd
+    hostname: crucible
     expose:
       - "8060"
     ports:
       - "8060:8060"
-    volumes:
-    - /data/atlassian/crucible:/var/atlassian/crucible
+    environment:
+      - "constraint:node==hoeghh-crucible"
+    networks:
+      - back
   atlassiandb:
     image: staci/atlassiandb:0.1
     container_name: atlassiandb
@@ -33,5 +37,10 @@ services:
       - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=pass_word
-    volumes:
-      - /data/atlassian/atlassiandb:/var/lib/mysql
+      - "constraint:node==hoeghh-mysql"
+    networks:
+      - back
+networks:
+  back:
+    driver: overlay
+

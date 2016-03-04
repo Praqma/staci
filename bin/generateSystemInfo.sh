@@ -16,6 +16,7 @@ start_crucible=$(getProperty "start_crucible")
 
 cluster=$(getProperty "createCluster")
 atlassiandb_ip=atlassiandb
+node_prefix=$(getProperty "clusterNodePrefix")
 
 #   if [ "$cluster" == "1" ]; then
 #      node_prefix=$(getProperty "clusterNodePrefix")
