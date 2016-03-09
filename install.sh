@@ -38,11 +38,14 @@ echo " - Using $backup_folder for backup"
 # Create folders for persistant container data, if not existing
 # But only if run locally
 if [ ! -d "$volume_dir" ] && [ "$cluster" == 0 ]; then
-  mkdir "$volume_dir"
-  mkdir "$volume_dir/jira"
-  mkdir "$volume_dir/confluence"
-  mkdir "$volume_dir/bamboo"
-  mkdir "$volume_dir/atlassiandb"
+  mkdir -p "$volume_dir"
+  mkdir -p "$volume_dir/jira"
+  mkdir -p "$volume_dir/confluence"
+  mkdir -p "$volume_dir/bamboo"
+  mkdir -p "$volume_dir/atlassiandb"
+  mkdir -p "$volume_dir/bitbucket"
+  mkdir -p "$volume_dir/crowd"
+  mkdir -p "$volume_dir/crucible"
   echo " - Created $volume_dir folder."
 fi
 
