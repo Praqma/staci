@@ -38,7 +38,6 @@ pull the repository (git clone https://github.com/Praqma/staci.git)
 cd staci
 cp conf/staci.properties.template staci.properties
 vim conf/staci.properties
-export DOCKER_HOST=YOUR-IP:2375  (only if not using a provider)
 ./install.sh
 ```
 
