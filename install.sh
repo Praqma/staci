@@ -36,7 +36,8 @@ backup_folder=$(getProperty "backup_folder")
 echo " - Using $backup_folder for backup"
 
 # Create folders for persistant container data, if not existing
-if [ ! -d "$volume_dir" ]; then
+# But only if run locally
+if [ ! -d "$volume_dir" ] && [ "$cluster" == 0 ]; then
   mkdir "$volume_dir"
   mkdir "$volume_dir/jira"
   mkdir "$volume_dir/confluence"
@@ -44,25 +45,6 @@ if [ ! -d "$volume_dir" ]; then
   mkdir "$volume_dir/atlassiandb"
   echo " - Created $volume_dir folder."
 fi
-
-# Check if we have a DOCKER_HOST variable
-#if [ -z "$DOCKER_HOST" ] && [ "$cluster" == 0 ]; then
-#   echo " - Can't find a valid DOCKER_HOST variable, and cluster is OFF."
-#   echo " - Exiting....
-#"
-#   exit
-#fi
-
-#if [ ! -z "$DOCKER_HOST" ] && [ "$cluster" == 1 ]; then
-#   echo " - Make up your mind ! unset DOCKER_HOST or turn cluster off."
-#   echo " - Exiting....
-#"
-#   exit
-#fi
-
-#if [ ! -z "$DOCKER_HOST" ]; then
-#   echo " - Deploying on $DOCKER_HOST"
-#fi
 
 read -p "
  - Press [Enter] key to continue...

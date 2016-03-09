@@ -90,11 +90,11 @@ function createSwarm(){
     # Get the node prefix
     local node_prefix=$(getProperty "clusterNodePrefix")
 
-    createDMInstance "$provider" "$dmflags" "0" "0" "consul-keystore"
+    createDMInstance "$provider" "$dmflags" "0" "0" "$node_prefix-keystore"
 
-    docker $(docker-machine config consul-keystore) pull progrium/consul:latest > $STACI_HOME/logs/consult.pull.log
+    docker $(docker-machine config $node_prefix-keystore) pull progrium/consul:latest > $STACI_HOME/logs/consult.pull.log
 
-    docker $(docker-machine config consul-keystore) run -d \
+    docker $(docker-machine config $node_prefix-keystore) run -d \
         -p "8500:8500" \
         -h "consul" \
         progrium/consul -server -bootstrap > $STACI_HOME/logs/consul.run.log
@@ -134,6 +134,7 @@ function createDMInstance(){
     local dmname=$5
     local swarmtype=$3
     local clusteropts=$4
+    local node_prefix=$(getProperty "clusterNodePrefix")
 
     local swarm=""
     local cluster=""
@@ -141,7 +142,7 @@ function createDMInstance(){
     if [ $clusteropts == "0" ];then
         cluster=""
     elif [ $clusteropts == "1" ];then
-        discoveryservice="consul://$(docker-machine ip consul-keystore):8500"
+        discoveryservice="consul://$(docker-machine ip $node_prefix-keystore):8500"
         cluster="--engine-opt=""cluster-store=$discoveryservice"" --engine-opt=""cluster-advertise=eth1:2376"""
     fi
 
