@@ -35,12 +35,6 @@ function buildBaseImage(){
       docker build -t staci/base:$version $STACI_HOME/images/base/context/ > $STACI_HOME/logs/base.bitbucket.build.log 2>&1 &
     fi
 
-    if [ "$start_mysql" == "1" ]; then
-      echo "   - Building base image on MySql instans."
-      eval $(docker-machine env "$node_prefix-mysql")
-      docker build -t staci/base:$version $STACI_HOME/images/base/context/ > $STACI_HOME/logs/base.mysql.build.log 2>&1 &
-    fi
-
     if [ "$start_crowd" == "1" ]; then
       echo "   - Building base image on Crowd instans."
       eval $(docker-machine env "$node_prefix-crowd")
