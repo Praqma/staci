@@ -73,11 +73,9 @@ source $STACI_HOME/functions/tools.f
 source $STACI_HOME/functions/build.f
 source $STACI_HOME/functions/staciOperations.f
 
-# Find out, if we are using a cluster or not
-cluster=$(getProperty "createCluster")
-
 if [ $param1 == "install" ];then
-  echo "Doing install, please wait...."
+  echo "Installing, please wait...."
+  installStaci
   exit 0;
 fi
 
@@ -86,25 +84,26 @@ if [ $param1 == "wwig" ];then
   if [ ! -z "$param2" ];then
     echo " - Analyzing file $param2"
   else
-    echo " - Analyzing file ./bin/staci/properties"
+    echo " - Analyzing file $STACI_HOME/conf/staci.properties"
   fi
   exit 0;
 fi
 
 if [ $param1 == "delete" ];then
   echo "Deleting containers, please wait...."
+  deleteStaci
   exit 0;
 fi
 
 if [ $param1 == "start" ];then
   echo "Starting containers, please wait...."
-  startContainers
+  startStaci
   exit 0;
 fi
 
 if [ $param1 == "stop" ];then
   echo "Stopping containers, please wait...."
-  stopContainers
+  stopStaci
   exit 0;
 fi
 
