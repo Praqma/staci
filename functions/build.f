@@ -12,37 +12,37 @@ function buildBaseImage(){
 
   if [ "$cluster" == "1" ]; then
     if [ "$start_jira" == "1"  ];then
-      echo "   - Building base image on Jira instans."
+      echo "   - Building base image on Jira instance."
       eval $(docker-machine env "$node_prefix-jira")
       docker build -t staci/base:$version $STACI_HOME/images/base/context/ > $STACI_HOME/logs/base.jira.build.log 2>&1 &
     fi
 
     if [ "$start_confluence" == "1" ]; then
-      echo "   - Building base image on Confluence instans."
+      echo "   - Building base image on Confluence instance."
       eval $(docker-machine env "$node_prefix-confluence")
       docker build -t staci/base:$version $STACI_HOME/images/base/context/ > $STACI_HOME/logs/base.confluence.build.log 2>&1 &
     fi 
 
     if [ "$start_bamboo" == "1" ]; then
-      echo "   - Building base image on Bamboo instans."
+      echo "   - Building base image on Bamboo instance."
       eval $(docker-machine env "$node_prefix-bamboo")
       docker build -t staci/base:$version $STACI_HOME/images/base/context/ > $STACI_HOME/logs/base.bamboo.build.log 2>&1 &
     fi
 
     if [ "$start_bitbucket" == "1" ]; then
-      echo "   - Building base image on Bitbucket instans."
+      echo "   - Building base image on Bitbucket instance."
       eval $(docker-machine env "$node_prefix-bitbucket")
       docker build -t staci/base:$version $STACI_HOME/images/base/context/ > $STACI_HOME/logs/base.bitbucket.build.log 2>&1 &
     fi
 
     if [ "$start_crowd" == "1" ]; then
-      echo "   - Building base image on Crowd instans."
+      echo "   - Building base image on Crowd instance."
       eval $(docker-machine env "$node_prefix-crowd")
       docker build -t staci/base:$version $STACI_HOME/images/base/context/ > $STACI_HOME/logs/base.crowd.build.log 2>&1 &
     fi
 
     if [ "$start_crucible" == "1" ]; then
-      echo "   - Building base image on Crucible instans."
+      echo "   - Building base image on Crucible instance."
       eval $(docker-machine env "$node_prefix-crucible")
       docker build -t staci/base:$version $STACI_HOME/images/base/context/ > $STACI_HOME/logs/base.crucible.build.log 2>&1 &
     fi
