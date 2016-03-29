@@ -22,7 +22,7 @@ use_browser:1
 volume_dir:/data/atlassian
 
 # Choose which cluster provider to use
-# [none, virtualbox, mesos, openstack]
+# [none, virtualbox, mesos, openstack, vmwarevsphere]
 provider_type:none
 
 # Backup folder
@@ -74,4 +74,3 @@ confluence_database_name:confluencedb
 confluence_xms:512m
 confluence_xmx:768m
 confluence_session_cookie_name:confluencesession
-
