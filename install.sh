@@ -10,7 +10,7 @@
 echo "
 ##                                                                            ##
 #                                                                              #
-#  Starting STACI - Support Tracking and Continous Integration.                #
+#  Starting STACI - Support Tracking and Continuous Integration.               #
 #                                                                              #
 #  - If you need to build images, use ./functions/build.f/buildAll             #
 #  - If you need to push images to docker hub, use ./bin/push-to-dockerhub.sh  #
