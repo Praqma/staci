@@ -18,6 +18,10 @@ echo "
 ##                                                                            ##
 "
 
+# Create needed directories
+mkdir -p compose
+mkdir -p logs
+
 # Sourcing env setup
 source setEnv.sh
 source $STACI_HOME/functions/tools.f
@@ -102,7 +106,7 @@ if [ ! -z $start_mysql ];then
 fi
 
 echo '
- - To view log, exec "docker-compose log"
- - To stop, exec "./stop.sh"
- - To start again later, exec "./start.sh"
+ - To view logs, execute "docker-compose -f compose/docker-compose.yml logs"
+ - To stop, execute "./stop.sh"
+ - To start again later, execute "./start.sh"
 '
