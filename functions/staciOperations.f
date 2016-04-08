@@ -62,6 +62,15 @@ function installStaci(){
     echo " - Using $backup_folder for backup"
   fi
 
+  # Create needed directories
+  if [ ! -d "compose" ]; then
+    mkdir -p compose
+  fi
+
+  if [ ! -d "$DIRECTORY" ]; then
+    mkdir -p logs
+  fi
+
   # Create folders for persistant container data, if not existing
   # But only if run locally
   if [ ! -d "$volume_dir" ] && [ "$provider_type" == "none" ]; then
