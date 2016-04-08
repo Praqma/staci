@@ -19,8 +19,13 @@ echo "
 "
 
 # Create needed directories
-mkdir -p compose
-mkdir -p logs
+if [ ! -d "compose" ]; then
+  mkdir -p compose
+fi
+
+if [ ! -d "$DIRECTORY" ]; then
+  mkdir -p logs
+fi
 
 # Sourcing env setup
 source setEnv.sh
