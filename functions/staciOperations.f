@@ -48,6 +48,14 @@ function startStaci(){
 }
 
 function installStaci(){
+  if [ ! -d "compose" ]; then
+    mkdir -p compose
+  fi
+
+  if [ ! -d "$DIRECTORY" ]; then
+    mkdir -p logs
+  fi
+
   # Find out, if we should create a cluster or not
   cluster=$(getProperty "createCluster")
   provider_type=$(getProperty "provider_type")
