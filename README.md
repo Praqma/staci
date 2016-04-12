@@ -10,6 +10,14 @@ This repository is maintained by www.praqma.com
 - Crucible
 - MySQL
 
+## As of 12 April use these new commands
+- install.sh -> staci.sh install
+- start.sh -> staci.sh start
+- stop.sh -> staci.sh stop
+- removeContainers.sh -> staci.sh delete
+
+staci.sh replaces the above old commands.
+
 ## Requirements
 - Docker version 1.10
 - Docker-compose version: 1.6.0
