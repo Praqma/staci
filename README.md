@@ -46,7 +46,7 @@ pull the repository (git clone https://github.com/Praqma/staci.git)
 cd staci
 cp conf/staci.properties.template staci.properties
 vim conf/staci.properties
-./install.sh
+./staci.sh install
 ```
 
 If you want to change the behaviour of STACI, edit the file ./conf/staci.properties
