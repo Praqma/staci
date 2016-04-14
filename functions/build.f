@@ -48,7 +48,12 @@ function buildBaseImage(){
     fi
 
   else
-    echo "    - Building base image locally."
+    if [ ! "$provider_type" == "none" ];then
+      node_prefix=$(getProperty "clusterNodePrefix")
+      eval $(docker-machine env $node_prefix-Atlassian)
+    fi
+
+    echo "    - Building base image."
     docker build -t staci/base:$version $STACI_HOME/images/base/context/ > $STACI_HOME/logs/base.local.build.log 2>&1
   fi
 
@@ -59,6 +64,11 @@ function buildJira(){
   if [ "$start_jira" == "1"  ];then
     if [ "$cluster" == "1" ]; then
       eval $(docker-machine env "$node_prefix-jira")
+    else
+      if [ ! "$provider_type" == "none" ];then
+        node_prefix=$(getProperty "clusterNodePrefix")
+        eval $(docker-machine env $node_prefix-Atlassian)
+      fi
     fi
     jiraContextPath=$(getProperty "jira_contextpath")
     jiraContextPath='\'$jiraContextPath
@@ -74,6 +84,11 @@ function buildConfluence(){
   if [ "$start_confluence" == "1" ]; then
     if [ "$cluster" == "1" ]; then
       eval $(docker-machine env "$node_prefix-confluence")
+    else
+      if [ ! "$provider_type" == "none" ];then
+        node_prefix=$(getProperty "clusterNodePrefix")
+        eval $(docker-machine env $node_prefix-Atlassian)
+      fi
     fi
     confluenceContextPath=$(getProperty "confluence_contextpath")
     confluenceContextPath='\'$confluenceContextPath
@@ -88,6 +103,11 @@ function buildBamboo(){
   if [ "$start_bamboo" == "1" ]; then
     if [ "$cluster" == "1" ]; then
       eval $(docker-machine env "$node_prefix-bamboo")
+    else
+      if [ ! "$provider_type" == "none" ];then
+        node_prefix=$(getProperty "clusterNodePrefix")
+        eval $(docker-machine env $node_prefix-Atlassian)
+      fi
     fi
     bambooContextPath=$(getProperty "bamboo_contextpath")
     bambooContextPath='\'$bambooContextPath
@@ -102,6 +122,11 @@ function buildBitbucket(){
   if [ "$start_bitbucket" == "1" ]; then
     if [ "$cluster" == "1" ]; then
       eval $(docker-machine env "$node_prefix-bitbucket")
+    else
+      if [ ! "$provider_type" == "none" ];then
+        node_prefix=$(getProperty "clusterNodePrefix")
+        eval $(docker-machine env $node_prefix-Atlassian)
+      fi
     fi
     bitbucketContextPath=$(getProperty "bitbucket_contextpath")
     bitbucketContextPath='\'$bitbucketContextPath
@@ -116,6 +141,11 @@ function buildMySQL(){
   if [ "$start_mysql" == "1" ]; then
     if [ "$cluster" == "1" ]; then
       eval $(docker-machine env "$node_prefix-mysql")
+    else
+      if [ ! "$provider_type" == "none" ];then
+        node_prefix=$(getProperty "clusterNodePrefix")
+        eval $(docker-machine env $node_prefix-Atlassian)
+      fi
     fi
     echo "   - Building MySQL image"
     docker build -t staci/atlassiandb:$version $STACI_HOME/images/mysql/context/ > $STACI_HOME/logs/atlassiandb.build.log 2>&1 &
@@ -126,6 +156,11 @@ function buildCrowd(){
   if [ "$start_crowd" == "1" ]; then
     if [ "$cluster" == "1" ]; then
       eval $(docker-machine env "$node_prefix-crowd")
+    else
+      if [ ! "$provider_type" == "none" ];then
+        node_prefix=$(getProperty "clusterNodePrefix")
+        eval $(docker-machine env $node_prefix-Atlassian)
+      fi
     fi
     echo "   - Building Crowd image"
     docker build -t staci/crowd:$version $STACI_HOME/images/crowd/context/ > $STACI_HOME/logs/crowd.build.log 2>&1 &
@@ -136,6 +171,11 @@ function buildCrucible(){
   if [ "$start_crucible" == "1" ]; then
     if [ "$cluster" == "1" ]; then
       eval $(docker-machine env "$node_prefix-crucible")
+    else
+      if [ ! "$provider_type" == "none" ];then
+        node_prefix=$(getProperty "clusterNodePrefix")
+        eval $(docker-machine env $node_prefix-Atlassian)
+      fi
     fi
     $STACI_HOME/bin/generate_crucible_config.sh > $STACI_HOME/images/crucible/context/configure.sh
     echo "   - Building Crucible image"

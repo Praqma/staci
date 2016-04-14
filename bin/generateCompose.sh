@@ -18,6 +18,7 @@ timezone=$(getProperty "time_zone")
 
 node_prefix=$(getProperty "clusterNodePrefix")
 cluster=$(getProperty "createCluster")
+provider_type=$(getProperty "provider_type")
 
 # Printing version and header
 cat << EOF
@@ -28,15 +29,20 @@ EOF
 
 # Printing Bitbucket specific yml
 if [ "$start_bitbucket" == "1" ]; then
- if [ "$cluster" == "1" ]; then
+if [ "$cluster" == 1 ]; then
   cluster_opts='    environment:
       - "constraint:node=='$node_prefix'-bitbucket"
     networks:
       - back'
- else
-  cluster_opts='    volumes:
+else
+  if [ ! "$provider_type" == "none" ];then
+    cluster_opts=''
+  else
+    cluster_opts='    volumes:
       - '$volume_dir'/bitbucket:/var/atlassian/bitbucket'
- fi
+  fi
+fi
+
 cat << EOF
   bitbucket:
     image: staci/bitbucket:$version
@@ -54,15 +60,20 @@ fi
 
 # Printing Crowd specific yml
 if [ "$start_crowd" == "1" ]; then
- if [ "$cluster" == "1" ]; then
+if [ "$cluster" == 1 ]; then
   cluster_opts='    environment:
       - "constraint:node=='$node_prefix'-crowd"
     networks:
       - back'
- else
-  cluster_opts='    volumes:
+else
+  if [ ! "$provider_type" == "none" ];then
+    cluster_opts=''
+  else
+    cluster_opts='    volumes:
     - '$volume_dir'/crowd:/var/atlassian/crowd'
- fi
+  fi
+fi
+
 cat << EOF
   crowd:
     image: staci/crowd:$version
@@ -78,15 +89,20 @@ fi
 
 # Printing Crucible specific yml
 if [ "$start_crucible" == "1" ]; then
- if [ "$cluster" == "1" ]; then
+if [ "$cluster" == 1 ]; then
   cluster_opts='    environment:
       - "constraint:node=='$node_prefix'-crucible"
     networks:
       - back'
- else
-  cluster_opts='    volumes:
+else
+  if [ ! "$provider_type" == "none" ];then
+    cluster_opts=''
+  else
+    cluster_opts='    volumes:
     - '$volume_dir'/crucible:/var/atlassian/crucible'
- fi
+  fi
+fi
+
 cat << EOF
   crucible:
     image: staci/crucible:$version
@@ -107,18 +123,24 @@ jira_xmx=$(getProperty "jira_xmx")
 jira_session_cookie_name=$(getProperty "jira_session_cookie_name")
 jira_plugin_wait=$(getProperty "jira_plugin_wait")
 
- if [ "$cluster" == "1" ]; then
+
+if [ "$cluster" == 1 ]; then
   cluster_opts='    environment:
       - "constraint:node=='$node_prefix'-jira"
       - CATALINA_OPTS="-Datlassian.plugins.enable.wait='$jira_plugin_wait'" "-Xmx'$jira_xmx'" "-Xms'$jira_xms'" "-Dorg.apache.catalina.SESSION_COOKIE_NAME='$jira_session_cookie_name'" "-Duser.timezone='$timezone'"
     networks:
       - back'
- else
-  cluster_opts='    environment:
+else
+  if [ ! "$provider_type" == "none" ];then
+    cluster_opts='    environment:
+      - CATALINA_OPTS="-Datlassian.plugins.enable.wait='$jira_plugin_wait'" "-Xmx'$jira_xmx'" "-Xms'$jira_xms'" "-Dorg.apache.catalina.SESSION_COOKIE_NAME='$jira_session_cookie_name'" "-Duser.timezone='$timezone'"'
+  else
+    cluster_opts='    environment:
       - CATALINA_OPTS="-Datlassian.plugins.enable.wait='$jira_plugin_wait'" "-Xmx'$jira_xmx'" "-Xms'$jira_xms'" "-Dorg.apache.catalina.SESSION_COOKIE_NAME='$jira_session_cookie_name'" "-Duser.timezone='$timezone'"
     volumes:
       - '$volume_dir'/jira:/var/atlassian/jira'
- fi
+  fi
+fi
 
 cat << EOF
   jira:
@@ -139,18 +161,23 @@ confluence_xms=$(getProperty "confluence_xms")
 confluence_xmx=$(getProperty "confluence_xmx")
 confluence_session_cookie_name=$(getProperty "confluence_session_cookie_name")
 
- if [ "$cluster" == "1" ]; then
+if [ "$cluster" == 1 ]; then
   cluster_opts='    environment:
       - "constraint:node=='$node_prefix'-confluence"
       - CATALINA_OPTS="-Xmx'$confluence_xmx'" "-Xms'$confluence_xms'" "-Dorg.apache.catalina.SESSION_COOKIE_NAME='$confluence_session_cookie_name'" "-Duser.timezone='$timezone'"
     networks:
       - back'
- else
-  cluster_opts='    environment:
+else
+  if [ ! "$provider_type" == "none" ];then
+    cluster_opts='    environment:
+      - CATALINA_OPTS="-Xmx'$confluence_xmx'" "-Xms'$confluence_xms'" "-Dorg.apache.catalina.SESSION_COOKIE_NAME='$confluence_session_cookie_name'" "-Duser.timezone='$timezone'"'
+  else
+    cluster_opts='    environment:
       - CATALINA_OPTS="-Xmx'$confluence_xmx'" "-Xms'$confluence_xms'" "-Dorg.apache.catalina.SESSION_COOKIE_NAME='$confluence_session_cookie_name'" "-Duser.timezone='$timezone'"
     volumes:
       - '$volume_dir'/confluence:/var/atlassian/confluence'
- fi
+  fi
+fi
 
 cat << EOF
   confluence:
@@ -167,15 +194,21 @@ fi
 
 # Printing Bamboo specific yml
 if [ "$start_bamboo" == "1" ]; then
- if [ "$cluster" == "1" ]; then
+
+if [ "$cluster" == 1 ]; then
   cluster_opts='    environment:
       - "constraint:node=='$node_prefix'-bamboo"
     networks:
       - back'
- else
-  cluster_opts='    volumes:
+else
+  if [ ! "$provider_type" == "none" ];then
+    cluster_opts=''
+  else
+    cluster_opts='    volumes:
       - '$volume_dir'/bamboo:/var/lib/bamboo'
- fi
+  fi
+fi
+
 cat << EOF
   bamboo:
     image: staci/bamboo:$version
@@ -195,18 +228,23 @@ fi
 if [ "$start_mysql" == "1" ]; then
 mysql_root_pass=$(getProperty "mysql_root_pass")
 
- if [ "$cluster" == "1" ]; then
+if [ "$cluster" == 1 ]; then
   cluster_opts='    environment:
       - MYSQL_ROOT_PASSWORD='$mysql_root_pass'
       - "constraint:node=='$node_prefix'-mysql"
     networks:
       - back'
- else
-  cluster_opts='    environment:
+else
+  if [ ! "$provider_type" == "none" ];then
+    cluster_opts='    environment:
+      - MYSQL_ROOT_PASSWORD='$mysql_root_pass
+  else
+    cluster_opts='    environment:
       - MYSQL_ROOT_PASSWORD='$mysql_root_pass'
     volumes:
       - '$volume_dir'/atlassiandb:/var/lib/mysql'
- fi
+  fi
+fi
 
 cat << EOF
   atlassiandb:

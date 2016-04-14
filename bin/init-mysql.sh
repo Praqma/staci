@@ -12,14 +12,17 @@ version=$(getProperty "imageVersion")
 node_prefix=$(getProperty "clusterNodePrefix")
 cluster=$(getProperty "createCluster")
 mysql_ip="atlassiandb"
+provider_type=$(getProperty "provider_type")
 
 function exec_sql(){
    local pw=$1
    local sqlcmd=$2
-
+   
    # Point to cluster, if used
    if [ "$cluster" == "1" ]; then
       eval $(docker-machine env "$node_prefix-mysql")
+   elif [ ! "$provider_type" == "none" ]; then
+      eval $(docker-machine env "$node_prefix-Atlassian")
    fi
  
    docker exec atlassiandb mysql --user=root --password=$pw -e "$sqlcmd" > $STACI_HOME/logs/mysqlInit.log 2>&1 >> $STACI_HOME/logs/mysql.log

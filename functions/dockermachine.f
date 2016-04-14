@@ -61,15 +61,25 @@ function getOpenStackFlags(){
 function getDMFlags(){
 
     local provider=$1
-    if [ $provider == "local" ];then
+    if [ "$provider" == "local" ];then
         echo "local"
-    elif [ $provider == "openstack" ];then
+    elif [ "$provider" == "openstack" ];then
         getOpenStackFlags
-    elif [ $provider == "virtualbox" ];then
+    elif [ "$provider" == "virtualbox" ];then
         getVirtualBoxFlags
-    elif [ $provider == "vmwarevsphere" ];then
+    elif [ "$provider" == "vmwarevsphere" ];then
         getVmwareVsphereFlags
     fi
+}
+
+function createSingleHost(){
+    local provider=$(getProperty "provider_type")
+    local dmflags=$(getDMFlags $provider)
+    local node_prefix=$(getProperty "clusterNodePrefix")
+    local machineName=$node_prefix-Atlassian
+
+    createDMInstance "$provider" "$dmflags" "0" "0" "$machineName"
+    
 }
 
 function createSwarm(){

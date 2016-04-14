@@ -96,6 +96,11 @@ function installStaci(){
   if [ "$cluster" == 1 ]; then
      source functions/dockermachine.f
      createSwarm
+  else
+    if [ ! "$provider_type" == "none" ];then
+      source functions/dockermachine.f
+      createSingleHost
+    fi
   fi
 
   echo "
@@ -113,14 +118,29 @@ function installStaci(){
 
 
   # Start the containers with docker-compose
-  echo -n " - Starting containers, using docker-compose :
-  "
+  echo " - Starting containers, using docker-compose"
 
   if [ "$cluster" == 1 ]; then
     node_prefix=$(getProperty "clusterNodePrefix")
     eval $(docker-machine env --swarm $node_prefix-mysql)
+  else 
+    if [ ! "$provider_type" == "none" ];then
+      node_prefix=$(getProperty "clusterNodePrefix")
+      eval $(docker-machine env $node_prefix-Atlassian)
+    fi
   fi
+
+  # Starting docker containers
   docker-compose -f compose/docker-compose.yml up -d > $STACI_HOME/logs/docker-compose.log 2>&1 &
+
+  start_mysql=$(getProperty "start_mysql")
+  if [ ! -z $start_mysql ];then
+    # TODO: Need to wait for MySQL to start, before continuing, instead of sleep
+    sleep 20
+
+    # Setup database
+    ./bin/init-mysql.sh
+  fi
 
   # Generate System Information html
   ./bin/generateSystemInfo.sh > $STACI_HOME/SystemInfo.html
@@ -130,15 +150,6 @@ function installStaci(){
   if [ "$use_browser" == "1" ]; then
     browser_cmd=$(getProperty "browser_cmd")
     $browser_cmd "$STACI_HOME/SystemInfo.html" &>/dev/null &
-  fi
-
-  start_mysql=$(getProperty "start_mysql")
-  if [ ! -z $start_mysql ];then
-    # TODO: Need to wait for MySQL to start, before continuing, instead of sleep
-    sleep 20
-
-    # Setup database
-    ./bin/init-mysql.sh
   fi
 
 }

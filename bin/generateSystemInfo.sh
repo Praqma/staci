@@ -1,6 +1,5 @@
 #!/bin/bash
 source $STACI_HOME/functions/tools.f
-#docker_host_ip=$(echo $DOCKER_HOST | grep -o '[0-9]\+[.][0-9]\+[.][0-9]\+[.][0-9]\+')
 
 # Set version of images
 version=$(getProperty "imageVersion")
@@ -15,6 +14,8 @@ start_bitbucket=$(getProperty "start_bitbucket")
 start_crucible=$(getProperty "start_crucible")
 
 cluster=$(getProperty "createCluster")
+provider_type=$(getProperty "provider_type")
+
 atlassiandb_ip=atlassiandb
 node_prefix=$(getProperty "clusterNodePrefix")
 
@@ -153,7 +154,9 @@ if [ "$start_jira" == "1" ]; then
    jira_database=$(getProperty "jira_database_name")
    jira_contextpath=$(getProperty "jira_contextpath")
 
-   if [ "$cluster" == "1" ]; then
+   if [ ! "$provider_type" == "none" ]; then
+      jiraip=$(docker-machine ip "$node_prefix-Atlassian")
+   elif [ "$cluster" == "1" ]; then
       jiraip=$(docker-machine ip "$node_prefix-jira")
    else
       jiraip="localhost"
@@ -178,9 +181,10 @@ fi
 if [ "$start_crucible" == "1" ]; then
   crucibleContextPath=$(getProperty "crusible_contextpath")
 
-   if [ "$cluster" == "1" ]; then
+   if [ ! "$provider_type" == "none" ]; then
+      crucibleip=$(docker-machine ip "$node_prefix-Atlassian")
+   elif [ "$cluster" == "1" ]; then
       crucibleip=$(docker-machine ip "$node_prefix-crucible")
-      jiraip=$(docker-machine ip "$node_prefix-jira")
    else
       crucibleip="localhost"
       jiraip="localhost"
@@ -209,7 +213,9 @@ if [ "$start_confluence" == "1" ]; then
    confluence_database=$(getProperty "confluence_database_name")
    confluence_contextpath=$(getProperty "confluence_contextpath")
 
-   if [ "$cluster" == "1" ]; then
+   if [ ! "$provider_type" == "none" ]; then
+      confluenceip=$(docker-machine ip "$node_prefix-Atlassian")
+   elif [ "$cluster" == "1" ]; then
       confluenceip=$(docker-machine ip "$node_prefix-confluence")
    else
       confluenceip="localhost"
@@ -238,7 +244,9 @@ if [ "$start_bamboo" == "1" ]; then
    bamboo_database=$(getProperty "bamboo_database_name")
    bamboo_contextpath=$(getProperty "bamboo_contextpath")
 
-   if [ "$cluster" == "1" ]; then
+   if [ ! "$provider_type" == "none" ]; then
+      bambooip=$(docker-machine ip "$node_prefix-Atlassian")
+   elif [ "$cluster" == "1" ]; then
       bambooip=$(docker-machine ip "$node_prefix-bamboo")
    else
       bambooip="localhost"
@@ -267,7 +275,9 @@ if [ "$start_bitbucket" == "1" ]; then
    bitbucket_database=$(getProperty "bitbucket_database_name")
    bitbucket_contextpath=$(getProperty "bitbucket_contextpath")
 
-   if [ "$cluster" == "1" ]; then
+   if [ ! "$provider_type" == "none" ]; then
+      bitbucketip=$(docker-machine ip "$node_prefix-Atlassian")
+   elif [ "$cluster" == "1" ]; then
       bitbucketip=$(docker-machine ip "$node_prefix-bitbucket")
    else
       bitbucketip="localhost"
@@ -295,7 +305,9 @@ if [ "$start_crowd" == "1" ]; then
    crowd_password=$(getProperty "crowd_password")
    crowd_database=$(getProperty "crowd_database_name")
 
-   if [ "$cluster" == "1" ]; then
+   if [ ! "$provider_type" == "none" ]; then
+      crowdip=$(docker-machine ip "$node_prefix-Atlassian")
+   elif [ "$cluster" == "1" ]; then
       crowdip=$(docker-machine ip "$node_prefix-crowd")
    else
       crowdip="localhost"
@@ -322,7 +334,9 @@ fi
 if [ "$start_mysql" == "1" ]; then
 mysql_root_pass=$(getProperty "mysql_root_pass")
 
-   if [ "$cluster" == "1" ]; then
+   if [ ! "$provider_type" == "none" ]; then
+      mysqlip=$(docker-machine ip "$node_prefix-Atlassian")
+   elif [ "$cluster" == "1" ]; then
       mysqlip=$(docker-machine ip "$node_prefix-mysql")
    else
       mysqlip="localhost"
