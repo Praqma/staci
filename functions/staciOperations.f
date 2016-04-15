@@ -47,9 +47,14 @@ function startStaci(){
 
 }
 
-function installStaci(){
-  # Find out, if we should create a cluster or not
-  cluster=$(getProperty "createCluster")
+function installStaciInteractive() {
+  create_cluster=0 # Not an option
+  installStaci $create_cluster
+}
+
+function installStaci() {
+  create_cluster=$1
+
   provider_type=$(getProperty "provider_type")
 
   if [ "$provider_type" == "none" ]; then
@@ -85,7 +90,7 @@ function installStaci(){
     echo " - Created $volume_dir folder."
   fi
 
-  if [ "$cluster" == 1 ]; then
+  if [ "$create_cluster" == 1 ]; then
      source functions/dockermachine.f
      createSwarm
   else
@@ -111,7 +116,7 @@ function installStaci(){
 
   echo " - Starting containers, using docker-compose"
 
-  if [ "$cluster" == 1 ]; then
+  if [ "$create_cluster" == 1 ]; then
     node_prefix=$(getProperty "clusterNodePrefix")
     eval $(docker-machine env --swarm $node_prefix-mysql)
   else

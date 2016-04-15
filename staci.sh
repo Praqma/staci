@@ -14,6 +14,7 @@ usage(){
 	echo -e "Usage: \nstaci.sh [OPTIONS] COMMAND [property-file]
 
 	Options:
+	\t -i \t\tInteractive mode, used with install
 	\t -v \t\tPrint version
 	\t -h \t\tPrint usage
 
@@ -32,15 +33,20 @@ if [ $# == 0 ] ; then
     exit 1;
 fi
 
-while getopts "::vh" optname
+interactive=0
+
+while getopts "::hiv" optname
   do
     case "$optname" in
-      "v")
-        echo "Version $VERSION"
+			"h")
+        usage
         exit 0;
         ;;
-      "h")
-        usage
+			"i")
+        interactive=1
+        ;;
+      "v")
+        echo "Version $VERSION"
         exit 0;
         ;;
       "?")
@@ -73,8 +79,14 @@ source $STACI_HOME/functions/build.f
 source $STACI_HOME/functions/staciOperations.f
 
 if [ $param1 == "install" ];then
-  echo "Installing, please wait...."
-  installStaci
+	if [ $interactive -eq 1 ]; then
+		echo "Interactive install"
+		installStaciInteractive
+	else
+    echo "Installing, please wait...."
+    create_cluster=$(getProperty "createCluster")
+    installStaci $create_cluster
+	fi
   exit 0;
 fi
 
