@@ -5,7 +5,7 @@ imageVersion:0.1
 createCluster:0
 clusterNodePrefix:praqma
 
-# What to start
+# What to start, 0=no, 1=yes
 start_mysql:1
 start_jira:1
 start_confluence:1
