@@ -113,13 +113,13 @@ fi
 
 if [ "$start_confluence" == "1" ]; then
 cat << EOF
-  <a href="#" onClick="showElement('confluence');">Confluence</a> | 
+  <a href="#" onClick="showElement('confluence');">Confluence</a> |
 EOF
 fi
 
 if [ "$start_bitbucket" == "1" ]; then
 cat << EOF
-  <a href="#" onClick="showElement('bitbucket');">Bitbucket</a> | 
+  <a href="#" onClick="showElement('bitbucket');">Bitbucket</a> |
 EOF
 fi
 
@@ -145,7 +145,8 @@ cat << EOF
 </div>
 
 <div id="info" class="settingsdiv">
-  <b>Welcome to your Atlassian tools stack.</b><br><br>Here you will find all the information you need, to set up your software.<br>
+  <b>Welcome to your Atlassian tool stack.</b><br><br>
+  Here you will find all the information you need to set up your software.<br>
 </div>
 EOF
 if [ "$start_jira" == "1" ]; then
@@ -358,4 +359,3 @@ cat << EOF
 </body>
 </html>
 EOF
-
