@@ -2,7 +2,6 @@
 # ------------------------------------------------------------------
 # [Henrik Hoegh] staci.sh                                 10/11/2015
 #
-#          This scipt is where the login in staci is placed.
 #          Here we control what to do, and how. There is no
 #          functionality here, as it calls out to functions
 #          placed in the $STACI_HOME/functions folder.
@@ -13,18 +12,18 @@ VERSION=0.1.0
 
 usage(){
 	echo -e "Usage: \nstaci.sh [OPTIONS] COMMAND [property-file]
-	
+
 	Options:
-	\t -v \t\tPrints version
+	\t -v \t\tPrint version
 	\t -h \t\tPrint usage
-	
+
 	Commands:
-	\t install \tInstalls STACI
-	\t wwig   \tWhat Will I Get - outcome of property file
-	\t stop   \tStops all runing containers
-	\t start  \tStarts all configured containers
-	\t delete  \tDeletes created containers
-	
+	\t install \tInstall STACI
+	\t wwig    \tWhat Will I Get - outcome of property file
+	\t stop    \tStop all running containers
+	\t start   \tStart all configured containers
+	\t delete  \tDelete created containers
+
 "
 }
 # --- Options processing -------------------------------------------
