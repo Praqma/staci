@@ -40,9 +40,13 @@ links to all the services started.
 
 
 ## Requirements
-- Docker version 1.10
-- Docker-compose version: 1.6.0
-- Docker-machine 0.6.0 if cluster is used
+- Docker
+  - Docker version 1.10
+  - Docker-compose version 1.6.0
+  - Docker-machine 0.6.0
+- Bash
+  - The STACI scripts are written in `bash` and have been tested on Linux and Mac
+
 
 ## Preparation for backup (works only when used locally)
 - Create a folder structure in /data/atlassian where a user with uid 1000 has full read-write access.
