@@ -7,7 +7,7 @@ STACI consists of:
 - Jira
 - Confluence
 - Bamboo
-- Bitbucket server
+- Bitbucket Server
 - Crowd
 - Crucible
 - MySQL
@@ -23,6 +23,8 @@ steps:
   - Copy the `.template` files in the `conf` folder to files with just a `.properties`
     extension
   - Edit your `.properties` files
+  - If you are not using Linux, you probably want to set `provider_type:virtualbox` in
+    `staci.properties`
 - Start `docker`
 - Run `./staci.sh install` to install and start the stack
 
@@ -30,6 +32,11 @@ You take down the stack by following these steps:
 
 - Run `./staci.sh stop` to stop the `docker` containers.
 - Run `./staci.sh delete` to delete the containers.
+
+## Access Services
+
+The `install` command creates a `SystemInfo.html` in the root directory. It contains
+links to all the services started.
 
 
 ## Requirements
