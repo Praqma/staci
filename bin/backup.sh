@@ -18,7 +18,7 @@ volume_dir=$(getProperty "volume_dir")
 # Get backup folder
 backup_folder=$(getProperty "backup_folder")
 
-# Create folders for persistant container data, if not existing
+# Create folders for persistent container data, if not existing
 if [ ! -d "$backup_folder" ]; then
   mkdir -p $backup_folder
 fi
@@ -70,4 +70,3 @@ echo "
  - Backup is done... Have a good night sleep.
 
 "
-

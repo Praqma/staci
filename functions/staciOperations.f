@@ -53,7 +53,7 @@ function installStaciInteractive() {
     echo OS looks like Mac OS X. Using VirtualBox provider
     provider_type="virtualbox"
   else
-    echo OS looks like Linux. Using no provider
+    echo OS looks like Linux. Running locally
     provider_type="none"
   fi
   installStaci $create_cluster $provider_type
@@ -72,7 +72,7 @@ function installStaci() {
   if [ "$provider_type" == "none" ]; then
     # Show directory for data
     volume_dir=$(getProperty "volume_dir")
-    echo " - Using $volume_dir for persistance"
+    echo " - Using $volume_dir for persistence"
 
     # Show backup folder
     backup_folder=$(getProperty "backup_folder")
