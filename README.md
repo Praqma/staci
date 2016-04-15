@@ -28,10 +28,17 @@ steps:
 - Start `docker`
 - Run `./staci.sh install` to install and start the stack
 
-You take down the stack by following these steps:
 
-- Run `./staci.sh stop` to stop the `docker` containers.
-- Run `./staci.sh delete` to delete the containers.
+## Commands
+
+- `./staci.sh install` : Create Docker host and images, and start Docker containers for
+   the chosen Atlassian tools
+- `./staci.sh stop` : Stop the Docker containers
+- `./staci.sh start` : Start existing Docker containers
+- `./staci.sh delete` : Delete the containers
+
+There are currently no STACI commands to manage the Docker host.
+
 
 ## Access Services
 
