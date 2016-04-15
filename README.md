@@ -1,9 +1,7 @@
 # Support Tracking And Continuous Integration
 
-STACI lets you run Atlassian products with easy command line scripts.
-
-STACI uses Docker to create the environment and adds provides features for integrating
-the services.
+STACI lets you run Atlassian products with easy command line scripts. It uses Docker to
+create the environment and adds features for integrating the services.
 
 STACI consists of:
 - Jira
@@ -18,8 +16,8 @@ This repository is maintained by www.praqma.com
 
 ## Quick Start
 
-STACI uses properties files to configure the stack. You need to follow these overall
-steps to get started:
+STACI uses properties files to configure the stack. You get started by following these
+steps:
 
 - Create configuration files
   - Copy the `.template` files in the `conf` folder to files with just a `.properties`
@@ -28,7 +26,7 @@ steps to get started:
 - Start `docker`
 - Run `./staci.sh install` to install and start the stack
 
-You can take down the stack by following these steps:
+You take down the stack by following these steps:
 
 - Run `./staci.sh stop` to stop the `docker` containers.
 - Run `./staci.sh delete` to delete the containers.
