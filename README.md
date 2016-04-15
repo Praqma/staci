@@ -44,11 +44,6 @@ links to all the services started.
 - Docker-compose version: 1.6.0
 - Docker-machine 0.6.0 if cluster is used
 
-## TO-DO's
-- Create a guideline for how to use Atlassian tools in Docker. Never use localhost, always use the dockerhost ip
-- Testing, testing and testing
-- Backup for cluster setup
-
 ## Preparation for backup (works only when used locally)
 - Create a folder structure in /data/atlassian where a user with uid 1000 has full read-write access.
 - Create a jira, atlassiandb, confluence, bamboo, crowd, crucible, bitbucket and backup folder inside /data/atlassian with same rights.
