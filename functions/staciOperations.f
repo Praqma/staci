@@ -9,7 +9,7 @@ function deleteStaci(){
   fi
 
   # we stop all containers
-  docker-compose -f compose/docker-compose.yml rm 
+  docker-compose -f compose/docker-compose.yml rm
 }
 
 function stopStaci(){
@@ -48,14 +48,6 @@ function startStaci(){
 }
 
 function installStaci(){
-  if [ ! -d "compose" ]; then
-    mkdir -p compose
-  fi
-
-  if [ ! -d "$DIRECTORY" ]; then
-    mkdir -p logs
-  fi
-
   # Find out, if we should create a cluster or not
   cluster=$(getProperty "createCluster")
   provider_type=$(getProperty "provider_type")
@@ -79,7 +71,7 @@ function installStaci(){
     mkdir -p logs
   fi
 
-  # Create folders for persistant container data, if not existing
+  # Create folders for persistent container data, if not existing
   # But only if run locally
   if [ ! -d "$volume_dir" ] && [ "$provider_type" == "none" ]; then
     mkdir -p "$volume_dir"
@@ -117,13 +109,12 @@ function installStaci(){
   fi
 
 
-  # Start the containers with docker-compose
   echo " - Starting containers, using docker-compose"
 
   if [ "$cluster" == 1 ]; then
     node_prefix=$(getProperty "clusterNodePrefix")
     eval $(docker-machine env --swarm $node_prefix-mysql)
-  else 
+  else
     if [ ! "$provider_type" == "none" ];then
       node_prefix=$(getProperty "clusterNodePrefix")
       eval $(docker-machine env $node_prefix-Atlassian)
