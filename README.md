@@ -53,6 +53,8 @@ links to all the services started.
   - Docker-machine 0.6.0
 - Bash
   - The STACI scripts are written in `bash` and have been tested on Linux and Mac
+- VirtualBox (optional)
+  - On a Mac, an easy way to get started is to use Docker with VirtualBox
 
 
 ## Preparation for backup (works only when used locally)
