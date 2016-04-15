@@ -49,13 +49,25 @@ function startStaci(){
 
 function installStaciInteractive() {
   create_cluster=0 # Not an option
-  installStaci $create_cluster
+  if [ $(uname) == "Darwin" ]; then
+    echo OS looks like Mac OS X. Using VirtualBox provider
+    provider_type="virtualbox"
+  else
+    echo OS looks like Linux. Using no provider
+    provider_type="none"
+  fi
+  installStaci $create_cluster $provider_type
+}
+
+function installStaciUsingProperties() {
+  create_cluster=$(getProperty "createCluster")
+  provider_type=$(getProperty "provider_type")
+  installStaci $create_cluster $provider_type
 }
 
 function installStaci() {
   create_cluster=$1
-
-  provider_type=$(getProperty "provider_type")
+  provider_type=$2
 
   if [ "$provider_type" == "none" ]; then
     # Show directory for data

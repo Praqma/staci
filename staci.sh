@@ -83,9 +83,8 @@ if [ $param1 == "install" ];then
 		echo "Interactive install"
 		installStaciInteractive
 	else
-    echo "Installing, please wait...."
-    create_cluster=$(getProperty "createCluster")
-    installStaci $create_cluster
+    echo "Installing using property files, please wait...."
+    installStaciUsingProperties
 	fi
   exit 0;
 fi
