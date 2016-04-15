@@ -153,6 +153,9 @@ function installStaci() {
   # Generate System Information html
   ./bin/generateSystemInfo.sh > $STACI_HOME/SystemInfo.html
 
+  echo Install complete
+  echo Open $STACI_HOME/SystemInfo.html in a browser to continue using the tool stack
+
   # Open tools and System Information websites
   use_browser=$(getProperty "use_browser")
   if [ "$use_browser" == "1" ]; then
