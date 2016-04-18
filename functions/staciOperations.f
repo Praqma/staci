@@ -134,12 +134,29 @@ function installStaci() {
   fi
 
   # Starting docker containers
-  docker-compose -f compose/docker-compose.yml up -d > $STACI_HOME/logs/docker-compose.log 2>&1 &
+  docker-compose -f compose/docker-compose.yml up -d > $STACI_HOME/logs/docker-compose.log 2>&1 
 
   start_mysql=$(getProperty "start_mysql")
   if [ ! -z $start_mysql ];then
-    # TODO: Need to wait for MySQL to start, before continuing, instead of sleep
-    sleep 20
+    # Wait for MySql to start up
+    status=$(docker inspect -f {{.State.Running}} atlassiandb 2>&1)
+
+    if [ "$status" == "true" ];then
+      echo " - Container mysql is active, waiting to be ready"
+      attempt=0
+      while [ $attempt -le 59 ]; do
+        attempt=$(( $attempt + 1 ))
+        result=$(docker logs --tail=10 atlassiandb 2>&1)
+        if grep -q 'ready for connections' <<< $result ; then
+          echo " - MySQL is up!"
+          break
+        fi
+        sleep .5
+      done
+    else
+      echo "Container mysql is not running..."
+      exit 0
+    fi
 
     # Setup database
     ./bin/init-mysql.sh
