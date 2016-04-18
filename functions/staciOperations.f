@@ -1,26 +1,30 @@
-function deleteStaci(){
+function setMachineEnv(){
+  # This function cannot be used by installStaci as it takes arguments, 
+  # not properties.
   # Find out, if we are using a cluster or not
-  cluster=$(getProperty "createCluster")
 
-  # Todo : does not do none cluster on provider
-  if [ "$cluster" == 1 ]; then
-    node_prefix=$(getProperty "clusterNodePrefix")
+  local create_cluster=$(getProperty "createCluster")
+  local node_prefix=$(getProperty "clusterNodePrefix")
+  local provider_type=$(getProperty "provider_type")
+
+  if [ "$create_cluster" == 1 ]; then
     eval $(docker-machine env --swarm $node_prefix-mysql)
+  elif [ ! "$provider_type" == "none" ];then
+    eval $(docker-machine env $node_prefix-Atlassian)
   fi
+}
 
-  # we stop all containers
+function deleteStaci(){
+  # Set docker-machine to point to the active host
+  setMachineEnv
+
+  # we delete all containers
   docker-compose -f compose/docker-compose.yml rm
 }
 
 function stopStaci(){
-  # Find out, if we are using a cluster or not
-  local cluster=$(getProperty "createCluster")
-
-  # Todo : does not do none cluster on provider
-  if [ "$cluster" == 1 ]; then
-    node_prefix=$(getProperty "clusterNodePrefix")
-    eval $(docker-machine env --swarm $node_prefix-mysql)
-  fi
+  # Set docker-machine to point to the active host
+  setMachineEnv
 
   # We write docker-compose log to file logs/compose.log
   echo "Writting log output to logs/compose.log"
@@ -28,23 +32,14 @@ function stopStaci(){
 
   # we stop all containers
   docker-compose -f ./compose/docker-compose.yml stop
-
 }
 
 function startStaci(){
-
-  # Find out, if we are using a cluster or not
-  local cluster=$(getProperty "createCluster")
-
-  # Todo : does not do none cluster on provider
-  if [ "$cluster" == 1 ]; then
-    node_prefix=$(getProperty "clusterNodePrefix")
-    eval $(docker-machine env --swarm $node_prefix-mysql)
-  fi
+  # Set docker-machine to point to the active host
+  setMachineEnv
 
   # we start all containers
   docker-compose -f ./compose/docker-compose.yml start
-
 }
 
 function installStaciInteractive() {
