@@ -76,10 +76,9 @@ function createSingleHost(){
     local provider=$(getProperty "provider_type")
     local dmflags=$(getDMFlags $provider)
     local node_prefix=$(getProperty "clusterNodePrefix")
-    local machineName=$node_prefix-Atlassian
 
-    createDMInstance "$provider" "$dmflags" "0" "0" "$machineName"
-    
+    createDMInstance "$provider" "$dmflags" "0" "0" "$node_prefix" "Atlassian"
+
 }
 
 function createSwarm(){
@@ -100,7 +99,7 @@ function createSwarm(){
     # Get the node prefix
     local node_prefix=$(getProperty "clusterNodePrefix")
 
-    createDMInstance "$provider" "$dmflags" "0" "0" "$node_prefix-keystore"
+    createDMInstance "$provider" "$dmflags" "0" "0" "$node_prefix" "keystore"
 
     docker $(docker-machine config $node_prefix-keystore) pull progrium/consul:latest > $STACI_HOME/logs/consult.pull.log
 
@@ -111,40 +110,36 @@ function createSwarm(){
 
 
     if [ "$start_mysql" == "1" ];then
-        createDMInstance "$provider" "$dmflags" "2" "1" "$node_prefix-mysql"
+        createDMInstance "$provider" "$dmflags" "2" "1" "$node_prefix" "mysql"
     fi
     if [ "$start_jira" == "1" ];then
-       createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix-jira"
+       createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix" "jira"
     fi
     if [ "$start_confluence" == "1" ];then
-        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix-confluence"
+        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix" "confluence"
     fi
     if [ "$start_bamboo" == "1" ];then
-        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix-bamboo"
+        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix" "bamboo"
     fi
     if [ "$start_crowd" == "1" ];then
-        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix-crowd"
+        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix" "crowd"
     fi
     if [ "$start_bitbucket" == "1" ];then
-        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix-bitbucket"
+        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix" "bitbucket"
     fi
     if [ "$start_crucible" == "1" ];then
-        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix-crucible"
+        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix" "crucible"
     fi
-
-# Create overlay network - Not being used, now made by docker-compose
-# eval $(docker-machine env --swarm "$node_prefix-mysql")
-# docker network create --driver overlay my-net
-
 }
 
 function createDMInstance(){
     local dmprovider=$1
     local dmflags=$2
-    local dmname=$5
     local swarmtype=$3
     local clusteropts=$4
-    local node_prefix=$(getProperty "clusterNodePrefix")
+    local node_prefix=$5
+    local instance_name=$6
+    local dmname="$node_prefix-$instance_name"
 
     local swarm=""
     local cluster=""
