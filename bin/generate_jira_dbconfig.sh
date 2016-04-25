@@ -1,9 +1,12 @@
 #! /bin/bash
 source $STACI_HOME/functions/tools.f 
 
-# Set version of images
-mysql_port=$(getProperty "mysql_port")
-mysql_driver_class=$(getProperty "mysql_driver_class")
+# Set variables
+start_mysql=$(getProperty "start_mysql")
+if [ ! -z $start_mysql ];then
+  mysql_port=$(getProperty "mysql_port")
+  mysql_driver_class=$(getProperty "mysql_driver_class")
+fi
 jira_username=$(getProperty "jira_username")
 jira_password=$(getProperty "jira_password")
 jira_database_name=$(getProperty "jira_database_name")
