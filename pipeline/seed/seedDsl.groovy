@@ -1,7 +1,14 @@
 job('staci') {
 
   scm {
-    github('Praqma/staci', 'origin/ready/**')
+    git {
+      remote {
+        github('Praqma/staci')
+        name('origin/ready/**')
+        // Assumes Jenkins has GitHub credentials with this ID
+        credentials('github')
+      }
+    }
   }
   // Add recommended git extensions
   configure { project ->
