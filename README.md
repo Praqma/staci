@@ -77,3 +77,20 @@ If you want to change the behaviour of STACI, edit the file ./conf/staci.propert
 
 ## Taking backup of local containers (not working with external providers yet)
 The containers have consistent data in /data/atlassian/ (default, edit staci.properties). You can take a backup by executing the script ./bin/backup.sh. This will tar-gz the volumes to /data/atlassian/backup/[date].
+
+
+## Continuous delivery pipeline
+
+The `pipeline` folder contains an implementation of [the pragmatic workflow](http://www.praqma.com/stories/a-pragmatic-workflow/)
+for this project: A Jenkins setup which uses the Pretested Integration plugin to merge
+changes from `ready` branches into `master`.
+
+It is run like this:
+
+* Start Jenkins in Docker using the scripts in `pipeline/docker`
+* Manually add GitHub credentials in Jenkins, with the ID `github`
+* Run the `seed` job
+* Add the `github` credentials to the generated job
+
+Notice that the generated job has no trigger. You need to manually build it to pick up
+changes on a `ready` branch.
