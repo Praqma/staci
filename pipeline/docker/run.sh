@@ -1,6 +1,6 @@
 #!/bin/bash
 docker stop staci-cd
-docker rm staci-cd
+docker rm -v staci-cd
 docker run -d -p 8080:8080 -p 50000:50000 \
               --name staci-cd praqma/staci-cd
 echo ==================================
