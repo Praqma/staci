@@ -4,10 +4,10 @@ job('staci') {
     git {
       remote {
         github('Praqma/staci')
-        name('origin/ready/**')
         // Assumes Jenkins has GitHub credentials with this ID
         credentials('github')
       }
+      branch('origin/ready/**')
     }
   }
   // Add recommended git extensions
