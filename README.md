@@ -93,3 +93,23 @@ It is run like this:
 
 Notice that the generated job has no trigger. You need to manually build it to pick up
 changes on a `ready` branch.
+
+
+## A pragmatic workflow
+
+Praqma has a workflow that encourages feature branching and a continuous delivery
+pipeline. It is described in this blog post:
+http://www.praqma.com/stories/a-pragmatic-workflow/
+
+Once you have it set up with `ghi` and the `git` aliases, here is how you can work on an
+issue:
+
+* `ghi open` - Create an issue
+* `ghi list` - List open issues to see the issue number you will fix, say 48
+* `git work-on 48` - Creates a feature branch for you, assigns the issue to you
+* Hack hack hack - fix the issue
+* `git wrapup` - Commits changes and closes the issue
+* `git deliver` - Pushes to a `ready` branch, adds `delivered` prefix to your local
+  feature branch
+* Trigger the pipeline - it should pick up the `ready` branch and integrate it to `master`
+* `git purge-all-delivered` - To delete your local feature branch that you no longer need
