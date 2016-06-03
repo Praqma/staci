@@ -77,6 +77,12 @@ export STACI_HOME=$(pwd)
 source $STACI_HOME/functions/tools.f
 source $STACI_HOME/functions/build.f
 source $STACI_HOME/functions/staciOperations.f
+source $STACI_HOME/functions/system.f
+
+check_docker_dependencies
+if [ $? -ne 0 ]; then
+	exit 1;
+fi
 
 if [ $param1 == "install" ];then
 	if [ $interactive -eq 1 ]; then

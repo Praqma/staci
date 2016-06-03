@@ -29,7 +29,7 @@ check_docker_dependencies() {
      if $(do_version_check $docker_compose_version $supported_docker_compose_version); then
        echo -e "\t - OK"
      else
-       echo -e "\t - Error, please upgrade to $supported_docker_compose_version" 
+       echo -e "\t - Error, please upgrade to $supported_docker_compose_version"
        return 1
      fi
   else
@@ -38,14 +38,14 @@ check_docker_dependencies() {
   fi
 
   # Check that docker-machine is installed, and has the right version
-  # 
+  #
   if command_exists docker-machine; then
      local docker_machine_version=$(docker-machine version | cut -d"," -f1|cut -d" " -f3)
      echo -ne "  - Docker-machine version\t: $docker_machine_version"
      if $(do_version_check $docker_machine_version $supported_docker_machine_version); then
        echo -e "\t - OK"
      else
-       echo -e "\t - Error, please upgrade to $supported_docker_machine_version" 
+       echo -e "\t - Error, please upgrade to $supported_docker_machine_version"
        return 1
      fi
   else
@@ -54,4 +54,3 @@ check_docker_dependencies() {
   fi
   return 0
 }
-
