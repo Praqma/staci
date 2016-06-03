@@ -7,7 +7,7 @@ RUN /bin/ln -sf ../sites-available/default-ssl /etc/apache2/sites-enabled/001-de
 RUN /bin/ln -sf ../mods-available/ssl.conf /etc/apache2/mods-enabled/
 RUN /bin/ln -sf ../mods-available/ssl.load /etc/apache2/mods-enabled/
 
-RUN echo "ServerName home.softica.dk" > /etc/apache2/conf-available/servername.conf 
+RUN echo "ServerName praqma-100.intern.it-huset.dk" > /etc/apache2/conf-available/servername.conf 
 RUN ln -s /etc/apache2/conf-available/servername.conf /etc/apache2/conf-enabled
 
 COPY index.html /var/www/html/index.html

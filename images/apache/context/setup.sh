@@ -6,7 +6,7 @@ openssl req -new -newkey rsa:2048 -nodes -x509 \
 echo '<IfModule mod_ssl.c>
 	<VirtualHost _default_:443>
 		ServerAdmin webmaster@localhost
-		ServerName home.softica.dk:443
+		ServerName praqma-100.intern.it-huset.dk:443
 
 		DocumentRoot /var/www/html
 		ErrorLog ${APACHE_LOG_DIR}/error.log
@@ -34,8 +34,8 @@ echo '<IfModule mod_ssl.c>
 		</Proxy>
                 ProxyRequests           Off
                 ProxyPreserveHost       On
-                ProxyPass               /jira       http://10.153.80.175:8080/jira
-                ProxyPassReverse        /jira       http://10.153.80.175:8080/jira
+                ProxyPass               /jira       http://praqma-100.intern.it-huset.dk:8080/jira
+                ProxyPassReverse        /jira       http://praqma-100.intern.it-huset.dk:8080/jira
 
                 SSLCertificateFile    /etc/ssl/certs/jira.crt
                 SSLCertificateKeyFile /etc/ssl/private/jira.key
