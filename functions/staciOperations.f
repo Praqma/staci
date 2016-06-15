@@ -146,6 +146,17 @@ function installStaci() {
       attempt=0
       while [ $attempt -le 59 ]; do
         attempt=$(( $attempt + 1 ))
+        result=$(docker logs atlassiandb 2>&1)
+        if grep -q 'MySQL init process done. Ready for start up.' <<< $result ; then
+          echo " - MySQL is starting up!"
+          break
+        fi
+        sleep .5
+      done
+
+      attempt=0
+      while [ $attempt -le 59 ]; do
+        attempt=$(( $attempt + 1 ))
         result=$(docker logs --tail=10 atlassiandb 2>&1)
         if grep -q 'ready for connections' <<< $result ; then
           echo " - MySQL is up!"
