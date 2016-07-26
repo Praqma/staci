@@ -57,8 +57,8 @@ links to all the services started.
   - On a Mac, an easy way to get started is to use Docker with VirtualBox
 
 
-## Preparation for backup (works only when used locally)
-- Create a folder structure in /data/atlassian where a user with uid 1000 has full read-write access.
+## Preparing Volume folder (only used whenused running locally)
+- Create a folder structure in /data/atlassian where a user with uid 1000 is owner and has full read-write access.
 - Create a jira, atlassiandb, confluence, bamboo, crowd, crucible, bitbucket and backup folder inside /data/atlassian with same rights.
 - You can specify another folder in ./conf/staci.properties instead of /data/atlassian (look for volume_dir=/data)
 
@@ -68,7 +68,7 @@ Turn off SELinux or AppAmour, if applicable
 Create data directory (See Preparation section)
 pull the repository (git clone https://github.com/Praqma/staci.git)
 cd staci
-cp conf/staci.properties.template staci.properties
+cp conf/staci.properties.template conf/staci.properties
 vim conf/staci.properties
 ./staci.sh install
 ```
