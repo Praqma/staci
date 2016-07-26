@@ -57,7 +57,7 @@ links to all the services started.
   - On a Mac, an easy way to get started is to use Docker with VirtualBox
 
 
-## Preparing Volume folder (only used whenused running locally)
+## Preparing Volume folder (only used when running locally)
 - Create a folder structure in /data/atlassian where a user with uid 1000 is owner and has full read-write access.
 - Create a jira, atlassiandb, confluence, bamboo, crowd, crucible, bitbucket and backup folder inside /data/atlassian with same rights.
 - You can specify another folder in ./conf/staci.properties instead of /data/atlassian (look for volume_dir=/data)
