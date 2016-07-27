@@ -170,6 +170,7 @@ function installStaci() {
     fi
 
     # Setup database
+    sleep 1
     ./bin/init-mysql.sh
   fi
 
