@@ -107,6 +107,9 @@ function installStaci() {
     fi
   fi
 
+  echo " - Autosetup preparing"
+   setJiraDatabaseConnection > $STACI_HOME/images/jira/context/dbconfig.xml
+
   echo "
  - Building images"
   buildAll
@@ -121,7 +124,7 @@ function installStaci() {
   fi
 
 
-  echo " - Starting containers, using docker-compose"
+  echo " - Starting Database, using docker-compose"
 
   if [ "$create_cluster" == 1 ]; then
     node_prefix=$(getProperty "clusterNodePrefix")
@@ -134,7 +137,7 @@ function installStaci() {
   fi
 
   # Starting docker containers
-  docker-compose -f compose/docker-compose.yml up -d > $STACI_HOME/logs/docker-compose.log 2>&1 
+  docker-compose -f compose/docker-compose.yml up -d atlassiandb > $STACI_HOME/logs/docker-compose.atlassiandb.log 2>&1 
 
   start_mysql=$(getProperty "start_mysql")
   if [ ! -z $start_mysql ];then
@@ -173,6 +176,14 @@ function installStaci() {
     sleep 1
     ./bin/init-mysql.sh
   fi
+
+  echo " - Starting Atlassian stack, using docker-compose"
+  docker-compose -f compose/docker-compose.yml up -d > $STACI_HOME/logs/docker-compose.log 2>&1
+# TODO This could be less, but should be tested then
+  sleep 3
+
+  echo " - Autosetup copying"
+  docker cp $STACI_HOME/images/jira/context/dbconfig.xml jira:/var/atlassian/jira/
 
   # Generate System Information html
   ./bin/generateSystemInfo.sh > $STACI_HOME/SystemInfo.html
