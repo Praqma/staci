@@ -7,7 +7,7 @@ RUN echo "atlassian:praqma" | chpasswd
 # Configuration variables.
 ENV BITBUCKET_HOME     /var/atlassian/bitbucket
 ENV BITBUCKET_INSTALL  /opt/atlassian/bitbucket
-ENV BITBUCKET_VERSION  4.0.2
+ENV BITBUCKET_VERSION  4.8.3
 
 # Define memory usage for tomcat
 ENV Xms           512m

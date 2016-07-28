@@ -4,7 +4,7 @@ FROM staci/base:0.1
 RUN useradd -u 1000 -ms /bin/bash atlassian
 RUN echo "atlassian:praqma" | chpasswd
 
-ENV CROWD_VERSION 2.8.3
+ENV CROWD_VERSION 2.9.1
 ENV CROWD_HOME /var/atlassian/crowd
 ENV CROWD_INSTALL /opt/atlassian/crowd
 

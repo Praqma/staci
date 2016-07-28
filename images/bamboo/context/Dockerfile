@@ -6,7 +6,7 @@ ENV BAMBOO_HOME=/var/lib/bamboo \
     BAMBOO_USER=atlassian \
     BAMBOO_GID=1000 \
     BAMBOO_GROUP=atlassian \
-    BAMBOO_VERSION=5.9.4 
+    BAMBOO_VERSION=5.12.3.1 
 
 ENV DEBIAN_FRONTEND=noninteractive 
 

@@ -13,7 +13,7 @@ RUN apt-get update && \
 
 # Configuration variables.
 ENV LANG C.UTF-8
-ENV FECRU_VERSION 3.10.1
+ENV FECRU_VERSION 4.4.1
 ENV FISHEYE_HOME /var/atlassian/crucible
 ENV FISHEYE_INST /opt/atlassian/crucible
 

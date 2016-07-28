@@ -180,7 +180,7 @@ function installStaci() {
   echo " - Starting Atlassian stack, using docker-compose"
   docker-compose -f compose/docker-compose.yml up -d > $STACI_HOME/logs/docker-compose.log 2>&1
 # TODO This could be less, but should be tested then
-  sleep 3
+#  sleep 3
 
   echo " - Autosetup copying"
   docker cp $STACI_HOME/images/jira/context/dbconfig.xml jira:/var/atlassian/jira/

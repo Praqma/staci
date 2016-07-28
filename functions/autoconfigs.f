@@ -8,7 +8,6 @@ local startmysql=$(getProperty "start_mysql")
 if [ "$startmysql" == "1" ]; then
   local mysqldriver=$(getProperty "mysql_driver_class")
   local mysqlport=$(getProperty "mysql_port")
-fi
 
 cat << EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -17,17 +16,8 @@ cat << EOF
   <delegator-name>default</delegator-name>
   <database-type>mysql</database-type>
   <jdbc-datasource>
-EOF
-
-if [ "$startmysql" == "1" ]; then
-  local mysqldriver=$(getProperty "mysql_driver_class")
-  local mysqlport=$(getProperty "mysql_port")
-cat << EOF
-    <url>jdbc:mysql://atlassiandb:$mysqlport/jiradb?useUnicode=true&amp;characterEncoding=UTF8&amp;sessionVariables=storage_engine=InnoDB</url>
-    <driver-class>com.mysql.jdbc.Driver</driver-class>
-EOF
-fi
-cat << EOF
+    <url>jdbc:mysql://atlassiandb:$mysqlport/$jiradatabasename?useUnicode=true&amp;characterEncoding=UTF8&amp;sessionVariables=storage_engine=InnoDB</url>
+    <driver-class>$mysqldriver</driver-class>
     <username>$jirausername</username>
     <password>$jirapassword</password>
     <pool-min-size>20</pool-min-size>
@@ -45,6 +35,6 @@ cat << EOF
   </jdbc-datasource>
 </jira-database-config>
 EOF
-
+fi
 }
 
