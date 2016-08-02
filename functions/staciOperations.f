@@ -185,6 +185,9 @@ function installStaci() {
   echo " - Autosetup copying"
   docker cp $STACI_HOME/images/jira/context/dbconfig.xml jira:/var/atlassian/jira/
 
+  # Setupjira from backup or blanc.
+  setupJira 
+
   # Generate System Information html
   ./bin/generateSystemInfo.sh > $STACI_HOME/SystemInfo.html
 

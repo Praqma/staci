@@ -1,3 +1,116 @@
+function waitForJiraLogin(){
+        local isRunning=false
+        # Is jira loginscreen ready ?
+        attempt=0
+        while [ $attempt -le 3600 ]; do
+          attempt=$(( $attempt + 1 ))
+          result=$(curl -Is 'http://localhost:8080/jira/'| grep "HTTP/1.1 200 OK")
+          if [ ! -z "$result" ] ; then
+            echo " - Jira Loginscreen is ready"
+            isRunning=true
+            break
+          fi
+        sleep 2
+        done
+
+        if [ $isRunning = "false" ]; then
+          echo " - Jira loginscreen did not start within timeelimit"
+          exit 0
+        fi
+}
+
+
+function waitForJiraWebSetup(){
+      # Is Jira started ?
+      status=$(docker inspect -f {{.State.Running}} jira 2>&1)
+
+      # Is Jira ready ? 
+      if [ "$status" == "true" ];then
+        echo " - Container jira is active, waiting to be ready"
+        attempt=0
+        while [ $attempt -le 120 ]; do
+          attempt=$(( $attempt + 1 ))
+          result=$(docker logs jira 2>&1)
+          if grep -q 'You can now access JIRA through your web browser' <<< $result ; then
+            echo " - Jira is Running!"
+            break
+          fi
+          sleep 1
+        done
+
+        # Is jira websetup ready ?
+        attempt=0
+        while [ $attempt -le 240 ]; do
+          attempt=$(( $attempt + 1 ))
+          result=$(curl -Is 'http://localhost:8080/jira/' | grep 'Location')
+          if grep -q '/jira/secure/SetupMode!default.jspa' <<< $result ; then
+            echo " - Jira Websetup is ready"
+            break
+          fi
+        sleep 2
+        done
+      else
+        echo "Container jira is not running..."
+        exit 0
+      fi
+      sleep 1
+
+}
+
+function setupJira(){
+
+  if [ ! -z $start_jira ];then
+    local importJiraBackup=$(getProperty "jira_import_backup")
+    local importJiraData=$(getProperty "jira_import_datafolder")
+    if [ ! -z "$importJiraBackup" ]; then
+
+      waitForJiraWebSetup
+
+      # Import Jira backup
+      local importJiraBackup=$(getProperty "jira_import_backup")
+      local importJiraHome=$(getProperty "jira_import_datafolder")
+
+      local backupfilename=$(echo $importJiraBackup| rev | cut -d"/" -f1 | rev)
+      local homefilename=$(echo $importJiraHome| rev | cut -d"/" -f1 | rev)
+      if [ ! -z "$importJiraBackup" ]; then
+        copyFileToContainer jira $importJiraBackup "/var/atlassian/jira/import/"
+      fi
+
+#read -p "Press [Enter] key after manuel Jira database import..."
+# Need to import database zip here
+       echo " - Calling Jira import"
+       curl -F filename="jirabackup.zip" -F license="" -F outgoingEmail="false" -F downgradeAnyway="False" "http://localhost:8080/jira/secure/SetupImport.jspa"
+
+      waitForJiraLogin
+
+      if [ ! -z "$importJiraBackup" ]; then
+        copyFileToContainer jira $importJiraHome "/tmp/"
+        docker exec jira unzip -qq -o /tmp/$homefilename -d /var/atlassian 2>&1
+        docker exec jira -u root rm -f /tmp/$homefilename 2>&1
+
+        docker-compose -f compose/docker-compose.yml restart jira 2>&1
+
+      elif [ -z "$importJiraBackup" ]; then
+        setupJiraInstance
+      fi
+    else
+      echo " - Skipping Jira backup import"
+    fi
+  fi
+}
+
+function copyFileToContainer(){
+    local application=$1
+    local source=$2
+    local destination=$3
+    docker cp $source $application:$destination
+}
+
+
+function setupJiraInstance(){
+  echo "Setting up Jira"
+}
+
 function setJiraDatabaseConnection(){
 
 local jirausername=$(getProperty "jira_username")
