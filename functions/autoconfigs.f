@@ -6,7 +6,7 @@ function waitForJiraLogin(){
           attempt=$(( $attempt + 1 ))
           result=$(curl -Is 'http://localhost:8080/jira/'| grep "HTTP/1.1 200 OK")
           if [ ! -z "$result" ] ; then
-            echo " - Jira Loginscreen is ready"
+            echo "  # Jira Loginscreen is ready"
             isRunning=true
             break
           fi
@@ -32,7 +32,7 @@ function waitForJiraWebSetup(){
           attempt=$(( $attempt + 1 ))
           result=$(docker logs jira 2>&1)
           if grep -q 'You can now access JIRA through your web browser' <<< $result ; then
-            echo " - Jira is Running!"
+            echo "  # Jira is Running!"
             break
           fi
           sleep 1
@@ -44,7 +44,7 @@ function waitForJiraWebSetup(){
           attempt=$(( $attempt + 1 ))
           result=$(curl -Is 'http://localhost:8080/jira/' | grep 'Location')
           if grep -q '/jira/secure/SetupMode!default.jspa' <<< $result ; then
-            echo " - Jira Websetup is ready"
+            echo "  # Jira Websetup is ready"
             break
           fi
         sleep 2
@@ -80,7 +80,7 @@ function setupJira(){
         copyFileToContainer jira $importJiraBackup "/var/atlassian/jira/import/"
       fi
 
-       echo " - Calling Jira import"
+       echo "  # Calling Jira import"
        curl -F filename="jirabackup.zip" -F license="$importJiraLicens" -F outgoingEmail="false" -F downgradeAnyway="False" "http://localhost:8080/jira/secure/SetupImport.jspa"
 
       waitForJiraLogin
@@ -92,20 +92,20 @@ function setupJira(){
 
 
         if [ ! -z "$JiraBaseUrl" ]; then
-          echo " - Updating Jira Base URL to $JiraBaseUrl"
+          echo "  # Updating Jira Base URL to $JiraBaseUrl"
           local update_jira_baseurl="update propertystring, propertyentry  set propertyvalue='$JiraBaseUrl'  where propertyentry.id=propertystring.id and propertyentry.property_key = 'jira.baseurl';"
           exec_mysql_sql "$update_jira_baseurl" "$JiraDbName"
         fi
-        echo " - Restarting Jira for import to take effect"
+        echo "  # Restarting Jira for import to take effect"
         docker-compose -f compose/docker-compose.yml restart jira &> /dev/null
 
       elif [ -z "$importJiraBackup" ]; then
         setupJiraInstance
       fi
     else
-      echo " - Skipping Jira backup import"
+      echo "  # Skipping Jira backup import"
     fi
-    echo " - Waiting for Jira to be ready"
+    echo "  # Waiting for Jira to be ready"
     waitForJiraLogin
   fi
 }
