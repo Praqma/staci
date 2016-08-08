@@ -66,6 +66,9 @@ function setupJira(){
     local JiraBaseUrl=$(getProperty "jira_baseurl")
     local JiraDbName=$(getProperty "jira_database_name")
 
+ #   docker cp $STACI_HOME/images/jira/context/dbconfig.xml jira:/var/atlassian/jira/
+    copyFileToContainer jira $STACI_HOME/images/jira/context/dbconfig.xml /var/atlassian/jira/
+
     if [ ! -z "$importJiraBackup" ]; then
 
       waitForJiraWebSetup
@@ -98,6 +101,8 @@ function setupJira(){
         fi
         echo "  # Restarting Jira for import to take effect"
         docker-compose -f compose/docker-compose.yml restart jira &> /dev/null
+        copyFileToContainer jira $STACI_HOME/images/jira/context/dbconfig.xml /var/atlassian/jira/
+#        docker cp $STACI_HOME/images/jira/context/dbconfig.xml jira:/var/atlassian/jira/
 
       elif [ -z "$importJiraBackup" ]; then
         setupJiraInstance
