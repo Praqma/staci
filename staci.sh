@@ -79,6 +79,7 @@ source $STACI_HOME/functions/build.f
 source $STACI_HOME/functions/staciOperations.f
 source $STACI_HOME/functions/system.f
 source $STACI_HOME/functions/autoconfigs.f
+source $STACI_HOME/functions/databaseOperations.f
 
 check_docker_dependencies
 if [ $? -ne 0 ]; then

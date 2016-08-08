@@ -19,7 +19,7 @@ function deleteStaci(){
   setMachineEnv
 
   # we delete all containers
-  docker-compose -f compose/docker-compose.yml rm
+  docker-compose -f compose/docker-compose.yml rm -f
 }
 
 function stopStaci(){

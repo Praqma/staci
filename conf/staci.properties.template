@@ -59,6 +59,11 @@ jira_xms:512m
 jira_xmx:768m
 jira_plugin_wait:300
 jira_session_cookie_name:jirasession
+jira_import_backup:
+jira_import_datafolder:
+jira_import_license:
+jira_baseurl:
+
 
 # Bamboo section
 bamboo_contextpath:/bamboo

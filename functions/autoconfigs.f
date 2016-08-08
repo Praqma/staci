@@ -62,6 +62,10 @@ function setupJira(){
   if [ ! -z $start_jira ];then
     local importJiraBackup=$(getProperty "jira_import_backup")
     local importJiraData=$(getProperty "jira_import_datafolder")
+    local importJiraLicens=$(getProperty "jira_import_license")
+    local JiraBaseUrl=$(getProperty "jira_baseurl")
+    local JiraDbName=$(getProperty "jira_database_name")
+
     if [ ! -z "$importJiraBackup" ]; then
 
       waitForJiraWebSetup
@@ -76,19 +80,24 @@ function setupJira(){
         copyFileToContainer jira $importJiraBackup "/var/atlassian/jira/import/"
       fi
 
-#read -p "Press [Enter] key after manuel Jira database import..."
-# Need to import database zip here
        echo " - Calling Jira import"
-       curl -F filename="jirabackup.zip" -F license="" -F outgoingEmail="false" -F downgradeAnyway="False" "http://localhost:8080/jira/secure/SetupImport.jspa"
+       curl -F filename="jirabackup.zip" -F license="$importJiraLicens" -F outgoingEmail="false" -F downgradeAnyway="False" "http://localhost:8080/jira/secure/SetupImport.jspa"
 
       waitForJiraLogin
 
       if [ ! -z "$importJiraBackup" ]; then
         copyFileToContainer jira $importJiraHome "/tmp/"
-        docker exec jira unzip -qq -o /tmp/$homefilename -d /var/atlassian 2>&1
-        docker exec jira -u root rm -f /tmp/$homefilename 2>&1
+        docker exec jira /bin/bash -c "unzip -qq -o /tmp/$homefilename -d /var/atlassian" 2>&1
+        docker exec -u root jira /bin/bash -c "rm -f /tmp/$homefilename" 2>&1
 
-        docker-compose -f compose/docker-compose.yml restart jira 2>&1
+
+        if [ ! -z "$JiraBaseUrl" ]; then
+          echo " - Updating Jira Base URL to $JiraBaseUrl"
+          local update_jira_baseurl="update propertystring, propertyentry  set propertyvalue='$JiraBaseUrl'  where propertyentry.id=propertystring.id and propertyentry.property_key = 'jira.baseurl';"
+          exec_mysql_sql "$update_jira_baseurl" "$JiraDbName"
+        fi
+        echo " - Restarting Jira for import to take effect"
+        docker-compose -f compose/docker-compose.yml restart jira &> /dev/null
 
       elif [ -z "$importJiraBackup" ]; then
         setupJiraInstance
@@ -96,6 +105,8 @@ function setupJira(){
     else
       echo " - Skipping Jira backup import"
     fi
+    echo " - Waiting for Jira to be ready"
+    waitForJiraLogin
   fi
 }
 
