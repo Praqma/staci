@@ -103,15 +103,16 @@ function setupJira(){
         docker-compose -f compose/docker-compose.yml restart jira &> /dev/null
         copyFileToContainer jira $STACI_HOME/images/jira/context/dbconfig.xml /var/atlassian/jira/
 #        docker cp $STACI_HOME/images/jira/context/dbconfig.xml jira:/var/atlassian/jira/
-
+        echo "  # Waiting for Jira to be ready"
+        waitForJiraLogin
       elif [ -z "$importJiraBackup" ]; then
         setupJiraInstance
       fi
     else
       echo "  # Skipping Jira backup import"
+      echo "  # Waiting for Jira to be ready"
+      waitForJiraWebSetup
     fi
-    echo "  # Waiting for Jira to be ready"
-    waitForJiraLogin
   fi
 }
 
