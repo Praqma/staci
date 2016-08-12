@@ -59,7 +59,7 @@ function waitForJiraWebSetup(){
 
 function setupJira(){
 
-  if [ ! -z $start_jira ];then
+  if [ "$start_jira" == "1" ];then
     local importJiraBackup=$(getProperty "jira_import_backup")
     local importJiraData=$(getProperty "jira_import_datafolder")
     local importJiraLicens=$(getProperty "jira_import_license")
