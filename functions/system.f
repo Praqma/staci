@@ -1,3 +1,10 @@
+function checkStaciPropertyFile(){
+  if [ ! -f $STACI_HOME/conf/staci.properties ]; then
+    echo "Error : You need to create conf/staci.properties from conf/staci.properties.template"
+    exit 0
+  fi
+}
+
 check_docker_dependencies() {
   local check_result=0
   local supported_docker_version="1.11.1"
