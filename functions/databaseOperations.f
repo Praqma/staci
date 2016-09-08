@@ -17,9 +17,8 @@ function exec_mysql_sql(){
    elif [ ! "$provider_type" == "none" ]; then
       eval $(docker-machine env "$node_prefix-Atlassian")
    fi
- 
-   local sql='mysql --user=root --password='"$mysql_pwd"' --database '"$appdb"' -e "'"$sqlcmd"'"' 
 
-   docker exec atlassiandb /bin/bash -c "$sql" &>> $STACI_HOME/logs/mysql.log
+   local sql='mysql --user=root --password='"$mysql_pwd"' --database '"$appdb"' -e "'"$sqlcmd"'"'
+
+   docker exec atlassiandb /bin/bash -c "$sql" & >> $STACI_HOME/logs/mysql.log
 }
-
