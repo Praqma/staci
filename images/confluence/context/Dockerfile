@@ -3,7 +3,7 @@ FROM staci/base:0.1
 # Setup useful environment variables
 ENV CONF_HOME     /var/atlassian/confluence
 ENV CONF_INSTALL  /opt/atlassian/confluence
-ENV CONF_VERSION  5.10.2
+ENV CONF_VERSION  5.10.4
 
 # Define memory usage for tomcat
 ENV Xms		  512m

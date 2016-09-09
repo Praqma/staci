@@ -93,7 +93,7 @@ if [ $param1 == "install" ];then
 		echo "Interactive install"
 		installStaciInteractive
 	else
-    echo "Installing using property files, please wait...."
+    echo " - Installing using property files, please wait...."
     installStaciUsingProperties
 	fi
   exit 0;
