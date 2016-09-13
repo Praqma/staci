@@ -10,6 +10,9 @@
 
 VERSION=0.1.0
 
+# Exit on error
+set -e
+
 usage(){
 	echo -e "Usage: \nstaci.sh [OPTIONS] COMMAND [property-file]
 
