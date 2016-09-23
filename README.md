@@ -89,7 +89,7 @@ It is run like this:
 
 * Start Jenkins in Docker using the scripts in `pipeline/docker`
 * Manually add GitHub credentials in Jenkins, with the ID `github`
-* Run the `seed` job
+* Watch the `seed` job run once
 
 Notice that the generated job has no trigger. You need to manually build it to pick up
 changes on a `ready` branch.
