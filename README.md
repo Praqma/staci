@@ -73,7 +73,7 @@ vim conf/staci.properties
 ./staci.sh install
 ```
 
-If you want to change the behaviour of STACI, edit the file ./conf/staci.properties
+If you want to change the behaviour of STACI, edit the file `./conf/staci.properties`
 
 ## Taking backup of local containers (not working with external providers yet)
 The containers have consistent data in /data/atlassian/ (default, edit staci.properties). You can take a backup by executing the script ./bin/backup.sh. This will tar-gz the volumes to /data/atlassian/backup/[date].
