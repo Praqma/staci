@@ -13,9 +13,12 @@ RUN apt-get update && \
 
 # Configuration variables.
 ENV LANG C.UTF-8
-ENV FECRU_VERSION 4.1.2
+ENV FECRU_VERSION 4.2.0
 ENV FISHEYE_HOME /var/atlassian/crucible
 ENV FISHEYE_INST /opt/atlassian/crucible
+
+# Set Fisheye memory usage
+# ENV FISHEYE_OPTS -Xmx3072m -XX:MaxPermSize=256m
 
 WORKDIR /opt/atlassian/
 
