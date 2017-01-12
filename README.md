@@ -55,6 +55,12 @@ links to all the services started.
   - The STACI scripts are written in `bash` and have been tested on Linux and Mac
 - VirtualBox (optional)
   - On a Mac, an easy way to get started is to use Docker with VirtualBox
+- Ubuntu Server 16.x
+  - Download the latest iso from: https://www.ubuntu.com/download/server and install/spin up VM
+  - Install all the prerequesits for Staci:
+     - clone this repo and run ```bin/install_on_ubuntu_server_16.x.sh```. It installs all the needed tools and setting described above
+  - Follow the instructions..
+  
 
 
 ## Preparing Volume folder (only used when running locally)
