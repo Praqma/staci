@@ -13,7 +13,7 @@ start_crowd=$(getProperty "start_crowd")
 start_bitbucket=$(getProperty "start_bitbucket")
 start_crucible=$(getProperty "start_crucible")
 start_jenkins=$(getProperty "start_jenkins")
-start_artifactory=$(getProperty "start_artifactory)
+start_artifactory=$(getProperty "start_artifactory")
 
 
 volume_dir=$(getProperty "volume_dir")
