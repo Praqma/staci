@@ -134,6 +134,9 @@ function createSwarm(){
     if [ "$start_jenkins" == "1" ];then
         createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix" "jenkins"
     fi
+    if [ "$start_artifactory" == "1" ];then
+        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix" "artifactory"
+    fi
 }
 
 function createDMInstance(){

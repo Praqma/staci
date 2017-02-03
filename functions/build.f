@@ -257,7 +257,7 @@ function buildAll(){
   start_crucible=$(getProperty "start_crucible")
   start_mysql=$(getProperty "start_mysql")
   start_jenkins=$(getProperty "start_jenkins")
-  start_jenkins=$(getProperty "start_artifactory")
+  start_artifactory=$(getProperty "start_artifactory")
   cluster=$(getProperty "createCluster")
   node_prefix=$(getProperty "clusterNodePrefix")
 

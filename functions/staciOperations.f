@@ -94,6 +94,8 @@ function installStaci() {
     mkdir -p "$volume_dir/bitbucket"
     mkdir -p "$volume_dir/crowd"
     mkdir -p "$volume_dir/crucible"
+    mkdir -p "$volume_dir/jenkins"
+    mkdir -p "$volume_dir/artifactory"
     echo " - Created $volume_dir folder."
   fi
 
