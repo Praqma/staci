@@ -46,6 +46,17 @@ function buildBaseImage(){
       eval $(docker-machine env "$node_prefix-crucible")
       docker build -t staci/base:$version $STACI_HOME/images/base/context/ > $STACI_HOME/logs/base.crucible.build.log 2>&1 &
     fi
+    
+    if [ "$start_jenkins" == "1" ]; then
+      echo "   - Building base image on Jenkins instance."
+      eval $(docker-machine env "$node_prefix-jenkins")
+      docker build -t staci/base:$version $STACI_HOME/images/base/context/ > $STACI_HOME/logs/base.jenkins.build.log 2>&1 &
+    fi
+    if [ "$start_artifactory" == "1" ]; then
+      echo "   - Building base image on aritfactory instance."
+      eval $(docker-machine env "$node_prefix-artifactory")
+      docker build -t staci/base:$version $STACI_HOME/images/base/context/ > $STACI_HOME/logs/base.artifactory.build.log 2>&1 &
+    fi
 
   else
     if [ ! "$provider_type" == "none" ];then
@@ -183,6 +194,44 @@ function buildCrucible(){
   fi
 }
 
+function buildJenkins(){
+  if [ "$start_jenkins" == "1" ]; then
+    if [ "$cluster" == "1" ]; then
+      eval $(docker-machine env "$node_prefix-jenkins")
+    else
+      if [ ! "$provider_type" == "none" ];then
+        node_prefix=$(getProperty "clusterNodePrefix")
+        eval $(docker-machine env $node_prefix-Atlassian)
+      fi
+    fi
+    jenkinsContextPath=$(getProperty "jenkins_contextpath")
+    jenkinsContextPath='\'$jenkinsContextPath
+    echo "sed -i -e 's/path=\"\"/path=\"$jenkinsContextPath\"/g' /opt/atlassian/jenkins/conf/server.xml" > $STACI_HOME/images/jenkins/context/setContextPath.sh
+    chmod u+x $STACI_HOME/images/jenkins/context/setContextPath.sh
+    echo "   - Building jenkins image"
+    docker build -t staci/jenkins:$version $STACI_HOME/images/jenkins/context/ > $STACI_HOME/logs/jenkins.build.log 2>&1 &
+  fi
+}
+
+function buildArtifactory(){
+  if [ "$start_artifactory" == "1" ]; then
+    if [ "$cluster" == "1" ]; then
+      eval $(docker-machine env "$node_prefix-artifactory")
+    else
+      if [ ! "$provider_type" == "none" ];then
+        node_prefix=$(getProperty "clusterNodePrefix")
+        eval $(docker-machine env $node_prefix-Atlassian)
+      fi
+    fi
+    artifactoryContextPath=$(getProperty "artifactory_contextpath")
+    artifactoryContextPath='\'$artifactoryContextPath
+    echo "sed -i -e 's/path=\"\"/path=\"$artifactoryContextPath\"/g' /opt/atlassian/artifactory/conf/server.xml" > $STACI_HOME/images/artifactory/context/setContextPath.sh
+    chmod u+x $STACI_HOME/images/artifactory/context/setContextPath.sh
+    echo "   - Building artifactory image"
+    docker build -t staci/artifactory:$version $STACI_HOME/images/artifactory/context/ > $STACI_HOME/logs/artifactory.build.log 2>&1 &
+  fi
+}
+
 function buildAtlassian(){
   echo "  # Building Atlassian, please wait..."
     buildJira 
@@ -191,7 +240,9 @@ function buildAtlassian(){
     buildBitbucket 
     buildMySQL 
     buildCrowd 
-    buildCrucible    
+    buildCrucible
+    buildJenkins
+    buildArtifactory
 
   wait
 
@@ -205,6 +256,8 @@ function buildAll(){
   start_bitbucket=$(getProperty "start_bitbucket")
   start_crucible=$(getProperty "start_crucible")
   start_mysql=$(getProperty "start_mysql")
+  start_jenkins=$(getProperty "start_jenkins")
+  start_jenkins=$(getProperty "start_artifactory")
   cluster=$(getProperty "createCluster")
   node_prefix=$(getProperty "clusterNodePrefix")
 

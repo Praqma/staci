@@ -12,6 +12,9 @@ start_bamboo=$(getProperty "start_bamboo")
 start_crowd=$(getProperty "start_crowd")
 start_bitbucket=$(getProperty "start_bitbucket")
 start_crucible=$(getProperty "start_crucible")
+start_jenkins=$(getProperty "start_jenkins")
+start_artifactory=$(getProperty "start_artifactory)
+
 
 volume_dir=$(getProperty "volume_dir")
 timezone=$(getProperty "time_zone")
@@ -268,3 +271,65 @@ networks:
 
 EOF
 fi
+
+#Printing jenkins specific yml
+if [ "$start_jenkins" == "1" ]; then
+if [ "$cluster" == 1 ]; then
+  cluster_opts='    environment:
+      - "constraint:node=='$node_prefix'-jenkins"
+    networks:
+      - back'
+else
+  if [ ! "$provider_type" == "none" ];then
+    cluster_opts=''
+  else
+    cluster_opts='    volumes:
+      - '$volume_dir'/jenkins:/var/atlassian/jenkins'
+  fi
+fi
+
+cat << EOF
+  bitbucket:
+    image: staci/jenkins:$version
+    container_name: jenkins
+    hostname: jenkins
+    expose:
+      - "8080"
+      - "50000"
+    ports:
+      - "8081:8080"
+      - "50000:50000"
+$cluster_opts
+EOF
+fi
+
+#Printing artifactory specific yml
+if [ "$start_artifactory" == "1" ]; then
+if [ "$cluster" == 1 ]; then
+  cluster_opts='    environment:
+      - "constraint:node=='$node_prefix'-artifactory"
+    networks:
+      - back'
+else
+  if [ ! "$provider_type" == "none" ];then
+    cluster_opts=''
+  else
+    cluster_opts='    volumes:
+      - '$volume_dir'/artifactory:/var/atlassian/artifactory'
+  fi
+fi
+
+cat << EOF
+  bitbucket:
+    image: staci/artifactory:$version
+    container_name: artifactory
+    hostname: artifactory
+    expose:
+      - "8080""
+    ports:
+      - "8082:8080"
+$cluster_opts
+EOF
+fi
+
+

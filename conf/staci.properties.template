@@ -13,6 +13,8 @@ start_bamboo:0
 start_crowd:0
 start_bitbucket:1
 start_crucible:1
+start_jenkins:1
+start_artifactory:1
 
 # Browser information
 browser_cmd:/usr/bin/google-chrome
@@ -79,3 +81,10 @@ confluence_database_name:confluencedb
 confluence_xms:512m
 confluence_xmx:768m
 confluence_session_cookie_name:confluencesession
+
+#jenkins section
+jenkins_contextpath:/jenkins
+
+#artifactory section
+artifactory_contextpath:/artifactory
+
