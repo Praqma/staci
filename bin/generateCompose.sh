@@ -325,11 +325,9 @@ cat << EOF
     container_name: artifactory
     hostname: artifactory
     expose:
-      - "8080""
+      - "8080"
     ports:
       - "8082:8080"
 $cluster_opts
 EOF
 fi
-
-
