@@ -289,7 +289,7 @@ else
 fi
 
 cat << EOF
-  bitbucket:
+  jenkins:
     image: staci/jenkins:$version
     container_name: jenkins
     hostname: jenkins
@@ -320,7 +320,7 @@ else
 fi
 
 cat << EOF
-  bitbucket:
+  artifactory:
     image: staci/artifactory:$version
     container_name: artifactory
     hostname: artifactory
