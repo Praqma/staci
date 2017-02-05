@@ -15,6 +15,8 @@ start_bitbucket:1
 start_crucible:1
 start_jenkins:1
 start_artifactory:1
+start_haproxy:1
+
 
 # Browser information
 browser_cmd:/usr/bin/google-chrome
@@ -88,3 +90,5 @@ jenkins_contextpath:/jenkins
 #artifactory section
 artifactory_contextpath:/artifactory
 
+#haproxy section
+haproxy_contextpath:/artifactory

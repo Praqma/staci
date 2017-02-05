@@ -96,6 +96,7 @@ function installStaci() {
     mkdir -p "$volume_dir/crucible"
     mkdir -p "$volume_dir/jenkins"
     mkdir -p "$volume_dir/artifactory"
+    mkdir -p "$volume_dir/artifactory"
     echo " - Created $volume_dir folder."
   fi
 
@@ -181,6 +182,8 @@ function installStaci() {
 
   echo " - Starting Atlassian stack, using docker-compose"
   docker-compose -f compose/docker-compose.yml up -d > $STACI_HOME/logs/docker-compose.log 2>&1
+
+sleep 10
 
   # Setupjira from backup or blanc.
   setupJira 

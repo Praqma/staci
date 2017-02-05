@@ -14,7 +14,7 @@ start_bitbucket=$(getProperty "start_bitbucket")
 start_crucible=$(getProperty "start_crucible")
 start_jenkins=$(getProperty "start_jenkins")
 start_artifactory=$(getProperty "start_artifactory")
-
+start_haproxy=$(getProperty "start_haproxy")
 
 volume_dir=$(getProperty "volume_dir")
 timezone=$(getProperty "time_zone")
@@ -328,6 +328,36 @@ cat << EOF
       - "8080"
     ports:
       - "8082:8080"
+$cluster_opts
+EOF
+fi
+
+#Printing haproxy specific yml
+
+if [ "$start_haproxy" == "1" ]; then
+if [ "$cluster" == 1 ]; then
+  cluster_opts='    environment:
+      - "constraint:node=='$node_prefix'-haproxy"
+    networks:
+      - back'
+else
+  if [ ! "$provider_type" == "none" ];then
+    cluster_opts=''
+  else
+    cluster_opts='    volumes:
+      - '$volume_dir'/haproxy:/var/atlassian/haproxy'
+  fi
+fi
+
+cat << EOF
+  haproxy:
+    image: staci/haproxy:$version
+    container_name: haproxy
+    hostname: haproxy
+    expose:
+      - "8080"
+    ports:
+      - "8083:8080"
 $cluster_opts
 EOF
 fi

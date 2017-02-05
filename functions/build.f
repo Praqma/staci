@@ -57,6 +57,12 @@ function buildBaseImage(){
       eval $(docker-machine env "$node_prefix-artifactory")
       docker build -t staci/base:$version $STACI_HOME/images/base/context/ > $STACI_HOME/logs/base.artifactory.build.log 2>&1 &
     fi
+    
+    if [ "$start_haproxy" == "1" ]; then
+      echo "   - Building base image on haproxy instance."
+      eval $(docker-machine env "$node_prefix-haproxy")
+      docker build -t staci/base:$version $STACI_HOME/images/base/context/ > $STACI_HOME/logs/base.haproxy.build.log 2>&1 &
+    fi
 
   else
     if [ ! "$provider_type" == "none" ];then
@@ -232,6 +238,25 @@ function buildArtifactory(){
   fi
 }
 
+function buildHaproxy(){
+  if [ "$start_haproxy" == "1" ]; then
+    if [ "$cluster" == "1" ]; then
+      eval $(docker-machine env "$node_prefix-haproxy")
+    else
+      if [ ! "$provider_type" == "none" ];then
+        node_prefix=$(getProperty "clusterNodePrefix")
+        eval $(docker-machine env $node_prefix-Atlassian)
+      fi
+    fi
+    haproxyContextPath=$(getProperty "haproxy_contextpath")
+    haproxyContextPath='\'$haproxyContextPath
+    echo "sed -i -e 's/path=\"\"/path=\"haproxyContextPath\"/g' /opt/atlassian/haproxy/conf/server.xml" > $STACI_HOME/images/haproxy/context/setContextPath.sh
+    chmod u+x $STACI_HOME/images/haproxy/context/setContextPath.sh
+    echo "   - Building artifactory image"
+    docker build -t staci/haproxy:$version $STACI_HOME/images/haproxy/context/ > $STACI_HOME/logs/haproxy.build.log 2>&1 &
+  fi
+}
+
 function buildAtlassian(){
   echo "  # Building Atlassian, please wait..."
     buildJira 
@@ -243,6 +268,7 @@ function buildAtlassian(){
     buildCrucible
     buildJenkins
     buildArtifactory
+    buildHaproxy
 
   wait
 
@@ -258,6 +284,7 @@ function buildAll(){
   start_mysql=$(getProperty "start_mysql")
   start_jenkins=$(getProperty "start_jenkins")
   start_artifactory=$(getProperty "start_artifactory")
+  start_haproxy=$(getProperty "start_haproxy"
   cluster=$(getProperty "createCluster")
   node_prefix=$(getProperty "clusterNodePrefix")
 
