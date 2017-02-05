@@ -284,7 +284,7 @@ function buildAll(){
   start_mysql=$(getProperty "start_mysql")
   start_jenkins=$(getProperty "start_jenkins")
   start_artifactory=$(getProperty "start_artifactory")
-  start_haproxy=$(getProperty "start_haproxy"
+  start_haproxy=$(getProperty "start_haproxy")
   cluster=$(getProperty "createCluster")
   node_prefix=$(getProperty "clusterNodePrefix")
 
