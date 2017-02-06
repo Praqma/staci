@@ -11,6 +11,11 @@ STACI consists of:
 - Crowd
 - Crucible
 - MySQL
+- HAProxy
+- Jenkins
+- Artifactory
+
+Presently, STACI runs Jenkins and Artifactory behind a reverse proxy (HAProxy). Work is ongoing to backend the other services in the stack.
 
 This repository is maintained by www.praqma.com
 
@@ -26,6 +31,8 @@ steps:
   - If you are not using Linux, you probably want to set `provider_type:virtualbox` in
     `staci.properties`
 - Start `docker`
+- Edit /function/haproxy_setup.f to fit your purpose, or leave the information as is if doing a trial run.
+- Create an A record entry for all the services you intend to run behind the reverse proxy, in /etc/hosts. E.g, 54.34.34.126 jenkins.example.com jira.example.com
 - Run `./staci.sh install` to install and start the stack
 
 
