@@ -1,5 +1,6 @@
 #!/bin/bash
 source $STACI_HOME/functions/tools.f
+source $STACI_HOME/functions/haproxy_setup.f
 
 # Set version of images
 version=$(getProperty "imageVersion")
@@ -24,11 +25,15 @@ cluster=$(getProperty "createCluster")
 provider_type=$(getProperty "provider_type")
 
 # Printing version and header
+
+setupHaproxy
+
 cat << EOF
 version: '2'
 
 services:
 EOF
+
 
 # Printing Bitbucket specific yml
 if [ "$start_bitbucket" == "1" ]; then
@@ -294,9 +299,6 @@ cat << EOF
     container_name: jenkins
     hostname: jenkins
     expose:
-      - "8080"
-      - "50000"
-    ports:
       - "50000"
 $cluster_opts
 EOF
@@ -323,8 +325,6 @@ cat << EOF
     image: staci/artifactory:$version
     container_name: artifactory
     hostname: artifactory
-    expose:
-      - "8080"
 $cluster_opts
 EOF
 fi
@@ -354,9 +354,8 @@ cat << EOF
     links:
     - jenkins
     - artifactory
-    expose:
-      - "80"
     ports:
+      - "443:443"
       - "80:80"
 $cluster_opts
 EOF
