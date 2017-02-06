@@ -96,7 +96,7 @@ function installStaci() {
     mkdir -p "$volume_dir/crucible"
     mkdir -p "$volume_dir/jenkins"
     mkdir -p "$volume_dir/artifactory"
-    mkdir -p "$volume_dir/artifactory"
+    mkdir -p "$volume_dir/haproxy"
     echo " - Created $volume_dir folder."
   fi
 

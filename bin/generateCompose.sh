@@ -297,8 +297,7 @@ cat << EOF
       - "8080"
       - "50000"
     ports:
-      - "8081:8080"
-      - "50000:50000"
+      - "50000"
 $cluster_opts
 EOF
 fi
@@ -326,8 +325,6 @@ cat << EOF
     hostname: artifactory
     expose:
       - "8080"
-    ports:
-      - "8082:8080"
 $cluster_opts
 EOF
 fi
@@ -354,10 +351,13 @@ cat << EOF
     image: staci/haproxy:$version
     container_name: haproxy
     hostname: haproxy
+    links:
+    - jenkins
+    - artifactory
     expose:
-      - "8080"
+      - "80"
     ports:
-      - "8083:8080"
+      - "80:80"
 $cluster_opts
 EOF
 fi

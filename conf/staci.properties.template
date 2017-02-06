@@ -91,4 +91,4 @@ jenkins_contextpath:/jenkins
 artifactory_contextpath:/artifactory
 
 #haproxy section
-haproxy_contextpath:/artifactory
+haproxy_contextpath:/haproxy

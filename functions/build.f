@@ -252,7 +252,7 @@ function buildHaproxy(){
     haproxyContextPath='\'$haproxyContextPath
     echo "sed -i -e 's/path=\"\"/path=\"haproxyContextPath\"/g' /opt/atlassian/haproxy/conf/server.xml" > $STACI_HOME/images/haproxy/context/setContextPath.sh
     chmod u+x $STACI_HOME/images/haproxy/context/setContextPath.sh
-    echo "   - Building artifactory image"
+    echo "   - Building haproxy image"
     docker build -t staci/haproxy:$version $STACI_HOME/images/haproxy/context/ > $STACI_HOME/logs/haproxy.build.log 2>&1 &
   fi
 }
