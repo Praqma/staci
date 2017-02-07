@@ -83,21 +83,42 @@ function installStaci() {
     mkdir -p logs
   fi
 
+
+  # WE force use UID and GID to be 1000, as all the containers expect that.
+  USERID=1000
+  GROUPID=1000
+
   # Create folders for persistent container data, if not existing
   # But only if run locally
-  if [ ! -d "$volume_dir" ] && [ "$provider_type" == "none" ]; then
-    mkdir -p "$volume_dir"
-    mkdir -p "$volume_dir/jira"
-    mkdir -p "$volume_dir/confluence"
-    mkdir -p "$volume_dir/bamboo"
-    mkdir -p "$volume_dir/atlassiandb"
-    mkdir -p "$volume_dir/bitbucket"
-    mkdir -p "$volume_dir/crowd"
-    mkdir -p "$volume_dir/crucible"
-    mkdir -p "$volume_dir/jenkins"
-    mkdir -p "$volume_dir/artifactory"
-    mkdir -p "$volume_dir/haproxy"
-    echo " - Created $volume_dir folder."
+  # if [ ! -d "$volume_dir" ] && [ "$provider_type" == "none" ]; then
+  if [ "$provider_type" == "none" ]; then
+   # Assuming that provider type is none, run a loop:  
+
+    if [ ! -d "$volume_dir" ] ; then
+      sudo mkdir -p $volume_dir
+      sudo chown $USERID:$GROUPID $volume_dir 
+    fi
+
+    # Add more directories to the list below, if needed
+    for dir in jira confluence bamboo atlassiandb bitbucket crowd crucible jenkins artifactory haproxy; do 
+      echo "Checking directory ${volume_dir}/${dir} ..."
+      if [ ! -d ${volume_dir}/${dir} ] ; then
+        sudo mkdir -p ${volume_dir}/${dir}
+        sudo chown $USERID:$GROUPID  ${volume_dir}/${dir}
+
+        # Jenkins and artifactory have a requirement to have other subdirectories too
+        if [ "${dir}" == "jenkins" ] ; then
+          sudo mkdir -p ${volume_dir}/${dir}/jenkins_home
+          sudo chown $USERID:$GROUPID  ${volume_dir}/${dir} -R 
+        fi
+
+        if [ "${dir}" == "artifactory" ] ; then
+          sudo mkdir -p ${volume_dir}/${dir}/{backup,data,logs}
+          sudo chown $USERID:$GROUPID  ${volume_dir}/${dir} -R
+        fi
+      fi
+     
+    done 
   fi
 
   if [ "$create_cluster" == 1 ]; then
