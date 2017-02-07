@@ -56,11 +56,7 @@ cat << EOF
     image: staci/bitbucket:$version
     container_name: bitbucket
     hostname: bitbucket
-    expose:
-      - "7990"
-      - "7999"
     ports:
-      - "7990:7990"
       - "7999:7999"
 $cluster_opts
 EOF
@@ -87,10 +83,6 @@ cat << EOF
     image: staci/crowd:$version
     container_name: crowd
     hostname: crowd
-    expose:
-      - "8095"
-    ports:
-      - "8095:8095"
 $cluster_opts
 EOF
 fi
@@ -116,10 +108,6 @@ cat << EOF
     image: staci/crucible:$version
     container_name: crucible
     hostname: crucible
-    expose:
-      - "8060"
-    ports:
-      - "8060:8060"
 $cluster_opts
 EOF
 fi
@@ -155,10 +143,6 @@ cat << EOF
     image: staci/jira:$version
     container_name: jira
     hostname: jira
-    expose:
-      - "8080"
-    ports:
-      - "8080:8080"
 $cluster_opts
 EOF
 fi
@@ -192,10 +176,6 @@ cat << EOF
     image: staci/confluence:$version
     container_name: confluence
     hostname: confluence
-    expose:
-      - "8090"
-    ports:
-      - "8090:8090"
 $cluster_opts
 EOF
 fi
@@ -223,10 +203,8 @@ cat << EOF
     container_name: bamboo
     hostname: bamboo
     expose:
-      - "8085"
       - "54663"
     ports:
-      - "8085:8085"
       - "54663:54663"
 $cluster_opts
 EOF
@@ -298,8 +276,8 @@ cat << EOF
     image: staci/jenkins:$version
     container_name: jenkins
     hostname: jenkins
-    expose:
-      - "50000"
+    ports:
+      - "50000:50000"
 $cluster_opts
 EOF
 fi
@@ -354,6 +332,11 @@ cat << EOF
     links:
     - jenkins
     - artifactory
+    - jira
+    - confluence
+    - bitbucket
+    - crowd
+    - crucible
     ports:
       - "443:443"
       - "80:80"
