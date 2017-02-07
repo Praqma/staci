@@ -329,14 +329,6 @@ cat << EOF
     image: staci/haproxy:$version
     container_name: haproxy
     hostname: haproxy
-    links:
-    - jenkins
-    - artifactory
-    - jira
-    - confluence
-    - bitbucket
-    - crowd
-    - crucible
     ports:
       - "443:443"
       - "80:80"
