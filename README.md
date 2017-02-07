@@ -1,3 +1,6 @@
+---
+Maintainer: Hoeghh 
+---
 # Support Tracking And Continuous Integration
 
 STACI lets you run Atlassian products with easy command line scripts. It uses Docker to
