@@ -2,9 +2,10 @@ function waitForJiraLogin(){
         local isRunning=false
         # Is jira loginscreen ready ?
         attempt=0
+        local JiraBaseUrl=$(getProperty "jira_baseurl")
         while [ $attempt -le 3600 ]; do
           attempt=$(( $attempt + 1 ))
-          result=$(curl -Is 'http://localhost:8080/jira/'| grep "HTTP/1.1 200 OK")
+          result=$(curl -Is "https://${JiraBaseUrl}/jira/"| grep "HTTP/1.1 302 Found")
           if [ ! -z "$result" ] ; then
             echo "  # Jira Loginscreen is ready"
             isRunning=true
@@ -42,7 +43,8 @@ function waitForJiraWebSetup(){
         attempt=0
         while [ $attempt -le 240 ]; do
           attempt=$(( $attempt + 1 ))
-          result=$(curl -Is 'http://localhost:8080/jira/' | grep 'Location')
+          local JiraBaseUrl=$(getProperty "jira_baseurl")
+          result=$(curl -Is "https://${JiraBaseUrl}/jira/" | grep 'Location')
           if grep -q '/jira/secure/SetupMode!default.jspa' <<< $result ; then
             echo "  # Jira Websetup is ready"
             break
@@ -84,7 +86,7 @@ function setupJira(){
       fi
 
        echo "  # Calling Jira import"
-       curl -F filename="jirabackup.zip" -F license="$importJiraLicens" -F outgoingEmail="false" -F downgradeAnyway="False" "http://localhost:8080/jira/secure/SetupImport.jspa"
+       curl -F filename="jirabackup.zip" -F license="$importJiraLicens" -F outgoingEmail="false" -F downgradeAnyway="False" "https://${JiraBaseUrl}/jira/secure/SetupImport.jspa"
 
       waitForJiraLogin
 
@@ -96,7 +98,7 @@ function setupJira(){
 
         if [ ! -z "$JiraBaseUrl" ]; then
           echo "  # Updating Jira Base URL to $JiraBaseUrl"
-          local update_jira_baseurl="update propertystring, propertyentry  set propertyvalue='$JiraBaseUrl'  where propertyentry.id=propertystring.id and propertyentry.property_key = 'jira.baseurl';"
+          local update_jira_baseurl="update propertystring, propertyentry  set propertyvalue=$JiraBaseUrl  where propertyentry.id=propertystring.id and propertyentry.property_key = 'jira.baseurl';"
           exec_mysql_sql "$update_jira_baseurl" "$JiraDbName"
         fi
         echo "  # Restarting Jira for import to take effect"

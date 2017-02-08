@@ -109,6 +109,10 @@ if [ $param1 == "wwig" ];then
   else
     echo " - Analyzing file $STACI_HOME/conf/staci.properties"
   fi
+  echo
+  echo "Here is what the compose file looks like:"
+  cat compose/docker-compose.yml
+  echo
   exit 0;
 fi
 

@@ -61,7 +61,7 @@ function getOpenStackFlags(){
 function getDMFlags(){
 
     local provider=$1
-    if [ "$provider" == "local" ];then
+    if [ "$provider" == "none" ];then
         echo "local"
     elif [ "$provider" == "openstack" ];then
         getOpenStackFlags
@@ -95,7 +95,9 @@ function createSwarm(){
     local start_crowd=$(getProperty "start_crowd")
     local start_bitbucket=$(getProperty "start_bitbucket")
     local start_crucible=$(getProperty "start_crucible")
-
+    local start_jenkins=$(getProperty "start_jenkins")
+    local start_artifactory=$(getProperty "start_artifactory")
+    local start_haproxy=$(getProperty "start_haproxy")
     # Get the node prefix
     local node_prefix=$(getProperty "clusterNodePrefix")
 
@@ -129,6 +131,15 @@ function createSwarm(){
     fi
     if [ "$start_crucible" == "1" ];then
         createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix" "crucible"
+    fi
+    if [ "$start_jenkins" == "1" ];then
+        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix" "jenkins"
+    fi
+    if [ "$start_artifactory" == "1" ];then
+        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix" "artifactory"
+    fi
+    if [ "$start_haproxy" == "1" ];then
+        createDMInstance "$provider" "$dmflags" "1" "1" "$node_prefix" "haproxy"
     fi
 }
 

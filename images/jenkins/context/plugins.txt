@@ -1,0 +1,21 @@
+# Job DSL plugin for generating pipeline jobs
+job-dsl:1.45
+
+# Git plugins and dependencies
+github:1.18.2
+github-api:1.75
+git:2.4.4
+git-client:1.19.6
+credentials:1.28
+icon-shim:2.0.3
+plain-credentials:1.1
+scm-api:1.2
+token-macro:1.12.1
+
+# Build flow
+build-flow-plugin:0.18
+buildgraph-view:1.2
+
+# Various, without dependencies
+copyartifact:1.38
+pretested-integration:2.4.0
