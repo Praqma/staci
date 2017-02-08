@@ -1,6 +1,5 @@
 #!/bin/bash
 source $STACI_HOME/functions/tools.f
-source $STACI_HOME/functions/haproxy_setup.f
 
 # Set version of images
 version=$(getProperty "imageVersion")
@@ -25,8 +24,6 @@ cluster=$(getProperty "createCluster")
 provider_type=$(getProperty "provider_type")
 
 # Printing version and header
-
-setupHaproxy
 
 cat << EOF
 version: '2'

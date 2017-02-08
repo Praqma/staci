@@ -37,6 +37,7 @@ crusible_contextpath:/crucible
 crucible_username:crucibledbuser
 crucible_password:cruciblepass
 crucible_database_name:crucibledb
+crucible_baseurl:crucible.example.com
 
 # MySQL section
 mysql_root_pass:pass_word
@@ -48,11 +49,13 @@ bitbucket_contextpath:/bitbucket
 bitbucket_username:bitbucketdbuser
 bitbucket_password:bitbucketpass
 bitbucket_database_name:bitbucketdb
+bitbucket_baseurl:bitbucket.example.com
 
 # Crowd section
 crowd_username:crowddbuser
 crowd_password:crowdpass
 crowd_database_name:crowddb
+crowd_baseurl:crowd.example.com
 
 # Jira section
 jira_contextpath:/jira
@@ -74,6 +77,7 @@ bamboo_contextpath:/bamboo
 bamboo_username:bamboouser
 bamboo_password:bamboopass
 bamboo_database_name:bamboodb
+bamboo_baseurl:bamboo.example.com
 
 # Confluence section
 confluence_contextpath:/confluence
@@ -83,12 +87,15 @@ confluence_database_name:confluencedb
 confluence_xms:512m
 confluence_xmx:768m
 confluence_session_cookie_name:confluencesession
+confluence_baseurl:confluence.example.com
 
 #jenkins section
 jenkins_contextpath:/jenkins
+jenkins_baseurl:jenkins.example.com
 
 #artifactory section
 artifactory_contextpath:/artifactory
+artifactory_baseurl:artifactory.example.com
 
 #haproxy section
 haproxy_contextpath:/haproxy

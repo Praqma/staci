@@ -134,8 +134,14 @@ function installStaci() {
   echo " - Autosetup preparing"
    setJiraDatabaseConnection > $STACI_HOME/images/jira/context/dbconfig.xml
 
-  echo "
- - Building images"
+  
+  #Prepare HAProxy settings and files
+  source functions/haproxy_ssl_setup.f
+  setupHaproxySSLcrt
+  
+  ./bin/generate_haproxy_cfg.sh > ./images/haproxy/context/haproxy.cfg 
+
+  echo " - Building images"
   buildAll
 
   # Generate a new compose yml, and put it in the compose folder

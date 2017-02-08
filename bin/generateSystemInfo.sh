@@ -3,6 +3,7 @@ source $STACI_HOME/functions/tools.f
 
 # Set version of images
 version=$(getProperty "imageVersion")
+jenkinsSecKey=$(docker exec jenkins /bin/bash -c "cat /var/jenkins_home/secrets/initialAdminPassword")
 
 # Find out what to start
 start_mysql=$(getProperty "start_mysql")
@@ -87,6 +88,16 @@ cat << EOF
     document.getElementById('crucible').style.display = 'none';
 EOF
 fi
+if [ "$start_jenkins" == "1" ]; then
+cat << EOF
+    document.getElementById('jenkins').style.display = 'none';
+EOF
+fi
+if [ "$start_artifactory" == "1" ]; then
+cat << EOF
+    document.getElementById('artifactory').style.display = 'none';
+EOF
+fi
 cat << EOF
 
     document.getElementById('info').style.display = 'none';
@@ -136,7 +147,16 @@ cat << EOF
   <a href="#" onClick="showElement('crowd');">Crowd</a> |
 EOF
 fi
-
+if [ "$start_jenkins" == "1" ]; then
+cat << EOF
+  <a href="#" onClick="showElement('jenkins');">Jenkins</a> |
+EOF
+fi
+if [ "$start_artifactory" == "1" ]; then
+cat << EOF
+  <a href="#" onClick="showElement('artifactory');">Artifactory</a> |
+EOF
+fi
 if [ "$start_mysql" == "1" ]; then
 cat << EOF
   <a href="#" onClick="showElement('atlassiandb');">Database</a> -
@@ -159,18 +179,17 @@ if [ "$start_jira" == "1" ]; then
    jira_baseurl=$(getProperty "jira_baseurl")
 
    if [ "$cluster" == "1" ]; then
-      jiraip=$(docker-machine ip "$node_prefix-jira")
+      jiraip=$(docker-machine ip "$node_prefix-jira"):8080
    elif [ ! "$provider_type" == "none" ]; then
-#      jiraip=$(docker-machine ip "$node_prefix-Atlassian")
-      jiraip=$(jira_baseurl)
-   else
-      jiraip="localhost"
+      jiraip=$(docker-machine ip "$node_prefix-Atlassian"):8080
+   else   
+      jiraip=${jira_baseurl}
    fi
 
 cat << EOF
 <div id="jira" class="settingsdiv">
   <b>Use the following to setup Jira db connection</b>
-  <a href="http://$jiraip:8080$jira_contextpath" target="_blank">Jira link</a>
+  <a href="http://${jiraip}${jira_contextpath}" target="_blank">Jira link</a>
   <ul>
     <li>Database Type : MySQL</li>
     <li>Hostname : $atlassiandb_ip</li>
@@ -187,26 +206,25 @@ if [ "$start_crucible" == "1" ]; then
   crucibleContextPath=$(getProperty "crusible_contextpath")
 
    if [ "$cluster" == "1" ]; then
-      crucibleip=$(docker-machine ip "$node_prefix-crucible")
-      jiraip=$(docker-machine ip "$node_prefix-jira")
+      crucibleip=$(docker-machine ip "$node_prefix-crucible"):8060
+      jiraip=$(docker-machine ip "$node_prefix-jira"):8080
    elif [ ! "$provider_type" == "none" ]; then
-      crucibleip=$(docker-machine ip "$node_prefix-Atlassian")
-      jiraip=$(docker-machine ip "$node_prefix-Atlassian")
+      crucibleip=$(docker-machine ip "$node_prefix-Atlassian"):8060
+      jiraip=$(docker-machine ip "$node_prefix-Atlassian"):8080
    else
-      crucibleip="localhost"
-      jiraip="localhost"
+      jiraip=$(getProperty "jira_baseurl")
+      crucibleip=$(getProperty "crucible_baseurl")
    fi
 
 cat << EOF
 <div id="crucible" class="settingsdiv">
   <b>Use the following to setup Crucible db connection</b>
-  <a href="http://$crucibleip:8060$crucibleContextPath" target="_blank">Crucible link</a>
-
+  <a href="http://${crucibleip}${crucibleContextPath}" target="_blank">Crucible link</a>
   <ul>
-    <li>Crucible link : http://$crucibleip:8060$crucibleContextPath</li>
+    <li>Crucible link : http://${crucibleip}${crucibleContextPath}</li>
 EOF
   if [ "$start_jira" == "1" ]; then
-     echo "<li>Link to Jira : http://$jiraip:8080$jira_contextpath</li>"
+     echo "<li>Link to JIRA : http://${jiraip}${jira_contextpath}</li>"
   fi
 cat << EOF
   </ul>
@@ -221,17 +239,17 @@ if [ "$start_confluence" == "1" ]; then
    confluence_contextpath=$(getProperty "confluence_contextpath")
 
    if [ "$cluster" == "1" ]; then
-      confluenceip=$(docker-machine ip "$node_prefix-confluence")
+      confluenceip=$(docker-machine ip "$node_prefix-confluence"):8090
    elif [ ! "$provider_type" == "none" ]; then
-      confluenceip=$(docker-machine ip "$node_prefix-Atlassian")
+      confluenceip=$(docker-machine ip "$node_prefix-Atlassian"):8090
    else
-      confluenceip="localhost"
+      confluenceip=$(getProperty "confluence_baseurl")
    fi
 
 cat << EOF
 <div id="confluence" class="settingsdiv">
   <b>Use the following to setup Confluence db connection</b>
-  <a href="http://$confluenceip:8090$confluence_contextpath" target="_blank">Confluence link</a>
+  <a href="http://${confluenceip}${confluence_contextpath}" target="_blank">Confluence link</a>
   <ul>
     <li>Install type : Production install</li>
     <li>Database Type : MySQL</li>
@@ -252,17 +270,17 @@ if [ "$start_bamboo" == "1" ]; then
    bamboo_contextpath=$(getProperty "bamboo_contextpath")
 
    if [ "$cluster" == "1" ]; then
-      bambooip=$(docker-machine ip "$node_prefix-bamboo")
+      bambooip=$(docker-machine ip "$node_prefix-bamboo"):8085
    elif [ ! "$provider_type" == "none" ]; then
-      bambooip=$(docker-machine ip "$node_prefix-Atlassian")
+      bambooip=$(docker-machine ip "$node_prefix-Atlassian"):8085
    else
-      bambooip="localhost"
+      bambooip=$(getProperty "bamboo_baseurl")
    fi
 
 cat << EOF
 <div id="bamboo" class="settingsdiv">
   <b>Use the following to setup Bamboo db connection</b>
-  <a href="http://$bambooip:8085$bamboo_contextpath" target="_blank">Bamboo link</a>
+  <a href="http://${bambooip}${bamboo_contextpath}" target="_blank">Bamboo link</a>
   <ul>
     <li>install type : Production install</li>
     <li>Select database : External MySQL</li>
@@ -283,17 +301,17 @@ if [ "$start_bitbucket" == "1" ]; then
    bitbucket_contextpath=$(getProperty "bitbucket_contextpath")
 
    if [ "$cluster" == "1" ]; then
-      bitbucketip=$(docker-machine ip "$node_prefix-bitbucket")
+      bitbucketip=$(docker-machine ip "$node_prefix-bitbucket"):7990
    elif [ ! "$provider_type" == "none" ]; then
-      bitbucketip=$(docker-machine ip "$node_prefix-Atlassian")
+      bitbucketip=$(docker-machine ip "$node_prefix-Atlassian"):7990
    else
-      bitbucketip="localhost"
+      bitbucketip=$(getProperty "bitbucket_baseurl")
    fi
 
 cat << EOF
 <div id="bitbucket" class="settingsdiv">
   <b>Use the following to setup Bitbucket db connection</b>
-  <a href="http://$bitbucketip:7990$bitbucket_contextpath" target="_blank">Bitbucket link</a>
+  <a href="http://${bitbucketip}${bitbucket_contextpath}" target="_blank">Bitbucket link</a>
   <ul>
     <li>Database : External</li>
     <li>Database type : MySQL</li>
@@ -313,18 +331,17 @@ if [ "$start_crowd" == "1" ]; then
    crowd_database=$(getProperty "crowd_database_name")
 
    if [ "$cluster" == "1" ]; then
-      crowdip=$(docker-machine ip "$node_prefix-crowd")
+      crowdip=$(docker-machine ip "$node_prefix-crowd"):8095
    elif [ ! "$provider_type" == "none" ]; then
-      crowdip=$(docker-machine ip "$node_prefix-Atlassian")
+      crowdip=$(docker-machine ip "$node_prefix-Atlassian"):8095
    else
-      crowdip="localhost"
+      crowdip=$(getProperty "crowd_baseurl")
    fi
 
 cat << EOF
 <div id="crowd" class="settingsdiv">
   <b>Use the following to setup Crowd db connection</b>
-  <a href="http://$crowdip:8095/crowd" target="_blank">Crowd link</a>
-
+  <a href="http://${crowdip}/crowd" target="_blank">Crowd link</a>
   <ul>
     <li>Install type : New installation</li>
     <li>Database type : JDBC connection</li>
@@ -333,6 +350,46 @@ cat << EOF
     <li>User name : $crowd_username</li>
     <li>Password : $crowd_password</li>
     <li>Overwrite Existing data : Yes, if you want</li>
+  </ul>
+</div>
+EOF
+fi
+if [ "$start_jenkins" == "1" ]; then
+   if [ "$cluster" == "1" ]; then
+      jenkinsip=$(docker-machine ip "$node_prefix-jenkins"):8080
+   elif [ ! "$provider_type" == "none" ]; then
+      jenkinsip=$(docker-machine ip "$node_prefix-Atlassian"):8080
+   else
+      jenkinsip=$(getProperty "jenkins_baseurl")
+   fi
+
+cat << EOF
+<div id="jenkins" class="settingsdiv">
+  <b>Use the following to login to Jenkins</b>
+  <a href="http://${jenkinsip}" target="_blank">Jenkins link</a>
+  <ul>
+    <li>Install type : New installation</li>
+    <li>Jenkins Secret key: ${jenkinsSecKey}</li>
+  </ul>
+</div>
+EOF
+fi
+
+if [ "$start_artifactory" == "1" ]; then
+   if [ "$cluster" == "1" ]; then
+      artifactoryip=$(docker-machine ip "$node_prefix-artifactory"):8080
+   elif [ ! "$provider_type" == "none" ]; then
+      artifactoryip=$(docker-machine ip "$node_prefix-artifactory"):8080
+   else
+      artifactoryip=$(getProperty "artifactory_baseurl")
+   fi
+cat << EOF
+<div id="artifactory" class="settingsdiv">
+  <b>Use the following to login to artifactory</b>
+  <a href="http://${artifactoryip}/artifactory" target="_blank">artifactory link</a>
+
+  <ul>
+    <li>Install type : New installation</li>
   </ul>
 </div>
 EOF
