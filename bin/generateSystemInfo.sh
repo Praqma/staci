@@ -12,7 +12,9 @@ start_bamboo=$(getProperty "start_bamboo")
 start_crowd=$(getProperty "start_crowd")
 start_bitbucket=$(getProperty "start_bitbucket")
 start_crucible=$(getProperty "start_crucible")
-
+start_jenkins=$(getProperty "start_jenkins")
+start_artifactory=$(getProperty "start_artifactory")
+start_haproxy=$(getProperty "start_haproxy")
 cluster=$(getProperty "createCluster")
 provider_type=$(getProperty "provider_type")
 
@@ -154,11 +156,13 @@ if [ "$start_jira" == "1" ]; then
    jira_password=$(getProperty "jira_password")
    jira_database=$(getProperty "jira_database_name")
    jira_contextpath=$(getProperty "jira_contextpath")
+   jira_baseurl=$(getProperty "jira_baseurl")
 
    if [ "$cluster" == "1" ]; then
       jiraip=$(docker-machine ip "$node_prefix-jira")
    elif [ ! "$provider_type" == "none" ]; then
-      jiraip=$(docker-machine ip "$node_prefix-Atlassian")
+#      jiraip=$(docker-machine ip "$node_prefix-Atlassian")
+      jiraip=$(jira_baseurl)
    else
       jiraip="localhost"
    fi

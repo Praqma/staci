@@ -204,16 +204,18 @@ function installStaci() {
   echo " - Starting Atlassian stack, using docker-compose"
   docker-compose -f compose/docker-compose.yml up -d > $STACI_HOME/logs/docker-compose.log 2>&1
 
-sleep 10
+  sleep 10
 
   # Setupjira from backup or blanc.
   setupJira 
 
+  echo "Generating system info page ..."
+  sleep 2
   # Generate System Information html
   ./bin/generateSystemInfo.sh > $STACI_HOME/SystemInfo.html
 
-  echo Install complete
-  echo Open $STACI_HOME/SystemInfo.html in a browser to continue using the tool stack
+  echo "Install complete"
+  echo "Open ${STACI_HOME}/SystemInfo.html in a browser to continue using the tool stack"
 
   # Open tools and System Information websites
   use_browser=$(getProperty "use_browser")

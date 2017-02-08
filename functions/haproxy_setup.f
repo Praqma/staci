@@ -24,5 +24,6 @@ function setupHaproxy(){
     # Combine /tmp/server.key and /tmp/server.crt into a single server.pem file. 
     
     cat /tmp/server.crt /tmp/server.key > $volume_dir/haproxy/haproxy.pem
-   
+    sudo cp /tmp/server.crt /usr/local/share/ca-certificates/.
+    sudo update-ca-certificates > /dev/null  
 }
