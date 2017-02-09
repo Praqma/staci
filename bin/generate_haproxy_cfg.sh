@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# SCRIPT_PATH=$(dirname $0)
+# pushd $(pwd) > /dev/null
+# cd $SCRIPT_PATH
+
+# STACI_HOME=../${SCRIPT_PATH}
+
 source $STACI_HOME/functions/tools.f
 
 # Find out what to include
@@ -32,9 +38,12 @@ global
 defaults
         log global
         mode http
-        default-server init-addr libc,none
+        # we are using docker-compose "depend_on", so there is no need to use libc hack.
+        # default-server init-addr libc,none
         option httplog
         option dontlognull
+        option httpclose
+	option forwardfor
         timeout connect 5000
         timeout client 10000
         timeout server 10000
@@ -52,55 +61,30 @@ frontend http-in
         acl crowd hdr(host) -i crowd.${DOMAIN_NAME}
         acl bitbucket hdr(host) -i bitbucket.${DOMAIN_NAME}
         acl crucible hdr(host) -i crucible.${DOMAIN_NAME}
-
-        option httplog
 EOF
 
-#conditional selection of backends
+# conditional selection of backends
 
-if [ "$start_jenkins" == "1" ]; then
-cat << EOF
-        use_backend jenkins if jenkins
-EOF
-fi
-if [ "$start_artifactory" == "1" ]; then
-cat << EOF
-        use_backend artifactory if artifactory
-EOF
-fi
-if [ "$start_jira" == "1" ]; then
-cat << EOF
-        use_backend jira if jira
-EOF
-fi
-if [ "$start_confluence" == "1" ]; then
-cat << EOF
-        use_backend confluence if confluence
-EOF
-fi
-if [ "$start_bamboo" == "1" ]; then
-cat << EOF
-        use_backend bamboo if bamboo
-EOF
-fi
-if [ "$start_crowd" == "1" ]; then
-cat << EOF
-        use_backend crowd if crowd
-EOF
-fi
-if [ "$start_bitbucket" == "1" ]; then
-cat << EOF
-        use_backend bitbucket if bitbucket
-EOF
-fi
-if [ "$start_crucible" == "1" ]; then
-cat << EOF
-        use_backend crucible if crucible
-EOF
-fi
+for service in start_jenkins start_artifactory start_jira start_confluence start_bamboo start_crowd start_bitbucket start_crucible ; do
+  # echo "Processing $service"
+  if [ ! -z "${!service+x}" ] ; then
+    if [ ${!service} -eq 1 ] ; then
+      BACKEND_STRING=$(echo -e "\t use_backend ${service} if ${service}"| sed 's/start_//g')
+      # echo -e $BACKEND_STRING
+      # since output of this script is being appended to a conf file, even the output of echo will  appear in the target file
+      # So no need of cat EOF here
+      echo -e "\t use_backend ${service} if ${service}"| sed 's/start_//g'
+    fi
+  fi
+done
+
+
+# References:
+# - http://stackoverflow.com/questions/2634590/bash-script-variable-inside-variable
+# - http://stackoverflow.com/questions/3601515/how-to-check-if-a-variable-is-set-in-bash
+
 
 cat << EOF
-
 frontend https-in
         bind *:443 ssl crt /var/atlassian/haproxy/haproxy.pem
         reqadd X-Forwarded-Proto:\ https
@@ -116,62 +100,28 @@ frontend https-in
         acl crucible hdr(host) -i crucible.${DOMAIN_NAME}
 EOF
 
-## figure out which one to use
-if [ "$start_jenkins" == "1" ]; then
-cat << EOF
-        use_backend jenkins if jenkins
-EOF
-fi
+#conditional selection of backends
+for service in start_jenkins start_artifactory start_jira start_confluence start_bamboo start_crowd start_bitbucket start_crucible ; do
+  if [ ! -z ${!service+x} ]; then
+    if [ ${!service} -eq 1 ] ; then
+      BACKEND_STRING=$(echo -e "\t use_backend ${service} if ${service}"| sed 's/start_//g')
+      # echo -e $BACKEND_STRING
+      # since output of this script is being appended to a conf file, even the output of echo will  appear in the target file
+      # So no need of cat EOF here
+      echo -e "\t use_backend ${service} if ${service}"| sed 's/start_//g'
+    fi
+  fi
+done
 
-if [ "$start_artifactory" == "1" ]; then
-cat << EOF
-        use_backend artifactory if artifactory
-EOF
-fi
+# References:
+# - http://stackoverflow.com/questions/2634590/bash-script-variable-inside-variable
+# - http://stackoverflow.com/questions/3601515/how-to-check-if-a-variable-is-set-in-bash
 
-if [ "$start_jira" == "1" ]; then
-cat << EOF
-        use_backend jira if jira
-EOF
-fi
-
-if [ "$start_confluence" == "1" ]; then
-cat << EOF
-        use_backend confluence if confluence
-EOF
-fi
-
-if [ "$start_bamboo" == "1" ]; then
-cat << EOF
-        use_backend bamboo if bamboo
-EOF
-fi
-
-if [ "$start_crowd" == "1" ]; then
-cat << EOF
-        use_backend crowd if crowd
-EOF
-fi
-
-if [ "$start_bitbucket" == "1" ]; then
-cat << EOF
-        use_backend bitbucket if bitbucket
-EOF
-fi
-
-if [ "$start_crucible" == "1" ]; then
-cat << EOF
-        use_backend crucible if crucible
-EOF
-fi
 
 if [ "$start_bitbucket" == "1" ]; then
 cat << EOF
 backend bitbucket
- 	mode http
         redirect scheme https if !{ ssl_fc }
-        option httpclose
-        option forwardfor
         server bitbucket bitbucket:7990 check
 EOF
 fi
@@ -179,10 +129,7 @@ fi
 if [ "$start_crowd" == "1" ]; then
 cat << EOF
 backend crowd
-        mode http
         redirect scheme https if !{ ssl_fc }
-        option httpclose
-        option forwardfor
         server crowd crowd:8095 check
 EOF
 fi
@@ -190,40 +137,31 @@ fi
 if [ "$start_crucible" == "1" ]; then
 cat << EOF
 backend crucible
-        mode http
         redirect scheme https if !{ ssl_fc }
-        option httpclose
-        option forwardfor
         server crucible crucible:8060 check
 EOF
 fi
+
 if [ "$start_jira" == "1" ]; then
 cat << EOF
 backend jira
-        mode http
         redirect scheme https if !{ ssl_fc }
-        option httpclose
-        option forwardfor
         server jira jira:8080 check
 EOF
 fi
+
 if [ "$start_confluence" == "1" ]; then
 cat << EOF
 backend confluence
-        mode http
         redirect scheme https if !{ ssl_fc }
-        option httpclose
-        option forwardfor
         server confluence confluence:8090 check
 EOF
 fi
+
 if [ "$start_bamboo" == "1" ]; then
 cat << EOF
 backend bamboo
-        mode http
         redirect scheme https if !{ ssl_fc }
-        option httpclose
-        option forwardfor
         server bamboo bamboo:8085 check
 EOF
 fi
@@ -231,20 +169,17 @@ fi
 if [ "$start_jenkins" == "1" ]; then
 cat << EOF
 backend jenkins
-        mode http
         redirect scheme https if !{ ssl_fc }
-        option httpclose
-        option forwardfor
         server jenkins jenkins:8080 check
 EOF
 fi
+
 if [ "$start_artifactory" == "1" ]; then
 cat << EOF
 backend artifactory
-        mode http
         redirect scheme https if !{ ssl_fc }
-        option httpclose
-        option forwardfor
         server artifactory artifactory:8080
 EOF
 fi
+
+# popd > /dev/null
