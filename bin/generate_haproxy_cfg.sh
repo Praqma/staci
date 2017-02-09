@@ -17,8 +17,8 @@ start_haproxy=$(getProperty "start_haproxy")
 # Here we can use some function to get the actual domain name from the staci.properties file,
 # and use it to build our haprpoxy.cfg
 
-DOMAIN_NAME='example.com'
-
+# DOMAIN_NAME='example.com'
+DOMAIN_NAME=$(getProperty "org_domain_name")
 
 # Printing version and header
 
@@ -55,7 +55,9 @@ frontend http-in
 
         option httplog
 EOF
-        #conditional selection of backends
+
+#conditional selection of backends
+
 if [ "$start_jenkins" == "1" ]; then
 cat << EOF
         use_backend jenkins if jenkins
@@ -98,6 +100,7 @@ EOF
 fi
 
 cat << EOF
+
 frontend https-in
         bind *:443 ssl crt /var/atlassian/haproxy/haproxy.pem
         reqadd X-Forwarded-Proto:\ https
@@ -112,42 +115,50 @@ frontend https-in
         acl bitbucket hdr(host) -i bitbucket.${DOMAIN_NAME}
         acl crucible hdr(host) -i crucible.${DOMAIN_NAME}
 EOF
-        ## figure out which one to use
-	if [ "$start_jenkins" == "1" ]; then
+
+## figure out which one to use
+if [ "$start_jenkins" == "1" ]; then
 cat << EOF
         use_backend jenkins if jenkins
 EOF
 fi
+
 if [ "$start_artifactory" == "1" ]; then
 cat << EOF
         use_backend artifactory if artifactory
 EOF
 fi
+
 if [ "$start_jira" == "1" ]; then
 cat << EOF
         use_backend jira if jira
 EOF
 fi
+
 if [ "$start_confluence" == "1" ]; then
 cat << EOF
         use_backend confluence if confluence
 EOF
 fi
+
 if [ "$start_bamboo" == "1" ]; then
 cat << EOF
         use_backend bamboo if bamboo
 EOF
 fi
+
 if [ "$start_crowd" == "1" ]; then
 cat << EOF
         use_backend crowd if crowd
 EOF
 fi
+
 if [ "$start_bitbucket" == "1" ]; then
 cat << EOF
         use_backend bitbucket if bitbucket
 EOF
 fi
+
 if [ "$start_crucible" == "1" ]; then
 cat << EOF
         use_backend crucible if crucible
@@ -164,6 +175,7 @@ backend bitbucket
         server bitbucket bitbucket:7990 check
 EOF
 fi
+
 if [ "$start_crowd" == "1" ]; then
 cat << EOF
 backend crowd
@@ -174,6 +186,7 @@ backend crowd
         server crowd crowd:8095 check
 EOF
 fi
+
 if [ "$start_crucible" == "1" ]; then
 cat << EOF
 backend crucible
