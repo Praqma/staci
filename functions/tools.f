@@ -5,7 +5,7 @@
 # 1: name of property to retrieve
 function getProperty(){
     local property=$1
-    echo $(cat $STACI_HOME/conf/staci.properties|grep "$property"|cut -d":" -f 2-)
+    echo $(grep -v \# $STACI_HOME/conf/staci.properties | grep ^"$property" | cut -d ":" -f 2-)
 }
 
 # Extracts a property from an OpenStack property file
