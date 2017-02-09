@@ -291,7 +291,9 @@ else
     cluster_opts=''
   else
     cluster_opts='    volumes:
-      - '$volume_dir'/artifactory:/var/atlassian/artifactory'
+      - '$volume_dir'/artifactory/backup:/artifactory/backup
+      - '$volume_dir'/artifactory/data:/artifactory/data
+      - '$volume_dir'/artifactory/logs:/artifactory/logs'
   fi
 fi
 
