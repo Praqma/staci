@@ -326,6 +326,50 @@ cat << EOF
     image: staci/haproxy:$version
     container_name: haproxy
     hostname: haproxy
+    depends_on:
+       - atlassaindb
+EOF
+if [ "$start_jenkins" == "1" ]; then
+cat << EOF
+       - jenkins        
+EOF
+fi
+if [ "$start_artifactory" == "1" ]; then
+cat << EOF
+       - artifactory
+EOF
+fi
+if [ "$start_jira" == "1" ]; then
+cat << EOF
+        - jira
+EOF
+fi
+if [ "$start_confluence" == "1" ]; then
+cat << EOF
+        - confluence
+EOF
+fi
+if [ "$start_bamboo" == "1" ]; then
+cat << EOF
+        - bamboo
+EOF
+fi
+if [ "$start_crowd" == "1" ]; then
+cat << EOF
+        - crowd
+EOF
+fi
+if [ "$start_bitbucket" == "1" ]; then
+cat << EOF
+        - bitbucket
+EOF
+fi
+if [ "$start_crucible" == "1" ]; then
+cat << EOF
+        - crucible
+EOF
+fi
+cat << EOF
     ports:
       - "443:443"
       - "80:80"
