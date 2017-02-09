@@ -14,6 +14,12 @@ start_jenkins=$(getProperty "start_jenkins")
 start_artifactory=$(getProperty "start_artifactory")
 start_haproxy=$(getProperty "start_haproxy")
 
+# Here we can use some function to get the actual domain name from the staci.properties file,
+# and use it to build our haprpoxy.cfg
+
+DOMAIN_NAME='example.com'
+
+
 # Printing version and header
 
 cat << EOF
@@ -38,14 +44,14 @@ frontend http-in
         bind *:80
 
         #define samples and matches in ACLs 
-        acl jenkins hdr(host) -i jenkins.example.com
-        acl artifactory hdr(host) -i artifactory.example.com
-        acl jira hdr(host) -i jira.example.com
-        acl confluence hdr(host) -i confluence.example.com
-        acl bamboo hdr(host) -i bamboo.example.com
-        acl crowd hdr(host) -i crowd.example.com
-        acl bitbucket hdr(host) -i bitbucket.example.com
-        acl crucible hdr(host) -i crucible.example.com
+        acl jenkins hdr(host) -i jenkins.${DOMAIN_NAME}
+        acl artifactory hdr(host) -i artifactory.${DOMAIN_NAME}
+        acl jira hdr(host) -i jira.${DOMAIN_NAME}
+        acl confluence hdr(host) -i confluence.${DOMAIN_NAME}
+        acl bamboo hdr(host) -i bamboo.${DOMAIN_NAME}
+        acl crowd hdr(host) -i crowd.${DOMAIN_NAME}
+        acl bitbucket hdr(host) -i bitbucket.${DOMAIN_NAME}
+        acl crucible hdr(host) -i crucible.${DOMAIN_NAME}
 
         option httplog
 EOF
@@ -97,14 +103,14 @@ frontend https-in
         reqadd X-Forwarded-Proto:\ https
 
         # Define hosts
-        acl jenkins hdr(host) -i jenkins.example.com
-        acl artifactory hdr(host) -i artifactory.example.com
-        acl jira hdr(host) -i jira.example.com
-        acl confluence hdr(host) -i confluence.example.com
-        acl bamboo hdr(host) -i bamboo.example.com
-        acl crowd hdr(host) -i crowd.example.com
-        acl bitbucket hdr(host) -i bitbucket.example.com
-        acl crucible hdr(host) -i crucible.example.com
+        acl jenkins hdr(host) -i jenkins.${DOMAIN_NAME}
+        acl artifactory hdr(host) -i artifactory.${DOMAIN_NAME}
+        acl jira hdr(host) -i jira.${DOMAIN_NAME}
+        acl confluence hdr(host) -i confluence.${DOMAIN_NAME}
+        acl bamboo hdr(host) -i bamboo.${DOMAIN_NAME}
+        acl crowd hdr(host) -i crowd.${DOMAIN_NAME}
+        acl bitbucket hdr(host) -i bitbucket.${DOMAIN_NAME}
+        acl crucible hdr(host) -i crucible.${DOMAIN_NAME}
 EOF
         ## figure out which one to use
 	if [ "$start_jenkins" == "1" ]; then
