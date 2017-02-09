@@ -1,9 +1,18 @@
+# REMEMBER: No quotes for any values for variables.
+
 # Version for docker containers
 imageVersion:0.1
 
 # Create Cluster 0=false, 1=true
 createCluster:0
 clusterNodePrefix:praqma
+
+
+# org_domain_name
+# This directive sets the domain name to be used throughout staci (install)
+org_domain_name:example.com
+
+
 
 # What to start, 0=no, 1=yes
 start_mysql:1
@@ -37,7 +46,7 @@ crusible_contextpath:/crucible
 crucible_username:crucibledbuser
 crucible_password:cruciblepass
 crucible_database_name:crucibledb
-crucible_baseurl:crucible.example.com
+crucible_baseurl:crucible
 
 # MySQL section
 mysql_root_pass:pass_word
@@ -49,13 +58,13 @@ bitbucket_contextpath:/bitbucket
 bitbucket_username:bitbucketdbuser
 bitbucket_password:bitbucketpass
 bitbucket_database_name:bitbucketdb
-bitbucket_baseurl:bitbucket.example.com
+bitbucket_baseurl:bitbucket
 
 # Crowd section
 crowd_username:crowddbuser
 crowd_password:crowdpass
 crowd_database_name:crowddb
-crowd_baseurl:crowd.example.com
+crowd_baseurl:crowd
 
 # Jira section
 jira_contextpath:/jira
@@ -69,7 +78,7 @@ jira_session_cookie_name:jirasession
 jira_import_backup:
 jira_import_datafolder:
 jira_import_license:
-jira_baseurl:jira.example.com
+jira_baseurl:jira
 
 
 # Bamboo section
@@ -77,7 +86,7 @@ bamboo_contextpath:/bamboo
 bamboo_username:bamboouser
 bamboo_password:bamboopass
 bamboo_database_name:bamboodb
-bamboo_baseurl:bamboo.example.com
+bamboo_baseurl:bamboo
 
 # Confluence section
 confluence_contextpath:/confluence
@@ -87,15 +96,15 @@ confluence_database_name:confluencedb
 confluence_xms:512m
 confluence_xmx:768m
 confluence_session_cookie_name:confluencesession
-confluence_baseurl:confluence.example.com
+confluence_baseurl:confluence
 
 #jenkins section
 jenkins_contextpath:/jenkins
-jenkins_baseurl:jenkins.example.com
+jenkins_baseurl:jenkins
 
 #artifactory section
 artifactory_contextpath:/artifactory
-artifactory_baseurl:artifactory.example.com
+artifactory_baseurl:artifactory
 
 #haproxy section
 haproxy_contextpath:/haproxy
