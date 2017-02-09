@@ -32,14 +32,14 @@ browser_cmd:/usr/bin/google-chrome
 use_browser:1
 
 # Persistent home folder for STACI
-volume_dir:/data/atlassian
+volume_dir:/opt/staci
 
 # Choose which cluster provider to use
 # [none, virtualbox, mesos, openstack, vmwarevsphere]
 provider_type:none
 
 # Backup folder
-backup_folder:/data/atlassian/backup
+backup_folder:/opt/staci/backup
 
 # Crucible section
 crusible_contextpath:/crucible
