@@ -291,7 +291,9 @@ else
     cluster_opts=''
   else
     cluster_opts='    volumes:
-      - '$volume_dir'/artifactory:/var/atlassian/artifactory'
+      - '$volume_dir'/artifactory/backup:/artifactory/backup
+      - '$volume_dir'/artifactory/data:/artifactory/data
+      - '$volume_dir'/artifactory/logs:/artifactory/logs'
   fi
 fi
 
@@ -327,46 +329,46 @@ cat << EOF
     container_name: haproxy
     hostname: haproxy
     depends_on:
-       - atlassaindb
+      - atlassiandb
 EOF
 if [ "$start_jenkins" == "1" ]; then
 cat << EOF
-       - jenkins        
+      - jenkins        
 EOF
 fi
 if [ "$start_artifactory" == "1" ]; then
 cat << EOF
-       - artifactory
+      - artifactory
 EOF
 fi
 if [ "$start_jira" == "1" ]; then
 cat << EOF
-        - jira
+      - jira
 EOF
 fi
 if [ "$start_confluence" == "1" ]; then
 cat << EOF
-        - confluence
+      - confluence
 EOF
 fi
 if [ "$start_bamboo" == "1" ]; then
 cat << EOF
-        - bamboo
+      - bamboo
 EOF
 fi
 if [ "$start_crowd" == "1" ]; then
 cat << EOF
-        - crowd
+      - crowd
 EOF
 fi
 if [ "$start_bitbucket" == "1" ]; then
 cat << EOF
-        - bitbucket
+      - bitbucket
 EOF
 fi
 if [ "$start_crucible" == "1" ]; then
 cat << EOF
-        - crucible
+      - crucible
 EOF
 fi
 cat << EOF
