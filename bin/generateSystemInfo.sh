@@ -18,6 +18,8 @@ start_artifactory=$(getProperty "start_artifactory")
 start_haproxy=$(getProperty "start_haproxy")
 cluster=$(getProperty "createCluster")
 provider_type=$(getProperty "provider_type")
+domain_name=$(getProperty "org_domain_name")
+
 
 atlassiandb_ip=atlassiandb
 node_prefix=$(getProperty "clusterNodePrefix")
@@ -183,13 +185,13 @@ if [ "$start_jira" == "1" ]; then
    elif [ ! "$provider_type" == "none" ]; then
       jiraip=$(docker-machine ip "$node_prefix-Atlassian"):8080
    else   
-      jiraip=${jira_baseurl}
+      jiraip=${jira_baseurl}.${domain_name}
    fi
 
 cat << EOF
 <div id="jira" class="settingsdiv">
   <b>Use the following to setup Jira db connection</b>
-  <a href="http://${jiraip}${jira_contextpath}" target="_blank">Jira link</a>
+  <a href="http://${jiraip}" target="_blank">Jira link</a>
   <ul>
     <li>Database Type : MySQL</li>
     <li>Hostname : $atlassiandb_ip</li>
@@ -212,8 +214,8 @@ if [ "$start_crucible" == "1" ]; then
       crucibleip=$(docker-machine ip "$node_prefix-Atlassian"):8060
       jiraip=$(docker-machine ip "$node_prefix-Atlassian"):8080
    else
-      jiraip=$(getProperty "jira_baseurl")
-      crucibleip=$(getProperty "crucible_baseurl")
+      jiraip=$(getProperty "jira_baseurl").${domain_name}
+      crucibleip=$(getProperty "crucible_baseurl").${domain_name}
    fi
 
 cat << EOF
@@ -224,7 +226,7 @@ cat << EOF
     <li>Crucible link : http://${crucibleip}${crucibleContextPath}</li>
 EOF
   if [ "$start_jira" == "1" ]; then
-     echo "<li>Link to JIRA : http://${jiraip}${jira_contextpath}</li>"
+     echo "<li>Link to JIRA : http://${jiraip}</li>"
   fi
 cat << EOF
   </ul>
@@ -243,7 +245,7 @@ if [ "$start_confluence" == "1" ]; then
    elif [ ! "$provider_type" == "none" ]; then
       confluenceip=$(docker-machine ip "$node_prefix-Atlassian"):8090
    else
-      confluenceip=$(getProperty "confluence_baseurl")
+      confluenceip=$(getProperty "confluence_baseurl").${domain_name}
    fi
 
 cat << EOF
@@ -274,7 +276,7 @@ if [ "$start_bamboo" == "1" ]; then
    elif [ ! "$provider_type" == "none" ]; then
       bambooip=$(docker-machine ip "$node_prefix-Atlassian"):8085
    else
-      bambooip=$(getProperty "bamboo_baseurl")
+      bambooip=$(getProperty "bamboo_baseurl").${domain_name}
    fi
 
 cat << EOF
@@ -305,7 +307,7 @@ if [ "$start_bitbucket" == "1" ]; then
    elif [ ! "$provider_type" == "none" ]; then
       bitbucketip=$(docker-machine ip "$node_prefix-Atlassian"):7990
    else
-      bitbucketip=$(getProperty "bitbucket_baseurl")
+      bitbucketip=$(getProperty "bitbucket_baseurl").${domain_name}
    fi
 
 cat << EOF
@@ -335,7 +337,7 @@ if [ "$start_crowd" == "1" ]; then
    elif [ ! "$provider_type" == "none" ]; then
       crowdip=$(docker-machine ip "$node_prefix-Atlassian"):8095
    else
-      crowdip=$(getProperty "crowd_baseurl")
+      crowdip=$(getProperty "crowd_baseurl").${domain_name}
    fi
 
 cat << EOF
@@ -360,7 +362,7 @@ if [ "$start_jenkins" == "1" ]; then
    elif [ ! "$provider_type" == "none" ]; then
       jenkinsip=$(docker-machine ip "$node_prefix-Atlassian"):8080
    else
-      jenkinsip=$(getProperty "jenkins_baseurl")
+      jenkinsip=$(getProperty "jenkins_baseurl").${domain_name}
    fi
 
 cat << EOF
@@ -381,12 +383,12 @@ if [ "$start_artifactory" == "1" ]; then
    elif [ ! "$provider_type" == "none" ]; then
       artifactoryip=$(docker-machine ip "$node_prefix-artifactory"):8080
    else
-      artifactoryip=$(getProperty "artifactory_baseurl")
+      artifactoryip=$(getProperty "artifactory_baseurl").${domain_name}
    fi
 cat << EOF
 <div id="artifactory" class="settingsdiv">
   <b>Use the following to login to artifactory</b>
-  <a href="http://${artifactoryip}/artifactory" target="_blank">artifactory link</a>
+  <a href="http://${artifactoryip}" target="_blank">artifactory link</a>
 
   <ul>
     <li>Install type : New installation</li>
