@@ -1,11 +1,12 @@
 function waitForJiraLogin(){
         local isRunning=false
+        local domain_name=$(getProperty "org_domain_name")
         # Is jira loginscreen ready ?
         attempt=0
         local JiraBaseUrl=$(getProperty "jira_baseurl")
         while [ $attempt -le 3600 ]; do
           attempt=$(( $attempt + 1 ))
-          result=$(curl -Is "https://${JiraBaseUrl}/jira/"| egrep "HTTP/1.1 302 Found | HTTP/1.1 202 OK")
+          result=$(curl -kIs "https://${JiraBaseUrl}.${domain_name}"| grep -E "(HTTP/1.1 302 Found|HTTP/1.1 202 OK)")
           if [ ! -z "$result" ] ; then
             echo "  # Jira Loginscreen is ready"
             isRunning=true
@@ -24,7 +25,7 @@ function waitForJiraLogin(){
 function waitForJiraWebSetup(){
       # Is Jira started ?
       status=$(docker inspect -f {{.State.Running}} jira 2>&1)
-
+      local domain_name=$(getProperty "org_domain_name")
       # Is Jira ready ? 
       if [ "$status" == "true" ];then
         echo " - Container jira is active, waiting to be ready"
@@ -43,9 +44,10 @@ function waitForJiraWebSetup(){
         attempt=0
         while [ $attempt -le 240 ]; do
           attempt=$(( $attempt + 1 ))
+          echo
           local JiraBaseUrl=$(getProperty "jira_baseurl")
-          result=$(curl -Is "https://${JiraBaseUrl}/jira/" | grep 'Location')
-          if grep -q '/jira/secure/SetupMode!default.jspa' <<< $result ; then
+          result=$(curl -kIs "https://${JiraBaseUrl}.${domain_name}" | grep 'Location')
+          if grep -q '/secure/SetupMode!default.jspa' <<< $result ; then
             echo "  # Jira Websetup is ready"
             break
           fi
@@ -60,7 +62,7 @@ function waitForJiraWebSetup(){
 }
 
 function setupJira(){
-
+  local domain_name=$(getProperty "org_domain_name")
   if [ "$start_jira" == "1" ];then
     local importJiraBackup=$(getProperty "jira_import_backup")
     local importJiraData=$(getProperty "jira_import_datafolder")
@@ -86,7 +88,7 @@ function setupJira(){
       fi
 
        echo "  # Calling Jira import"
-       curl -F filename="jirabackup.zip" -F license="$importJiraLicens" -F outgoingEmail="false" -F downgradeAnyway="False" "https://${JiraBaseUrl}/jira/secure/SetupImport.jspa"
+       curl -F filename="jirabackup.zip" -F license="$importJiraLicens" -F outgoingEmail="false" -F downgradeAnyway="False" "https://${JiraBaseUrl}.${domain_name}/jira/secure/SetupImport.jspa"
 
       waitForJiraLogin
 
