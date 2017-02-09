@@ -6,6 +6,6 @@
 # Also backups can be handled separately without worrying about mounting the entire directory structure containing the main data.
 # So until this image is improved, I (humbly) suggest using mattgruter's image. (That is also 200MB) 
 
-FROM: mattgruter/artifactory:3.9
+FROM mattgruter/artifactory:3.9
 
 
