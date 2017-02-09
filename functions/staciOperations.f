@@ -218,7 +218,7 @@ function installStaci() {
   echo "Generating system info page ..."
   sleep 2
   # Generate System Information html
-  source ./bin/generateSystemInfo.sh > $STACI_HOME/SystemInfo.html
+  source  ./bin/generateSystemInfo.sh > $STACI_HOME/SystemInfo.html
 
   echo "Install complete"
   echo "Open ${STACI_HOME}/SystemInfo.html in a browser to continue using the tool stack"
