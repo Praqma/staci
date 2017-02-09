@@ -12,7 +12,13 @@ function setupHaproxySSLcrt(){
     # COMMON_NAME="jenkins.example.com"
     # COMMON_NAME="example.com"
 
-    COMMON_NAME="*.example.com"
+    # Get the domain name from staci.properties
+
+    # DOMAIN_NAME='example.com'
+    DOMAIN_NAME=$(getProperty "org_domain_name")
+
+    echo "$DOMAIN_NAME"
+    COMMON_NAME="*.${DOMAIN_NAME}"
 
     # http://crohr.me/journal/2014/generate-self-signed-ssl-certificate-without-prompt-noninteractive-mode.html
     openssl genrsa -des3 -passout pass:x -out /tmp/server.pass.key 2048
@@ -24,6 +30,6 @@ function setupHaproxySSLcrt(){
     # Combine /tmp/server.key and /tmp/server.crt into a single server.pem file. 
     
     cat /tmp/server.crt /tmp/server.key > $volume_dir/haproxy/haproxy.pem
-    sudo cp /tmp/server.crt /usr/local/share/ca-certificates/.
-    sudo update-ca-certificates > /dev/null  
+    # sudo cp /tmp/server.crt /usr/local/share/ca-certificates/.
+    # sudo update-ca-certificates > /dev/null  
 }
