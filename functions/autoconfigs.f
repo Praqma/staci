@@ -5,7 +5,7 @@ function waitForJiraLogin(){
         local JiraBaseUrl=$(getProperty "jira_baseurl")
         while [ $attempt -le 3600 ]; do
           attempt=$(( $attempt + 1 ))
-          result=$(curl -Is "https://${JiraBaseUrl}/jira/"| grep "HTTP/1.1 302 Found")
+          result=$(curl -Is "https://${JiraBaseUrl}/jira/"| egrep "HTTP/1.1 302 Found | HTTP/1.1 202 OK")
           if [ ! -z "$result" ] ; then
             echo "  # Jira Loginscreen is ready"
             isRunning=true
