@@ -191,7 +191,7 @@ if [ "$start_jira" == "1" ]; then
 cat << EOF
 <div id="jira" class="settingsdiv">
   <b>Use the following to setup Jira db connection</b>
-  <a href="http://${jiraip}" target="_blank">Jira link</a>
+  <a href="http://${jiraip}jira_contextpath=$(getProperty "jira_contextpath")" target="_blank">Jira link</a>
   <ul>
     <li>Database Type : MySQL</li>
     <li>Hostname : $atlassiandb_ip</li>
@@ -206,7 +206,7 @@ fi
 
 if [ "$start_crucible" == "1" ]; then
   crucibleContextPath=$(getProperty "crusible_contextpath")
-
+  jira_contextpath=$(getProperty "jira_contextpath")
    if [ "$cluster" == "1" ]; then
       crucibleip=$(docker-machine ip "$node_prefix-crucible"):8060
       jiraip=$(docker-machine ip "$node_prefix-jira"):8080
@@ -226,7 +226,7 @@ cat << EOF
     <li>Crucible link : http://${crucibleip}${crucibleContextPath}</li>
 EOF
   if [ "$start_jira" == "1" ]; then
-     echo "<li>Link to JIRA : http://${jiraip}</li>"
+     echo "<li>Link to JIRA : http://${jiraip}${jira_contextpath}</li>"
   fi
 cat << EOF
   </ul>
@@ -357,6 +357,7 @@ cat << EOF
 EOF
 fi
 if [ "$start_jenkins" == "1" ]; then
+   jenkins_contextpath=$(getProperty "jenkins_contextpath")
    if [ "$cluster" == "1" ]; then
       jenkinsip=$(docker-machine ip "$node_prefix-jenkins"):8080
    elif [ ! "$provider_type" == "none" ]; then
@@ -368,7 +369,7 @@ if [ "$start_jenkins" == "1" ]; then
 cat << EOF
 <div id="jenkins" class="settingsdiv">
   <b>Use the following to login to Jenkins</b>
-  <a href="http://${jenkinsip}" target="_blank">Jenkins link</a>
+  <a href="http://${jenkinsip}${jenkins_contextpath}" target="_blank">Jenkins link</a>
   <ul>
     <li>Install type : New installation</li>
     <li>Jenkins Secret key: ${jenkinsSecKey}</li>
@@ -378,6 +379,7 @@ EOF
 fi
 
 if [ "$start_artifactory" == "1" ]; then
+   artifactory_contextpath=$(getProperty "artifactory_contextpath")
    if [ "$cluster" == "1" ]; then
       artifactoryip=$(docker-machine ip "$node_prefix-artifactory"):8080
    elif [ ! "$provider_type" == "none" ]; then
@@ -388,7 +390,7 @@ if [ "$start_artifactory" == "1" ]; then
 cat << EOF
 <div id="artifactory" class="settingsdiv">
   <b>Use the following to login to artifactory</b>
-  <a href="http://${artifactoryip}" target="_blank">artifactory link</a>
+  <a href="http://${artifactoryip}${artifactory_contextpath}" target="_blank">artifactory link</a>
 
   <ul>
     <li>Install type : New installation</li>
