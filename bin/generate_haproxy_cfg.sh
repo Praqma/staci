@@ -1,11 +1,6 @@
 #!/bin/bash
 
-# SCRIPT_PATH=$(dirname $0)
-# pushd $(pwd) > /dev/null
-# cd $SCRIPT_PATH
-
-# STACI_HOME=../${SCRIPT_PATH}
-
+#fetch helper tools
 source $STACI_HOME/functions/tools.f
 
 # Find out what to include
@@ -23,10 +18,11 @@ start_haproxy=$(getProperty "start_haproxy")
 # Here we can use some function to get the actual domain name from the staci.properties file,
 # and use it to build our haprpoxy.cfg
 
-# DOMAIN_NAME='example.com'
+# DOMAIN_NAME='example.com'. If required, change the domain name in conf/staci.properties
 DOMAIN_NAME=$(getProperty "org_domain_name")
 
-# Printing version and header
+# Creating global, default, and frontend settings.
+# Some settings, such as user and group, are not so necessary relative to use context.
 
 cat << EOF
 global
@@ -63,7 +59,7 @@ frontend http-in
         acl crucible hdr(host) -i crucible.${DOMAIN_NAME}
 EOF
 
-# conditional selection of backends
+# conditional selection of backends in association with the above ACLs
 
 for service in start_jenkins start_artifactory start_jira start_confluence start_bamboo start_crowd start_bitbucket start_crucible ; do
   # echo "Processing $service"
@@ -181,5 +177,3 @@ backend artifactory
         server artifactory artifactory:8080
 EOF
 fi
-
-# popd > /dev/null
