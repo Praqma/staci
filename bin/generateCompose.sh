@@ -323,6 +323,8 @@ else
   fi
 fi
 
+# haproxy may spin up faster than other containers in its backend pool, hence there is need for blocking \
+# execution to be induced. With docker-compose this is invoked using depends_on attribute
 cat << EOF
   haproxy:
     image: staci/haproxy:$version
@@ -331,6 +333,11 @@ cat << EOF
     depends_on:
       - atlassiandb
 EOF
+
+#Only services turned on will get backend entries in haproxy.cfg. 
+#See ./images/haproxy/context/haproxy.cfg for post-build confirmation.
+#look in $(docker logs haproxy) output when troubleshooting haproxy.
+
 if [ "$start_jenkins" == "1" ]; then
 cat << EOF
       - jenkins        
