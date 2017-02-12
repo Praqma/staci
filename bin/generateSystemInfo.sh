@@ -191,7 +191,7 @@ if [ "$start_jira" == "1" ]; then
 cat << EOF
 <div id="jira" class="settingsdiv">
   <b>Use the following to setup Jira db connection</b>
-  <a href="http://${jiraip}jira_contextpath=$(getProperty "jira_contextpath")" target="_blank">Jira link</a>
+  <a href="http://${jiraip}${jira_contextpath}" target="_blank">Jira link</a>
   <ul>
     <li>Database Type : MySQL</li>
     <li>Hostname : $atlassiandb_ip</li>
