@@ -14,7 +14,7 @@ function setupHaproxySSLcrt(){
 
     # Get the domain name from staci.properties
 
-    # DOMAIN_NAME='example.com'
+    # E.g, DOMAIN_NAME='example.com'. Fetched from conf/staci.properties
     DOMAIN_NAME=$(getProperty "org_domain_name")
 
     echo "$DOMAIN_NAME"
@@ -30,6 +30,4 @@ function setupHaproxySSLcrt(){
     # Combine /tmp/server.key and /tmp/server.crt into a single server.pem file. 
     
     cat /tmp/server.crt /tmp/server.key > $volume_dir/haproxy/haproxy.pem
-    # sudo cp /tmp/server.crt /usr/local/share/ca-certificates/.
-    # sudo update-ca-certificates > /dev/null  
 }
