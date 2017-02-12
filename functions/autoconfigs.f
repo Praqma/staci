@@ -1,4 +1,5 @@
 function waitForJiraLogin(){
+        # This function is relevant for a backup scenario. It is not called otherwise
         local isRunning=false
         local domain_name=$(getProperty "org_domain_name")
         # Is jira loginscreen ready ?
@@ -23,6 +24,8 @@ function waitForJiraLogin(){
 
 
 function waitForJiraWebSetup(){
+      # (This function is called in setupJira)
+      ###
       # Is Jira started ?
       status=$(docker inspect -f {{.State.Running}} jira 2>&1)
       local domain_name=$(getProperty "org_domain_name")
@@ -47,6 +50,9 @@ function waitForJiraWebSetup(){
           echo
           local JiraBaseUrl=$(getProperty "jira_baseurl")
           result=$(curl -kIs "https://${JiraBaseUrl}.${domain_name}" | grep 'Location')
+          
+          # If Jira is part of the stack, the 'if' condition must return  \
+          # a match so that SystemInfo.html can be produced.
           if grep -q '/secure/SetupMode!default.jspa' <<< $result ; then
             echo "  # Jira Websetup is ready"
             break
@@ -62,6 +68,8 @@ function waitForJiraWebSetup(){
 }
 
 function setupJira(){
+  # This function is responsible for restoring Jira  based from a backup \
+  # and checking the initial state of the new service.
   local domain_name=$(getProperty "org_domain_name")
   if [ "$start_jira" == "1" ];then
     local importJiraBackup=$(getProperty "jira_import_backup")
