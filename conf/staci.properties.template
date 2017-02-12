@@ -26,7 +26,6 @@ start_jenkins:1
 start_artifactory:1
 start_haproxy:1
 
-
 # Browser information
 browser_cmd:/usr/bin/google-chrome
 use_browser:1
@@ -41,8 +40,13 @@ provider_type:none
 # Backup folder
 backup_folder:/opt/staci/backup
 
+### The context_path for each of the services is preferrably set blank for a setup where they are \
+### identified by unique FQDNs. Use a non-empty contextpath if the config is for a common FQDN with service paths.\
+### E.g, with /crucible we should end up with a request URL similar to: http://common.domain.com/crucible 
+
 # Crucible section
-crusible_contextpath:/crucible
+#crucible_contextpath:/crucible
+crucible_contextpath:
 crucible_username:crucibledbuser
 crucible_password:cruciblepass
 crucible_database_name:crucibledb
@@ -54,20 +58,24 @@ mysql_driver_class:com.mysql.jdbc.Driver
 mysql_port:3306
 
 # Bitbucket section
-bitbucket_contextpath:/bitbucket
+#bitbucket_contextpath:/bitbucket
+bitbucket_contextpath:
 bitbucket_username:bitbucketdbuser
 bitbucket_password:bitbucketpass
 bitbucket_database_name:bitbucketdb
 bitbucket_baseurl:bitbucket
 
 # Crowd section
+#crowd_contextpath:/crowd
+crowd_contextpath:
 crowd_username:crowddbuser
 crowd_password:crowdpass
 crowd_database_name:crowddb
 crowd_baseurl:crowd
 
 # Jira section
-jira_contextpath:/jira
+#jira_contextpath:/jira
+jira_contextpath:
 jira_username:jiradbuser
 jira_password:jirapass
 jira_database_name:jiradb
@@ -82,14 +90,16 @@ jira_baseurl:jira
 
 
 # Bamboo section
-bamboo_contextpath:/bamboo
+#bamboo_contextpath:/bamboo
+bamboo_contextpath:
 bamboo_username:bamboouser
 bamboo_password:bamboopass
 bamboo_database_name:bamboodb
 bamboo_baseurl:bamboo
 
 # Confluence section
-confluence_contextpath:/confluence
+#confluence_contextpath:/confluence
+confluence_contextpath:
 confluence_username:confluenceuser
 confluence_password:confluencepass
 confluence_database_name:confluencedb
@@ -99,12 +109,15 @@ confluence_session_cookie_name:confluencesession
 confluence_baseurl:confluence
 
 #jenkins section
-jenkins_contextpath:/jenkins
+#jenkins_contextpath:/jenkins
+jenkins_contextpath:
 jenkins_baseurl:jenkins
 
 #artifactory section
-artifactory_contextpath:/artifactory
+#artifactory_contextpath:/artifactory
+artifactory_contextpath:
 artifactory_baseurl:artifactory
 
 #haproxy section
-haproxy_contextpath:/haproxy
+#haproxy_contextpath:/haproxy
+haproxy_contextpath:
