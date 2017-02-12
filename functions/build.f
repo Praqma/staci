@@ -210,10 +210,6 @@ function buildJenkins(){
         eval $(docker-machine env $node_prefix-Atlassian)
       fi
     fi
-    jenkinsContextPath=$(getProperty "jenkins_contextpath")
-    jenkinsContextPath='\'$jenkinsContextPath
-    echo "sed -i -e 's/path=\"\"/path=\"$jenkinsContextPath\"/g' /opt/atlassian/jenkins/conf/server.xml" > $STACI_HOME/images/jenkins/context/setContextPath.sh
-    chmod u+x $STACI_HOME/images/jenkins/context/setContextPath.sh
     echo "   - Building jenkins image"
     docker build -t staci/jenkins:$version $STACI_HOME/images/jenkins/context/ > $STACI_HOME/logs/jenkins.build.log 2>&1 &
   fi
@@ -229,10 +225,6 @@ function buildArtifactory(){
         eval $(docker-machine env $node_prefix-Atlassian)
       fi
     fi
-    artifactoryContextPath=$(getProperty "artifactory_contextpath")
-    artifactoryContextPath='\'$artifactoryContextPath
-    echo "sed -i -e 's/path=\"\"/path=\"$artifactoryContextPath\"/g' /opt/atlassian/artifactory/conf/server.xml" > $STACI_HOME/images/artifactory/context/setContextPath.sh
-    chmod u+x $STACI_HOME/images/artifactory/context/setContextPath.sh
     echo "   - Building artifactory image"
     docker build -t staci/artifactory:$version $STACI_HOME/images/artifactory/context/ > $STACI_HOME/logs/artifactory.build.log 2>&1 &
   fi
@@ -248,10 +240,6 @@ function buildHaproxy(){
         eval $(docker-machine env $node_prefix-Atlassian)
       fi
     fi
-    haproxyContextPath=$(getProperty "haproxy_contextpath")
-    haproxyContextPath='\'$haproxyContextPath
-    echo "sed -i -e 's/path=\"\"/path=\"haproxyContextPath\"/g' /opt/atlassian/haproxy/conf/server.xml" > $STACI_HOME/images/haproxy/context/setContextPath.sh
-    chmod u+x $STACI_HOME/images/haproxy/context/setContextPath.sh
     echo "   - Building haproxy image"
     docker build -t staci/haproxy:$version $STACI_HOME/images/haproxy/context/ > $STACI_HOME/logs/haproxy.build.log 2>&1 &
   fi
