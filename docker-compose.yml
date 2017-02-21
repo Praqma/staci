@@ -1,0 +1,69 @@
+version: '2'
+
+services:
+  bitbucket:
+    build: ./images/bitbucket
+    container_name: bitbucket.example.com
+    expose:
+      - "8081"
+      - "7990"
+    ports:
+      - "7999:7999"
+    volumes:
+      - /opt/simple_ci/bitbucket:/var/atlassian/bitbucket
+  jira:
+    build:  ./images/jira
+    container_name: jira.example.com
+    environment:
+      - CATALINA_OPTS="-Datlassian.plugins.enable.wait=300" "-Xmx768m" "-Xms512m" "-Dorg.apache.catalina.SESSION_COOKIE_NAME=jirasession" "-Duser.timezone="
+    expose:
+      - "8081"
+      - "8080"
+    volumes:
+      - /opt/simple_ci/jira:/var/atlassian/jira
+  atlassiandb:
+    build:  ./images/mysql
+    container_name: atlassiandb
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=pass_word
+    volumes:
+      - /opt/simple_ci/atlassiandb:/var/lib/mysql
+  crucible:
+    build:  ./images/crucible
+    container_name: crucible.example.com
+    volumes:
+      - /opt/simple_ci/crucible:/var/atlassian/crucible
+  jenkins:
+    build: ./images/jenkins
+    container_name: jenkins.example.com
+    ports:
+      - "50000:50000"
+    volumes:
+      - /opt/simple_ci/jenkins:/var/jenkins
+  artifactory:
+    build:  ./images/artifactory
+    container_name: artifactory.example.com
+    volumes:
+      - /opt/simple_ci/artifactory/backup:/artifactory/backup
+      - /opt/simple_ci/artifactory/data:/artifactory/data
+      - /opt/simple_ci/artifactory/logs:/artifactory/logs
+  haproxy:
+    build:  ./images/haproxy
+    container_name: haproxy.example.com
+    hostname: haproxy
+    depends_on:
+      - atlassiandb
+      - jenkins        
+      - artifactory
+      - jira
+      - crucible
+      - bitbucket
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - /opt/simple_ci/haproxy:/var/haproxy
