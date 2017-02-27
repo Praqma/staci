@@ -25,9 +25,9 @@ WORKDIR /opt/atlassian/
 # download and install fisheye to /opt/atlassian/fisheye
 COPY crucible-4.2.0.zip crucible-4.2.0.zip
 RUN unzip -q crucible-${FECRU_VERSION}.zip \
-&& mv fecru-${FECRU_VERSION} crucible \
-&& mkdir -p ${FISHEYE_HOME}/crucible \
-&& rm -f crucible-4.2.0.zip
+  && mv fecru-${FECRU_VERSION} crucible \
+  && mkdir -p ${FISHEYE_HOME}/crucible \
+  && rm -f crucible-4.2.0.zip
 
 # Getting the MySQL driver
 COPY mysql-connector-java-5.1.36.tar.gz mysql-connector-java-5.1.36.tar.gz 
@@ -39,9 +39,9 @@ ADD configure.sh ${FISHEYE_INST}/
 RUN chmod +x ${FISHEYE_INST}/configure.sh
 
 RUN chmod -R 700                 "${FISHEYE_INST}" \
-&&  chmod -R 700                 "${FISHEYE_HOME}" \
-&&  chown -R atlassian:atlassian "${FISHEYE_INST}" \
-&&  chown -R atlassian:atlassian "${FISHEYE_HOME}" 
+  &&  chmod -R 700                 "${FISHEYE_HOME}" \
+  &&  chown -R atlassian:atlassian "${FISHEYE_INST}" \
+  &&  chown -R atlassian:atlassian "${FISHEYE_HOME}" 
 
 # Use the user atlassian to run Jira.
 USER atlassian:atlassian
@@ -51,6 +51,9 @@ VOLUME ${FISHEYE_HOME}
 EXPOSE 8060
 
 WORKDIR ${FISHEYE_INST}/
-RUN ./configure.sh
+# RUN ./configure.sh
+
+# There is nothing dynamic in config.xml, so it is better to just copy the file as it is. - or so I understand. (Kamran)
+COPY config.xml /opt/atlassian/crucible/config.xml
 
 CMD ["./bin/run.sh"]
