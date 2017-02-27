@@ -1,2 +1,5 @@
-
+*.tar.gz
+*.tar
+*.zip
+*.gz
 logs
