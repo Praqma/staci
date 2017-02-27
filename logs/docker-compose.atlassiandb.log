@@ -1,202 +1,0 @@
-Building atlassiandb
-Step 1/16 : FROM debian:jessie
- ---> e5599115b6a6
-Step 2/16 : RUN useradd -u 1000 -ms /bin/bash mysql
- ---> Running in 63866c5c5ffd
- ---> 20b953ba442f
-Removing intermediate container 63866c5c5ffd
-Step 3/16 : RUN echo "mysql:praqma" | chpasswd
- ---> Running in 1af4e4925b40
- ---> 78e0e46c950c
-Removing intermediate container 1af4e4925b40
-Step 4/16 : RUN mkdir /docker-entrypoint-initdb.d
- ---> Running in 211c52d0fe9a
- ---> 8c4849e5845c
-Removing intermediate container 211c52d0fe9a
-Step 5/16 : RUN apt-get update && apt-get install -y perl --no-install-recommends && rm -rf /var/lib/apt/lists/*
- ---> Running in 6c6d1e07eaa0
-Get:1 http://security.debian.org jessie/updates InRelease [63.1 kB]
-Ign http://deb.debian.org jessie InRelease
-Get:2 http://deb.debian.org jessie-updates InRelease [145 kB]
-Get:3 http://deb.debian.org jessie Release.gpg [2373 B]
-Get:4 http://deb.debian.org jessie Release [148 kB]
-Get:5 http://security.debian.org jessie/updates/main amd64 Packages [438 kB]
-Get:6 http://deb.debian.org jessie-updates/main amd64 Packages [17.6 kB]
-Get:7 http://deb.debian.org jessie/main amd64 Packages [9049 kB]
-Fetched 9863 kB in 4s (2100 kB/s)
-Reading package lists...
-Reading package lists...
-Building dependency tree...
-The following extra packages will be installed:
-  libgdbm3 perl-modules
-Suggested packages:
-  perl-doc libterm-readline-gnu-perl libterm-readline-perl-perl make
-  libb-lint-perl libcpanplus-dist-build-perl libcpanplus-perl
-  libfile-checktree-perl liblog-message-simple-perl liblog-message-perl
-  libobject-accessor-perl
-Recommended packages:
-  rename libarchive-extract-perl libmodule-pluggable-perl libpod-latex-perl
-  libterm-ui-perl libtext-soundex-perl libcgi-pm-perl libmodule-build-perl
-  libpackage-constants-perl
-The following NEW packages will be installed:
-  libgdbm3 perl perl-modules
-0 upgraded, 3 newly installed, 0 to remove and 0 not upgraded.
-Need to get 5214 kB of archives.
-After this operation, 33.6 MB of additional disk space will be used.
-Get:1 http://deb.debian.org/debian/ jessie/main libgdbm3 amd64 1.8.3-13.1 [30.0 kB]
-Get:2 http://deb.debian.org/debian/ jessie/main perl-modules all 5.20.2-3+deb8u6 [2547 kB]
-Get:3 http://deb.debian.org/debian/ jessie/main perl amd64 5.20.2-3+deb8u6 [2637 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 5214 kB in 0s (6511 kB/s)
-Selecting previously unselected package libgdbm3:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 7559 files and directories currently installed.)
-Preparing to unpack .../libgdbm3_1.8.3-13.1_amd64.deb ...
-Unpacking libgdbm3:amd64 (1.8.3-13.1) ...
-Selecting previously unselected package perl-modules.
-Preparing to unpack .../perl-modules_5.20.2-3+deb8u6_all.deb ...
-Unpacking perl-modules (5.20.2-3+deb8u6) ...
-Selecting previously unselected package perl.
-Preparing to unpack .../perl_5.20.2-3+deb8u6_amd64.deb ...
-Unpacking perl (5.20.2-3+deb8u6) ...
-Setting up libgdbm3:amd64 (1.8.3-13.1) ...
-Setting up perl-modules (5.20.2-3+deb8u6) ...
-Setting up perl (5.20.2-3+deb8u6) ...
-update-alternatives: using /usr/bin/prename to provide /usr/bin/rename (rename) in auto mode
-Processing triggers for libc-bin (2.19-18+deb8u7) ...
- ---> d5184c454bf0
-Removing intermediate container 6c6d1e07eaa0
-Step 6/16 : RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys A4A9406876FCBD3C456770C88C718D3B5072E1F5
- ---> Running in 19118baef29c
-Executing: gpg --ignore-time-conflict --no-options --no-default-keyring --homedir /tmp/tmp.ShyEdhacSH --no-auto-check-trustdb --trust-model always --primary-keyring /etc/apt/trusted.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-jessie-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-jessie-security-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-jessie-stable.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-squeeze-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-squeeze-stable.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-wheezy-automatic.gpg --keyring /etc/apt/trusted.gpg.d/debian-archive-wheezy-stable.gpg --keyserver ha.pool.sks-keyservers.net --recv-keys A4A9406876FCBD3C456770C88C718D3B5072E1F5
-gpg: requesting key 5072E1F5 from hkp server ha.pool.sks-keyservers.net
-gpg: key 5072E1F5: public key "MySQL Release Engineering <mysql-build@oss.oracle.com>" imported
-gpg: Total number processed: 1
-gpg:               imported: 1
- ---> 7a7bd1e8c23a
-Removing intermediate container 19118baef29c
-Step 7/16 : ENV MYSQL_MAJOR 5.6
- ---> Running in 27022dd9f22e
- ---> 0d559963d88c
-Removing intermediate container 27022dd9f22e
-Step 8/16 : RUN echo "deb http://repo.mysql.com/apt/debian/ jessie mysql-${MYSQL_MAJOR}" > /etc/apt/sources.list.d/mysql.list
- ---> Running in efc961abd54c
- ---> 824d02b5d8e3
-Removing intermediate container efc961abd54c
-Step 9/16 : RUN { 		echo mysql-community-server mysql-community-server/data-dir select ''; 		echo mysql-community-server mysql-community-server/root-pass password ''; 		echo mysql-community-server mysql-community-server/re-root-pass password ''; 		echo mysql-community-server mysql-community-server/remove-test-db select false; 	} | debconf-set-selections 	&& apt-get update && apt-get install -y mysql-server && rm -rf /var/lib/apt/lists/* 	&& rm -rf /var/lib/mysql && mkdir -p /var/lib/mysql
- ---> Running in 57ef0dce2406
-Get:1 http://repo.mysql.com jessie InRelease [23.9 kB]
-Get:2 http://security.debian.org jessie/updates InRelease [63.1 kB]
-Ign http://deb.debian.org jessie InRelease
-Get:3 http://deb.debian.org jessie-updates InRelease [145 kB]
-Get:4 http://repo.mysql.com jessie/mysql-5.6 amd64 Packages [2758 B]
-Get:5 http://deb.debian.org jessie Release.gpg [2373 B]
-Get:6 http://security.debian.org jessie/updates/main amd64 Packages [438 kB]
-Get:7 http://deb.debian.org jessie Release [148 kB]
-Get:8 http://deb.debian.org jessie-updates/main amd64 Packages [17.6 kB]
-Get:9 http://deb.debian.org jessie/main amd64 Packages [9049 kB]
-Fetched 9890 kB in 4s (2069 kB/s)
-Reading package lists...
-Reading package lists...
-Building dependency tree...
-Reading state information...
-The following extra packages will be installed:
-  init-system-helpers libaio1 libnuma1 mysql-client mysql-common
-  mysql-community-client mysql-community-server psmisc
-The following NEW packages will be installed:
-  init-system-helpers libaio1 libnuma1 mysql-client mysql-common
-  mysql-community-client mysql-community-server mysql-server psmisc
-0 upgraded, 9 newly installed, 0 to remove and 0 not upgraded.
-Need to get 23.4 MB of archives.
-After this operation, 166 MB of additional disk space will be used.
-Get:1 http://repo.mysql.com/apt/debian/ jessie/mysql-5.6 mysql-common amd64 5.6.35-1debian8 [223 kB]
-Get:2 http://repo.mysql.com/apt/debian/ jessie/mysql-5.6 mysql-community-server amd64 5.6.35-1debian8 [14.0 MB]
-Get:3 http://deb.debian.org/debian/ jessie/main libaio1 amd64 0.3.110-1 [9312 B]
-Get:4 http://repo.mysql.com/apt/debian/ jessie/mysql-5.6 mysql-community-client amd64 5.6.35-1debian8 [8918 kB]
-Get:5 http://deb.debian.org/debian/ jessie/main libnuma1 amd64 2.0.10-1 [32.5 kB]
-Get:6 http://deb.debian.org/debian/ jessie/main psmisc amd64 22.21-2 [119 kB]
-Get:7 http://deb.debian.org/debian/ jessie/main init-system-helpers all 1.22 [14.0 kB]
-Get:8 http://repo.mysql.com/apt/debian/ jessie/mysql-5.6 mysql-client amd64 5.6.35-1debian8 [11.4 kB]
-Get:9 http://repo.mysql.com/apt/debian/ jessie/mysql-5.6 mysql-server amd64 5.6.35-1debian8 [11.4 kB]
-debconf: delaying package configuration, since apt-utils is not installed
-Fetched 23.4 MB in 1s (18.0 MB/s)
-Selecting previously unselected package libaio1:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 8764 files and directories currently installed.)
-Preparing to unpack .../libaio1_0.3.110-1_amd64.deb ...
-Unpacking libaio1:amd64 (0.3.110-1) ...
-Selecting previously unselected package libnuma1:amd64.
-Preparing to unpack .../libnuma1_2.0.10-1_amd64.deb ...
-Unpacking libnuma1:amd64 (2.0.10-1) ...
-Selecting previously unselected package mysql-common.
-Preparing to unpack .../mysql-common_5.6.35-1debian8_amd64.deb ...
-Unpacking mysql-common (5.6.35-1debian8) ...
-Selecting previously unselected package psmisc.
-Preparing to unpack .../psmisc_22.21-2_amd64.deb ...
-Unpacking psmisc (22.21-2) ...
-Selecting previously unselected package init-system-helpers.
-Preparing to unpack .../init-system-helpers_1.22_all.deb ...
-Unpacking init-system-helpers (1.22) ...
-Selecting previously unselected package mysql-community-server.
-Preparing to unpack .../mysql-community-server_5.6.35-1debian8_amd64.deb ...
-Unpacking mysql-community-server (5.6.35-1debian8) ...
-Selecting previously unselected package mysql-community-client.
-Preparing to unpack .../mysql-community-client_5.6.35-1debian8_amd64.deb ...
-Unpacking mysql-community-client (5.6.35-1debian8) ...
-Selecting previously unselected package mysql-client.
-Preparing to unpack .../mysql-client_5.6.35-1debian8_amd64.deb ...
-Unpacking mysql-client (5.6.35-1debian8) ...
-Selecting previously unselected package mysql-server.
-Preparing to unpack .../mysql-server_5.6.35-1debian8_amd64.deb ...
-Unpacking mysql-server (5.6.35-1debian8) ...
-Processing triggers for systemd (215-17+deb8u6) ...
-Setting up libaio1:amd64 (0.3.110-1) ...
-Setting up libnuma1:amd64 (2.0.10-1) ...
-Setting up mysql-common (5.6.35-1debian8) ...
-Setting up psmisc (22.21-2) ...
-Setting up init-system-helpers (1.22) ...
-Setting up mysql-community-server (5.6.35-1debian8) ...
-debconf: unable to initialize frontend: Dialog
-debconf: (TERM is not set, so the dialog frontend is not usable.)
-debconf: falling back to frontend: Readline
-2017-02-20 22:49:59 0 [Note] Ignoring --secure-file-priv value as server is running with --bootstrap.
-2017-02-20 22:49:59 0 [Note] /usr/sbin/mysqld (mysqld 5.6.35) starting as process 194 ...
-2017-02-20 22:50:02 0 [Note] Ignoring --secure-file-priv value as server is running with --bootstrap.
-2017-02-20 22:50:02 0 [Note] /usr/sbin/mysqld (mysqld 5.6.35) starting as process 217 ...
-2017-02-20 22:50:04 0 [Note] Ignoring --secure-file-priv value as server is running with --bootstrap.
-2017-02-20 22:50:04 0 [Note] mysqld (mysqld 5.6.35) starting as process 243 ...
-invoke-rc.d: policy-rc.d denied execution of start.
-Setting up mysql-community-client (5.6.35-1debian8) ...
-Setting up mysql-client (5.6.35-1debian8) ...
-Setting up mysql-server (5.6.35-1debian8) ...
-Processing triggers for libc-bin (2.19-18+deb8u7) ...
-Processing triggers for systemd (215-17+deb8u6) ...
- ---> 824515d991d6
-Removing intermediate container 57ef0dce2406
-Step 10/16 : RUN sed -Ei 's/^(bind-address|log)/#&/' /etc/mysql/my.cnf 	&& echo 'skip-host-cache\nskip-name-resolve' | awk '{ print } $1 == "[mysqld]" && c == 0 { c = 1; system("cat") }' /etc/mysql/my.cnf > /tmp/my.cnf 	&& mv /tmp/my.cnf /etc/mysql/my.cnf
- ---> Running in dd09e3ceef7f
- ---> 972dbcfc690a
-Removing intermediate container dd09e3ceef7f
-Step 11/16 : VOLUME /var/lib/mysql
- ---> Running in 2696cbd5d54d
- ---> 1e67de58f02a
-Removing intermediate container 2696cbd5d54d
-Step 12/16 : COPY my.cnf /etc/mysql/my.cnf
- ---> d0bda9b89216
-Removing intermediate container 26fe093d8cc7
-Step 13/16 : COPY docker-entrypoint.sh /entrypoint.sh
- ---> acfe1c477394
-Removing intermediate container 45205278fa02
-Step 14/16 : ENTRYPOINT /entrypoint.sh
- ---> Running in 29778517dc1c
- ---> 6b70b3ec7eec
-Removing intermediate container 29778517dc1c
-Step 15/16 : EXPOSE 3306
- ---> Running in 5729f4bc1e14
- ---> 2a4b100dfb75
-Removing intermediate container 5729f4bc1e14
-Step 16/16 : CMD mysqld
- ---> Running in 3096871973e6
- ---> ac15b47103a5
-Removing intermediate container 3096871973e6
-Successfully built ac15b47103a5
-Image for service atlassiandb was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
-Creating atlassiandb

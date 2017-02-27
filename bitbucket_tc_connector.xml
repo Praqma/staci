@@ -1,4 +1,0 @@
-    <Connector port="7990" protocol="HTTP/1.1" connectionTimeout="200000" useBodyEncodingForURI="true" redirectPort="443" proxyName="bitbucket.example.com" proxyPort="443" scheme="https" compression="on" compressableMimeType="text/html,text/xml,text/plain,text/css,application/json,application/javascript,application/x-javascript"/>
-    
-    <Connector port="8081" maxThreads="150" connectionTimeout="200000" minSpareThreads="10" acceptCount="10" protocol="HTTP/1.1" URIEncoding="UTF-8"/>
-
