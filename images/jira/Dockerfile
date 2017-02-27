@@ -17,6 +17,11 @@ ENV JIRA_INSTALL  /opt/atlassian/jira
 # Install Atlassian JIRA and helper tools and setup initial home
 # directory structure.
 COPY atlassian-jira-software-7.3.1.tar.gz "${JIRA_INSTALL}/atlassian-jira-software-7.3.1.tar.gz"
+
+COPY server.xml /tmp
+
+# /opt/atlassian/jira/conf/server.xml
+
 RUN set -x \
     && mkdir -p                     "${JIRA_HOME}" \
     && chmod -R 700                 "${JIRA_HOME}" \
@@ -24,6 +29,7 @@ RUN set -x \
     && mkdir -p                     "${JIRA_INSTALL}/conf/Catalina" \
     && tar -xzf "${JIRA_INSTALL}/atlassian-jira-software-7.3.1.tar.gz" --directory "${JIRA_INSTALL}" --strip-components=1 --no-same-owner \
     && rm -f "${JIRA_INSTALL}/atlassian-jira-software-7.3.1.tar.gz" \
+    && cp /tmp/server.xml 	/opt/atlassian/jira/conf/server.xml \
     && chmod -R 700                 "${JIRA_INSTALL}/logs" \
     && chmod -R 700                 "${JIRA_INSTALL}/temp" \
     && chmod -R 700                 "${JIRA_INSTALL}/work" \
@@ -41,7 +47,7 @@ EXPOSE 8080
 #RUN chown atlassian /var/atlassian/jira/dbconfig.xml
 
 # Fix Issue #1  -- https://github.com/Praqma/staci/issues/1
-#RUN sed -i -e 's/<Context>/<Context sessionCookieName="JIRASESSIONID">/g' /opt/atlassian/jira/conf/context.xml
+# RUN sed -i -e 's/<Context>/<Context sessionCookieName="JIRASESSIONID">/g' /opt/atlassian/jira/conf/context.xml
 
 # Set the default working directory as the installation directory.
 WORKDIR ${JIRA_HOME}

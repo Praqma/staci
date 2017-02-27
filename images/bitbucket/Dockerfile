@@ -15,6 +15,12 @@ ENV Xmx           1512m
 
 # Install Atlassian Bitbucket, tools and setup initial home directory structure.
 COPY atlassian-bitbucket-4.10.1.tar.gz "${BITBUCKET_INSTALL}/atlassian-bitbucket-4.10.1.tar.gz"
+
+# Copy our custom (superior) server.xml file in the correct location: :)
+COPY server.xml /tmp
+
+# /opt/atlassian/bitbucket/conf/server.xml
+
 RUN set -x \
     && apt-get install git perl -y \
     && mkdir -p               "${BITBUCKET_HOME}/lib" \
@@ -23,6 +29,7 @@ RUN set -x \
     && mkdir -p               "${BITBUCKET_INSTALL}" \
     && tar -xzf "${BITBUCKET_INSTALL}/atlassian-bitbucket-${BITBUCKET_VERSION}.tar.gz" --directory  "${BITBUCKET_INSTALL}" --strip-components=1 --no-same-owner \
     && rm -f "${BITBUCKET_INSTALL}/atlassian-bitbucket-${BITBUCKET_VERSION}.tar.gz" \
+    && cp /tmp/server.xml /opt/atlassian/bitbucket/conf/server.xml \
     && chmod -R 700           "${BITBUCKET_INSTALL}/conf" \
     && chmod -R 700           "${BITBUCKET_INSTALL}/logs" \
     && chmod -R 700           "${BITBUCKET_INSTALL}/temp" \
