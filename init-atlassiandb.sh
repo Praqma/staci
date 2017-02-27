@@ -8,7 +8,7 @@
 ##
 
 SETUP_DIR=$(pwd)
-mysql_ip="atlassiandb"
+MYSQL_HOST="atlassiandb"
 
 function exec_sql(){
    local PASSWORD=$1
@@ -25,7 +25,9 @@ echo " - Setting up MySQL for Jira"
 jira_username="jiradbuser"
 jira_password="jirapass"
 jira_database="jiradb"
-mysql_root_pass="pass_word"
+
+# MYSQL_ROOT_PASSWORD is defined in setup.conf and should be a global variable. 
+mysql_root_pass=$MYSQL_ROOT_PASSWORD
 
 #   exec_sql $mysql_root_pass "CREATE USER '$jira_username'@'%' IDENTIFIED BY '$jira_password';"
 exec_sql $mysql_root_pass "CREATE DATABASE IF NOT EXISTS $jira_database CHARACTER SET utf8 COLLATE utf8_bin;"
@@ -33,7 +35,7 @@ exec_sql $mysql_root_pass "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER,I
 exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
 echo "  # Database Type : MySQL
-  # Hostname : $mysql_ip
+  # Hostname : $MYSQL_HOST
   # Port : 3306
   # Database : $jira_database
   # Username : $jira_username
@@ -51,7 +53,7 @@ exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
 echo "  # Database : External
   # Database type : MySQL
-  # Hostname : $mysql_ip
+  # Hostname : $MYSQL_HOST
   # Port : 3306
   # Database name : $bitbucket_database
   # Database username : $bitbucket_username
@@ -69,7 +71,7 @@ exec_sql $mysql_root_pass "FLUSH PRIVILEGES;"
 
 echo "  # Database : External
   # Database type : MySQL
-  # Hostname : $mysql_ip
+  # Hostname : $MYSQL_HOST
   # Port : 3306
   # Database name : $crucible_database
   # Database username : $crucible_username

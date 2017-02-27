@@ -22,6 +22,6 @@ function setupHaproxySSLcrt(){
     openssl x509 -req -days 365 -in /tmp/server.csr -signkey /tmp/server.key -out /tmp/server.crt
 
     # Combine /tmp/server.key and /tmp/server.crt into a single server.pem file. 
-    
-    cat /tmp/server.crt /tmp/server.key > /opt/simple_ci/haproxy/haproxy.pem
+    cat /tmp/server.crt /tmp/server.key > ${STORAGE_DIR}/haproxy/haproxy.pem
+    echo "- Created SSL certificate for ${COMMON_NAME} as: ${STORAGE_DIR}/hapropxy/haproxy.pem"
 }
