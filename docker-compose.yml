@@ -4,8 +4,9 @@ services:
   bitbucket:
     build: ./images/bitbucket
     container_name: bitbucket.example.com
+    # 8888 is our custom port we set up for a separate/additional connection.
     expose:
-      - "8081"
+      - "8888"
       - "7990"
     ports:
       - "7999:7999"
@@ -17,7 +18,7 @@ services:
     environment:
       - CATALINA_OPTS="-Datlassian.plugins.enable.wait=300" "-Xmx768m" "-Xms512m" "-Dorg.apache.catalina.SESSION_COOKIE_NAME=jirasession" "-Duser.timezone="
     expose:
-      - "8081"
+      - "8888"
       - "8080"
     volumes:
       - /opt/simple_ci/jira:/var/atlassian/jira
