@@ -45,9 +45,9 @@ COPY mysql-connector-java-5.1.36.tar.gz "${BITBUCKET_INSTALL}/mysql-connector-ja
 RUN tar -xzf "${BITBUCKET_INSTALL}/mysql-connector-java-5.1.36.tar.gz" --directory "${BITBUCKET_INSTALL}/lib/" --strip-components=1 --no-same-owner
 RUN rm -f "${BITBUCKET_INSTALL}/mysql-connector-java-5.1.36.tar.gz"
 
-# Fix Issue with Context Path
-COPY setContextPath.sh /tmp/setContextPath.sh
-RUN /tmp/setContextPath.sh
+# Add /bitbucket Context Path
+# COPY setContextPath.sh /tmp/setContextPath.sh
+# RUN /tmp/setContextPath.sh
 
 # Use the user atlassian to run Jira.
 USER atlassian:atlassian

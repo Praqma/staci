@@ -2,4 +2,4 @@
 *.tar
 *.zip
 *.gz
-logs
+logs/*
