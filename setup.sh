@@ -108,7 +108,7 @@ done
 
 chown -R 1000:1000 ${STORAGE_DIR}
 
-echo "Generating self-signed SSL certificates for haproxy"
+echo "Generating self-signed SSL certificates for haproxy ..."
 
 setupHaproxySSLcrt  > /dev/null 2>&1
 
@@ -131,46 +131,61 @@ echo
 docker-compose up -d atlassiandb > $SETUP_DIR/logs/docker-compose.atlassiandb.log 2>&1
 
   
- # Wait for MySql to start up
 echo
-echo "####### waiting for MySQL to start ########"
+echo -n "Waiting for MySQL to start ."
 echo 
-status=$(docker inspect -f {{.State.Running}} atlassiandb 2>&1)
+# Needs to be a loop here, which exits when the status becomes true. 
+while [ "$status" != "true" ] ; do
+  status=$(docker inspect -f {{.State.Running}} atlassiandb 2>&1)
+  sleep 1
+  echo -n "."
+done
+
+echo 
 
 if [ "$status" == "true" ];then
-   echo "  # Container mysql is active, waiting to be ready"
+   echo -n "Container atlassiandb is now active; waiting for DB init process to complete ."
    attempt=0
    while [ $attempt -le 59 ]; do
       attempt=$(( $attempt + 1 ))
       result=$(docker logs atlassiandb 2>&1)
       if grep -q 'MySQL init process done. Ready for start up.' <<< $result ; then
-         echo "   # MySQL is starting up!"
-         echo
+         # echo
+         # echo "MySQL init process complete."
+         # echo
          break
-         fi
+      else
+         echo -n "."
          sleep .5
+      fi
    done
 
+   echo 
+   echo -n "DB init process complete. Waiting for it to be ready for connections ."
    attempt=0
    while [ $attempt -le 59 ]; do
       attempt=$(( $attempt + 1 ))
+      # Question: Why --tail=10 ? 
       result=$(docker logs --tail=10 atlassiandb 2>&1)
       if grep -q 'ready for connections' <<< $result ; then
          echo "   # MySQL is up!"
          break
+      else
+        echo -n "."
+        sleep .5
       fi
-      sleep .5
    done
    else
-      echo "Container mysql is not running..."
-      exit 0
+      echo "Container atlassiandb did not start. Please investigate (hint: $SETUP_DIR/logs/docker-compose.atlassiandb.log)."
+      echo "Exiting ..."    
+      exit 9
 fi
 
 # Setup database
 echo
 echo "######## setting up database #######"
 sleep 1
-./init-mysql.sh
+./init-atlassiandb.sh
 
 echo
 echo "######## spinning up the rest of the stack ########"

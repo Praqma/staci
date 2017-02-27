@@ -7,19 +7,19 @@
 #
 ##
 
-CI_HOME=$(pwd)
+SETUP_DIR=$(pwd)
 mysql_ip="atlassiandb"
 
 function exec_sql(){
-   local pw=$1
-   local sqlcmd=$2
+   local PASSWORD=$1
+   local SQL_COMMAND=$2
    
-   docker exec atlassiandb mysql --user=root --password=$pw -e "$sqlcmd" > $CI_HOME/logs/mysqlInit.log 2>&1 >> $CI_HOME/logs/mysql.log
+   docker exec atlassiandb mysql --user=root --password=$PASSWORD -e "$SQL_COMMAND" > $SETUP_DIR/logs/mysqlInit.log 2>&1 >> $SETUP_DIR/logs/mysql.log
 }
 
 
 # Clear old logfile
-rm -f $CI_HOME/logs/mysql.log
+rm -f $SETUP_DIR/logs/mysql.log
 
 echo " - Setting up MySQL for Jira"
 jira_username="jiradbuser"
