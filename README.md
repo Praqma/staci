@@ -4,37 +4,26 @@ Originally STACI was written  by Henrik . The idea was to setup Atlassian suite 
 
 To have it all bundled together was initially conceived to be a trivial task, but it actually turned out that having a reverse proxy would mean a redesign of STACI. So we thought of creating a separate branch **simple_ci** , where the configurations are not so dynamically generated as original STACI, and a tool-stack comes up immediately, comprising: Jenkins, Artifactory, Jira, BitBucket and Crucible, all behind a reverse proxy. So this is still STACI, but a simplified version.
 
-In short, this is s water-downed version of STACI which gives you a devops tool stack made of Jira, Confluence, Crucible, Jenkins, Artifactory, MySQL. They are placed behind a loadbalancer (HAProxy) so that they can be accessed with a comon domain suffic over HTTPS.
 
-One core goal of this project is to simplify the installation of these tools albeit for a limited context. Here the time it takes to transition from one infrastructure state to a new version is negligible as the tar balls - Jira, Bitbucket, Crucible, MySQL connector -  which ordinarily would be downloaded for every new build job would be fetched for the first job and kept locally for subsequent jobs.
+The tar balls - Jira, Bitbucket, Crucible, MySQL connector -  which are usually downloaded for every new build are now fetched for the first docker image build process, and kept locally for later use.
 
+
+# Configuration:
+Edit and adjust `setup.conf`
 
 # Setup:
 You need to run `setup.sh` as root (or sudo).
 
-# Post Installation hacks:
+# Post Installation steps:
 
-## Link Bitbucket and Jira:
+## Link Jira , BitBucket and Jira together:
 
-- Copy the content of jira_tc_connector
-- Run docker exec -it jira.example.com bash
-- Open /opt/atlassian/jira/conf/server.xml
-- Locate the configuration block delineated by server=catalina
-- Delete the uncommented connector in that section
-- Copy in the contents of jira_tc_connector
-- save your change and exit the container
+When you are done with the initial configuration and have been presented with a web gui, create mutually directed links. i.e, on Jira create a link to bitbucket using its docker IP address (service name - jira) and the port number of the extra tomcat connector we have already setup in server.xml for Jira and BitBucket. e.g, `http://jira:8888` and `http://bitbucket:8888`. On bitbucket do the same. 
+Crucible is special. You just use it's default port for application links, such as: `http://crucible:8060`. Also you need to manually setup MySQL as db backend for Crucible through it's GUI.
 
-Do the same for bitbucket using the contents of bitbucket_tc_connector.
+If you encounter any errors click on the edit icon beside each application link entry and check that OAUTH (impersonation) is enabled.
 
-Run,
-- Docker-compose stop jira bitbucket haproxy
-- Docker-compose up -d
-
-Go ahead and configure the database and admin user for both Bitbucket and Jira. 
-
-When you are done with the initial configuration and have been presented with a web gui, create mutually directed links. i.e, on Jira create a link to bitbucket using its docker IP address and the port number of the extra tomcat connector you added to that container. e.g, `http://192.19.0.5:8081/bitbucket`. On bitbucket do the same. If you encounter any errors click on the edit icon beside the link entry and check that OAUTH (impersonation) is enabled.
-
-Do not panic if errors occur on your first try: a successful connection requires that there be reciprocal links present. My suggestion is to start from the bitbucket side.
+Do not panic if errors occur on your first try: a successful connection requires that there be reciprocal links present. We suggest to start from the jira and bitbucket.
 
 
 (This is very much work in progress. The code and documentation will be augmented in due time. Feel free to make contributions)
