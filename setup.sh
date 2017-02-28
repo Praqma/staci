@@ -48,6 +48,7 @@ USER_ID=1000
 GROUP_ID=1000
 
 # Various options used with curl command. Note "do not" use -z . It does not work. (Kamran) . Also don't use -s.
+# CURL_OPTIONS="-# -L"
 CURL_OPTIONS="-# -L"
 
 #
@@ -99,43 +100,43 @@ fi
 # Notice that MySQL connector is downloaded directly in Jira's image location.
 
 
-
+echo 
 echo "Copying MySQL connector tarball inside each atlassian product ..."
 # Copy from Jira to other two atlassian products.
 
 if [ ! -r images/crucible/${MYSQL_CONNECTOR_TARBALL} ]; then
-	cp images/jira/${MYSQL_CONNECTOR_TARBALL}  images/crucible/${MYSQL_CONNECTOR_TARBALL}
+  cp images/jira/${MYSQL_CONNECTOR_TARBALL}  images/crucible/${MYSQL_CONNECTOR_TARBALL}
 fi
 
 if [ ! -r images/bitbucket/${MYSQL_CONNECTOR_TARBALL} ]; then
-        cp images/jira/${MYSQL_CONNECTOR_TARBALL}  images/bitbucket/${MYSQL_CONNECTOR_TARBALL}
-fi
-
-echo "Creating logs directory in the root of setup directory - ${SETUP_DIR} ..."
-
-if [ !  -d $SETUP_DIR/logs ]; then
-        mkdir $SETUP_DIR/logs
-	chown -R 1000:1000 $SETUP_DIR/logs
+  cp images/jira/${MYSQL_CONNECTOR_TARBALL}  images/bitbucket/${MYSQL_CONNECTOR_TARBALL}
 fi
 
 echo
-echo "Creating volume directories for persistent data storage in:  ${STORAGE_DIR}..."
-if [ !  -d ${STORAGE_DIR} ]; then
-	mkdir -p ${STORAGE_DIR}
+echo "Creating logs directory in the root of setup directory - ${SETUP_DIR} ..."
+
+if [ !  -d $SETUP_DIR/logs ]; then
+  mkdir $SETUP_DIR/logs
 fi
 
-for service in haproxy jira crucible bitbucket artifactory jenkins; do
-	if [  ! -d "${STORAGE_DIR}/$service" ]; then
-		mkdir ${STORAGE_DIR}/$service
-		if [ $service == "artifactory" ]; then
-			mkdir -p ${STORAGE_DIR}/$service/backup ${STORAGE_DIR}/$service/data ${STORAGE_DIR}/$service/logs
-			
-		fi
-	fi
+echo
+echo "Creating volume directories for persistent data storage in ${STORAGE_DIR}..."
+if [ !  -d ${STORAGE_DIR} ]; then
+  mkdir -p ${STORAGE_DIR}
+fi
+
+for SERVICE in haproxy jira crucible bitbucket artifactory jenkins atlassiandb; do
+  if [  ! -d "${STORAGE_DIR}/${SERVICE}" ]; then
+    mkdir ${STORAGE_DIR}/${SERVICE}
+    if [ "${SERVICE}" == "artifactory" ]; then
+      mkdir -p ${STORAGE_DIR}/${SERVICE}/backup ${STORAGE_DIR}/${SERVICE}/data ${STORAGE_DIR}/${SERVICE}/logs
+    fi
+  fi
 done
 
 chown -R 1000:1000 ${STORAGE_DIR}
 echo
+
 echo "Generating self-signed SSL certificates for haproxy ..."
 echo "Logs in: $SETUP_DIR/logs/SSL-certs.log"
 
@@ -175,41 +176,42 @@ done
 
 echo 
 if [ "$status" == "true" ];then
-   echo -n "Container atlassiandb is now active; waiting for DB init process to complete ..."
-   attempt=0
-   while [ $attempt -le 59 ]; do
-      attempt=$(( $attempt + 1 ))
-      result=$(docker logs atlassiandb 2>&1)
-      if grep -q 'MySQL init process done. Ready for start up.' <<< $result ; then
-         # echo
-         # echo "MySQL init process complete."
-         # echo
-         break
-      else
-         echo -n "."
-         sleep 1
-      fi
-   done
+  echo -n "Container atlassiandb is now active; waiting for DB init process to complete ..."
+  attempt=0
+  while [ $attempt -le 59 ]; do
+    attempt=$(( $attempt + 1 ))
+    result=$(docker logs atlassiandb 2>&1)
+    if grep -q 'MySQL init process done. Ready for start up.' <<< $result ; then
+      # echo
+      # echo "MySQL init process complete."
+      # echo
+      break
+    else
+      echo -n "."
+      sleep 1
+    fi
+  done
 
-   echo 
-   echo -n "DB init process complete. Waiting for it to be ready for connections ..."
-   attempt=0
-   while [ $attempt -le 59 ]; do
-      attempt=$(( $attempt + 1 ))
-      STATUS=$(docker exec  atlassiandb mysqladmin --user=root --password=${MYSQL_ROOT_PASSWORD} ping 2> /dev/null | grep 'alive')
-      if [ "${STATUS}" == "mysqld is alive"  ]; then
-         echo "Done."
-         echo "- MySQL DB is up!"
-         break
-      else
-        echo -n "."
-        sleep 1
-      fi
-   done
-   else
-      echo "Container atlassiandb did not start. Please investigate. Logs in: $SETUP_DIR/logs/docker-compose.atlassiandb.log"
-      echo "Exiting ..."    
-      exit 9
+  echo 
+  echo -n "DB init process complete. Waiting for it to be ready for connections ..."
+  attempt=0
+
+  while [ $attempt -le 59 ]; do
+    attempt=$(( $attempt + 1 ))
+    STATUS=$(docker exec  atlassiandb mysqladmin --user=root --password=${MYSQL_ROOT_PASSWORD} ping 2> /dev/null | grep 'alive')
+    if [ "${STATUS}" == "mysqld is alive"  ]; then
+      echo "Done."
+      echo "- MySQL DB is up!"
+      break
+    else
+      echo -n "."
+      sleep 1
+    fi
+  done
+else
+  echo "Container atlassiandb did not start. Please investigate. Logs in: $SETUP_DIR/logs/docker-compose.atlassiandb.log"
+  echo "Exiting ..."    
+  exit 9
 fi
 
 # Setup database
