@@ -14,7 +14,6 @@ fi
 #
 
 SETUP_DIR=$(pwd)
-SETUP_DIR=${SETUP_DIR}
 CONFIG_FILE=setup.conf
 
 #
@@ -28,7 +27,7 @@ if [ ! -r ${CONFIG_FILE} ] ; then
   echo "${CONFIG_FILE} is not found. Need to know the URLs for various software. Exiting ... "
   exit 1
 else
-  echo "Loading values for JIRA_URL , CRUCIBLE_URL, BITBUCKET_URL and MYSQL_CONNECTOR_URL ..."
+  echo "Loading values for JIRA_URL , CRUCIBLE_URL, BITBUCKET_URL , MYSQL_CONNECTOR_URL and a lot more ..."
   source ${CONFIG_FILE}
 fi
 
@@ -42,6 +41,7 @@ JIRA_TARBALL=$(basename $JIRA_URL)
 CRUCIBLE_TARBALL=$(basename $CRUCIBLE_URL)
 BITBUCKET_TARBALL=$(basename $BITBUCKET_URL)
 MYSQL_CONNECTOR_TARBALL=$(basename $MYSQL_CONNECTOR_URL)
+POSTGRES_CONNECTOR_TARBALL=$(basename $POSTGRES_CONNECTOR_URL)
 
 # Define the UID and GID for the directories and files ...
 USER_ID=1000
@@ -50,6 +50,15 @@ GROUP_ID=1000
 # Various options used with curl command. Note "do not" use -z . It does not work. (Kamran) . Also don't use -s.
 # CURL_OPTIONS="-# -L"
 CURL_OPTIONS="-# -L"
+
+# Set domain name to example.com if it is not specified in setup.conf.
+if [ -z "${DOMAIN_NAME}" ]; then
+  DOMAIN_NAME='example.com'
+fi
+
+# Assign the password in DB_ROOT_PASSWORD to both MYSQL and POSTGRES env variables. 
+MYSQL_ROOT_PASSWORD="${DB_ROOT_PASSWORD}"
+POSTGRES_PASSWORD="${DB_ROOT_PASSWORD}"
 
 #
 #
@@ -60,7 +69,7 @@ CURL_OPTIONS="-# -L"
 #
 #
 
-source haproxy_ssl_setup.f
+source ./functions.sh
 
 
 echo "Downloading Atlassian software products ..."
@@ -99,6 +108,18 @@ fi
 
 # Notice that MySQL connector is downloaded directly in Jira's image location.
 
+echo
+echo "- PostgreSQL JDBC Connector - (${POSTGRES_CONNECTOR_URL}) ..."
+if [ ! -r images/jira/${POSTGRES_CONNECTOR_TARBALL} ] ; then
+  curl ${CURL_OPTIONS} -o images/jira/${POSTGRES_CONNECTOR_TARBALL} ${POSTGRES_CONNECTOR_URL}
+else
+  echo "-- File images/jira/${POSTGRES_CONNECTOR_TARBALL} exists. Skipping download."
+fi
+
+# Notice that Postgres connector is downloaded directly in Jira's image location.
+
+
+
 
 echo 
 echo "Copying MySQL connector tarball inside each atlassian product ..."
@@ -111,6 +132,20 @@ fi
 if [ ! -r images/bitbucket/${MYSQL_CONNECTOR_TARBALL} ]; then
   cp images/jira/${MYSQL_CONNECTOR_TARBALL}  images/bitbucket/${MYSQL_CONNECTOR_TARBALL}
 fi
+
+
+echo
+echo "Copying PostgreSQL JDBC connector inside each atlassian product ..."
+# Copy from Jira to other two atlassian products.
+
+if [ ! -r images/crucible/${POSTGRES_CONNECTOR_TARBALL} ]; then
+  cp images/jira/${POSTGRES_CONNECTOR_TARBALL}  images/crucible/${POSTGRES_CONNECTOR_TARBALL}
+fi
+
+if [ ! -r images/bitbucket/${POSTGRES_CONNECTOR_TARBALL} ]; then
+  cp images/jira/${POSTGRES_CONNECTOR_TARBALL}  images/bitbucket/${POSTGRES_CONNECTOR_TARBALL}
+fi
+
 
 echo
 echo "Creating logs directory in the root of setup directory - ${SETUP_DIR} ..."
@@ -131,6 +166,11 @@ for SERVICE in haproxy jira crucible bitbucket artifactory jenkins atlassiandb; 
     if [ "${SERVICE}" == "artifactory" ]; then
       mkdir -p ${STORAGE_DIR}/${SERVICE}/backup ${STORAGE_DIR}/${SERVICE}/data ${STORAGE_DIR}/${SERVICE}/logs
     fi
+
+    # atlassiandb can have mysql or postgres backend. Need to keep them separated.
+    if [ "${SERVICE}" == "atlassiandb" ]; then
+      mkdir -p ${STORAGE_DIR}/${SERVICE}/mysql ${STORAGE_DIR}/${SERVICE}/postgres
+    fi
   fi
 done
 
@@ -140,7 +180,7 @@ echo
 echo "Generating self-signed SSL certificates for haproxy ..."
 echo "Logs in: $SETUP_DIR/logs/SSL-certs.log"
 
-setupHaproxySSLcrt >> $SETUP_DIR/logs/SSL-certs.log  2>&1
+generateSSLCertificate >> $SETUP_DIR/logs/SSL-certs.log  2>&1
 
 # build java base image for jira, crucible and bitbucket
 image_check=$(docker images | grep praqma/java)
@@ -153,7 +193,23 @@ if [ -z "$image_check" ]; then
 fi
 
 
-wait
+
+# here we have to select based on DB_PROVIDER.
+cat docker-compose-minus-db.yml docker-compose-db-${DB_PROVIDER}.yml > docker-compose.yml
+
+# Then do some sed magic:
+sed -i -e s#STORAGEDIR#${STORAGE_DIR}#g \
+       -e s#MYSQLPASS#${MYSQL_ROOT_PASSWORD}#g \
+       -e s#POSTGRESPASS#${POSTGRES_PASSWORD}#g \
+    docker-compose.yml  
+
+
+# Setup correct Dockerfile for atlassiandb image
+cp images/atlassiandb/Dockerfile.${DB_PROVIDER} images/atlassiandb/Dockerfile
+
+
+# From Here on we need to be more careful about DB provder.
+
 
 echo 
 echo "Spinning up database for initial configuration ..."
@@ -214,10 +270,22 @@ else
   exit 9
 fi
 
-# Setup database
+
+
+# Setup databases
+# ---------------
 echo
 echo "Setting up databases for Atlassian products in the DB container ..."
-source ./init-atlassiandb.sh
+# depending on db provider
+if [ "${DB_PROVIDER}" == "mysql" ] ; then
+  source ./init-mysql-dbs.sh
+fi
+
+if [ "${DB_PROVIDER}" == "postgres" ] ; then
+  source ./init-postgres-dbs.sh
+fi
+
+
 
 echo
 echo "Bringing up the rest of the stack..."
