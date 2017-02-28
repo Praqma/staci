@@ -45,10 +45,15 @@ RUN set -x \
     && sed -ri 's/JVM_MINIMUM_MEMORY="512m"/JVM_MINIMUM_MEMORY="'"${Xms}"'"/' $BITBUCKET_INSTALL/bin/setenv.sh \
     && sed -ri 's/JVM_MAXIMUM_MEMORY="768m"/JVM_MAXIMUM_MEMORY="'"${Xmx}"'"/' $BITBUCKET_INSTALL/bin/setenv.sh
 
-# Getting the MySQL driver
+
+# Placing the PGSQL and MySQL drivers in the container
+COPY postgresql-42.0.0.jar ${BITBUCKET_INSTALL}/lib/
 COPY mysql-connector-java-5.1.36.tar.gz "${BITBUCKET_INSTALL}/mysql-connector-java-5.1.36.tar.gz"
-RUN tar -xzf "${BITBUCKET_INSTALL}/mysql-connector-java-5.1.36.tar.gz" --directory "${BITBUCKET_INSTALL}/lib/" --strip-components=1 --no-same-owner
-RUN rm -f "${BITBUCKET_INSTALL}/mysql-connector-java-5.1.36.tar.gz"
+RUN tar -xzf "${BITBUCKET_INSTALL}/mysql-connector-java-5.1.36.tar.gz" \
+    --directory "${BITBUCKET_INSTALL}/lib/" --strip-components=1 --no-same-owner \
+ && rm -f "${BITBUCKET_INSTALL}/mysql-connector-java-5.1.36.tar.gz"
+
+
 
 # Add /bitbucket Context Path
 # COPY setContextPath.sh /tmp/setContextPath.sh
