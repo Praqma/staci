@@ -34,10 +34,15 @@ RUN set -x \
     && chmod -R 700                 "${JIRA_INSTALL}/work" \
     && chown -R atlassian:atlassian "${JIRA_INSTALL}" \
     && echo -e                      "\njira.home=$JIRA_HOME" >> "${JIRA_INSTALL}/atlassian-jira/WEB-INF/classes/jira-application.properties" 
-# Getting the MySQL driver
+
+
+# Place the PGSQL and MySQL JDBC drivers
+COPY postgresql-42.0.0.jar ${JIRA_INSTALL}/lib/
 COPY mysql-connector-java-5.1.36.tar.gz "${JIRA_INSTALL}/mysql-connector-java-5.1.36.tar.gz"
-RUN tar -xzf "${JIRA_INSTALL}/mysql-connector-java-5.1.36.tar.gz" --directory "${JIRA_INSTALL}/lib/" --strip-components=1 --no-same-owner \
-   && rm -f "${JIRA_INSTALL}/mysql-connector-java-5.1.36.tar.gz"
+RUN tar -xzf "${JIRA_INSTALL}/mysql-connector-java-5.1.36.tar.gz" \
+        --directory "${JIRA_INSTALL}/lib/" --strip-components=1 --no-same-owner \
+ && rm -f "${JIRA_INSTALL}/mysql-connector-java-5.1.36.tar.gz"
+
 
 # Expose default HTTP connector port.
 EXPOSE 8080
