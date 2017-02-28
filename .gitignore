@@ -2,4 +2,6 @@
 *.tar
 *.zip
 *.gz
+*.jar
+*.war
 logs/*
