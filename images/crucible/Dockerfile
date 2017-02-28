@@ -49,11 +49,12 @@ RUN unzip -q crucible-${FECRU_VERSION}.zip \
   && rm -f crucible-4.2.0.zip
 
 
-# MySQL java driver
+# PGSQL and MySQL java driver
+COPY postgresql-42.0.0.jar  ${CRUCIBLE_HOME}/lib/ 
 COPY mysql-connector-java-5.1.36.tar.gz /opt/atlassian/ 
 RUN tar -zxf mysql-connector-java-5.1.36.tar.gz \
       --directory ${CRUCIBLE_HOME}/lib/ --strip-components=1 --no-same-owner \
-    && rm -f mysql-connector-java-5.1.36.tar.gz
+ && rm -f mysql-connector-java-5.1.36.tar.gz
 
 
 
