@@ -1,7 +1,7 @@
 FROM praqma/java_8
 
 # Add staci user and set password
-RUN useradd -u 1000 -ms /bin/bash atlassian
+RUN useradd -u 1000 -m -s /bin/bash atlassian
 RUN echo "atlassian:praqma" | chpasswd
 
 # Configuration variables.
@@ -18,8 +18,6 @@ COPY atlassian-bitbucket-4.10.1.tar.gz "${BITBUCKET_INSTALL}/atlassian-bitbucket
 
 # Copy our custom (superior) server.xml file in the correct location: :)
 COPY server.xml /tmp
-
-# /opt/atlassian/bitbucket/conf/server.xml
 
 RUN set -x \
     && apt-get install git perl -y \
