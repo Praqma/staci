@@ -1,0 +1,72 @@
+version: '2'
+
+services:
+  bitbucket:
+    build: ./images/bitbucket
+    container_name: bitbucket.example.com
+    # 8888 is our custom port we set up for a separate/additional connection.
+    expose:
+      - "8888"
+      - "7990"
+    ports:
+      # 7999 is SSH for bitbucket
+      - "7999:7999"
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - STORAGEDIR/bitbucket:/var/atlassian/bitbucket
+
+  jira:
+    build:  ./images/jira
+    container_name: jira.example.com
+    environment:
+      - CATALINA_OPTS="-Datlassian.plugins.enable.wait=300" "-Xmx768m" "-Xms512m" "-Dorg.apache.catalina.SESSION_COOKIE_NAME=jirasession" "-Duser.timezone="
+    expose:
+      - "8888"
+      - "8080"
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - STORAGEDIR/jira:/var/atlassian/jira
+
+  crucible:
+    build:  ./images/crucible
+    container_name: crucible.example.com
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - STORAGEDIR/crucible:/var/atlassian/crucible
+
+  jenkins:
+    build: ./images/jenkins
+    container_name: jenkins.example.com
+    ports:
+      - "50000:50000"
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - STORAGEDIR/jenkins:/var/jenkins_home
+
+  artifactory:
+    build:  ./images/artifactory
+    container_name: artifactory.example.com
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - STORAGEDIR/artifactory/backup:/artifactory/backup
+      - STORAGEDIR/artifactory/data:/artifactory/data
+      - STORAGEDIR/artifactory/logs:/artifactory/logs
+
+  haproxy:
+    build:  ./images/haproxy
+    container_name: haproxy.example.com
+    hostname: haproxy
+    depends_on:
+      - atlassiandb
+      - jenkins        
+      - artifactory
+      - jira
+      - crucible
+      - bitbucket
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - STORAGEDIR/haproxy:/var/haproxy
+

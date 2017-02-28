@@ -1,0 +1,12 @@
+  atlassiandb:
+    build:  ./images/mysql
+    container_name: atlassiandb
+    ports:
+      - "3306:3306"
+    environment:
+      # The word MYSQLPASS is just a placeholder and will get the password from the setup.conf file, 
+      # with the help of setup.sh script. 
+      - MYSQL_ROOT_PASSWORD=MYSQLPASS
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - STORAGEDIR/atlassiandb/mysql:/var/lib/mysql
