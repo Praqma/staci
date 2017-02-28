@@ -44,7 +44,7 @@ services:
     ports:
       - "50000:50000"
     volumes:
-      - /opt/simple_ci/jenkins:/var/jenkins
+      - /opt/simple_ci/jenkins:/var/jenkins_home
   artifactory:
     build:  ./images/artifactory
     container_name: artifactory.example.com
