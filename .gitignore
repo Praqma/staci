@@ -4,4 +4,7 @@
 *.gz
 *.jar
 *.war
+images/atlassiandb/Dockerfile
+docker-compose.yml
+
 logs/*
