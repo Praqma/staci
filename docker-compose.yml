@@ -9,8 +9,10 @@ services:
       - "8888"
       - "7990"
     ports:
+      # 7999 is SSH for bitbucket
       - "7999:7999"
     volumes:
+      - /etc/localtime:/etc/localtime
       - /opt/simple_ci/bitbucket:/var/atlassian/bitbucket
   jira:
     build:  ./images/jira
@@ -21,6 +23,7 @@ services:
       - "8888"
       - "8080"
     volumes:
+      - /etc/localtime:/etc/localtime
       - /opt/simple_ci/jira:/var/atlassian/jira
   atlassiandb:
     build:  ./images/mysql
@@ -32,11 +35,13 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=pass_word
     volumes:
+      - /etc/localtime:/etc/localtime
       - /opt/simple_ci/atlassiandb:/var/lib/mysql
   crucible:
     build:  ./images/crucible
     container_name: crucible.example.com
     volumes:
+      - /etc/localtime:/etc/localtime
       - /opt/simple_ci/crucible:/var/atlassian/crucible
   jenkins:
     build: ./images/jenkins
@@ -44,11 +49,13 @@ services:
     ports:
       - "50000:50000"
     volumes:
+      - /etc/localtime:/etc/localtime
       - /opt/simple_ci/jenkins:/var/jenkins_home
   artifactory:
     build:  ./images/artifactory
     container_name: artifactory.example.com
     volumes:
+      - /etc/localtime:/etc/localtime
       - /opt/simple_ci/artifactory/backup:/artifactory/backup
       - /opt/simple_ci/artifactory/data:/artifactory/data
       - /opt/simple_ci/artifactory/logs:/artifactory/logs
@@ -67,4 +74,5 @@ services:
       - "443:443"
       - "80:80"
     volumes:
+      - /etc/localtime:/etc/localtime
       - /opt/simple_ci/haproxy:/var/haproxy
