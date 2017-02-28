@@ -7,7 +7,7 @@
 FROM praqma/java_8
 
 # Add staci user and set password
-RUN useradd -u 1000 -ms /bin/bash atlassian
+RUN useradd -u 1000 -m -s /bin/bash atlassian
 RUN echo "atlassian:praqma" | chpasswd
 
 # Configuration variables.
@@ -20,7 +20,6 @@ COPY atlassian-jira-software-7.3.1.tar.gz "${JIRA_INSTALL}/atlassian-jira-softwa
 
 COPY server.xml /tmp
 
-# /opt/atlassian/jira/conf/server.xml
 
 RUN set -x \
     && mkdir -p                     "${JIRA_HOME}" \
