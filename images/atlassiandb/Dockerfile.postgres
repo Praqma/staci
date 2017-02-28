@@ -1,0 +1,5 @@
+FROM postgres:9
+
+# Reference: https://hub.docker.com/_/postgres/
+# Pass an env variable POSTGRES_PASSWORD with postgres password.
+# Need to mount host volume into /var/lib/postgresql/data/pgdata
