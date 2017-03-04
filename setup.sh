@@ -56,6 +56,24 @@ if [ -z "${DOMAIN_NAME}" ]; then
   DOMAIN_NAME='example.com'
 fi
 
+# If there is no DB_PROVIDER, then use mysql as default DB_PROVIDER.
+if [ -z "${DB_PROVIDER}"  ] ; then
+  DB_PROVIDER='mysql'
+fi
+
+# If DB_PROVIDER is none of either mysql or postgres, set mysql as the default one.
+if [ "${DB_PROVIDER}" != 'mysql' ]; then  
+  if [ "${DB_PROVIDER}" != "postgres" ] ; then
+    echo "Unidentified DB_PROVIDER in config file. You must use either 'mysql' or 'postgres'."
+    echo "Setting mysql as default DB_PROVIDER ."
+    DB_PROVIDER='mysql'
+  fi
+fi
+
+echo
+echo "Using the ${DB_PROVIDER} DB provider ."
+echo
+
 # Assign the password in DB_ROOT_PASSWORD to both MYSQL and POSTGRES env variables. 
 MYSQL_ROOT_PASSWORD="${DB_ROOT_PASSWORD}"
 POSTGRES_PASSWORD="${DB_ROOT_PASSWORD}"
@@ -119,7 +137,7 @@ fi
 # Notice that Postgres connector is downloaded directly in Jira's image location.
 
 
-
+##########################################################################################
 
 echo 
 echo "Copying MySQL connector tarball inside each atlassian product ..."
@@ -145,6 +163,9 @@ fi
 if [ ! -r images/bitbucket/${POSTGRES_CONNECTOR_TARBALL} ]; then
   cp images/jira/${POSTGRES_CONNECTOR_TARBALL}  images/bitbucket/${POSTGRES_CONNECTOR_TARBALL}
 fi
+
+
+####################################################################################
 
 
 echo
@@ -208,9 +229,6 @@ sed -i -e s#STORAGEDIR#${STORAGE_DIR}#g \
 cp images/atlassiandb/Dockerfile.${DB_PROVIDER} images/atlassiandb/Dockerfile
 
 
-# From Here on we need to be more careful about DB provder.
-
-
 echo 
 echo "Spinning up database for initial configuration ..."
 echo "This will take a while. It includes building atlassiandb docker image when run for the first time."
@@ -220,7 +238,7 @@ echo
 
 docker-compose up -d atlassiandb > $SETUP_DIR/logs/docker-compose.atlassiandb.log 2>&1
 
-  
+
 echo
 echo -n "Waiting for atlassiandb container to start ..."
 # Needs to be a loop here, which exits when the status becomes true. 
@@ -230,79 +248,54 @@ while [ "$status" != "true" ] ; do
   echo -n "."
 done
 
-echo 
-if [ "$status" == "true" ];then
-  echo -n "Container atlassiandb is now active; waiting for DB init process to complete ..."
-  attempt=0
-  while [ $attempt -le 59 ]; do
-    attempt=$(( $attempt + 1 ))
-    result=$(docker logs atlassiandb 2>&1)
-    if grep -q 'MySQL init process done. Ready for start up.' <<< $result ; then
-      # echo
-      # echo "MySQL init process complete."
-      # echo
-      break
-    else
-      echo -n "."
-      sleep 1
-    fi
-  done
+echo -n "The atlassiandb container is now running. Waiting for DB to be ready ..."
 
-  echo 
-  echo -n "DB init process complete. Waiting for it to be ready for connections ..."
-  attempt=0
 
-  while [ $attempt -le 59 ]; do
-    attempt=$(( $attempt + 1 ))
-    STATUS=$(docker exec  atlassiandb mysqladmin --user=root --password=${MYSQL_ROOT_PASSWORD} ping 2> /dev/null | grep 'alive')
-    if [ "${STATUS}" == "mysqld is alive"  ]; then
-      echo "Done."
-      echo "- MySQL DB is up!"
-      break
-    else
-      echo -n "."
-      sleep 1
-    fi
-  done
+# From Here on we need to be more careful about DB provder.
+
+# Ideally we will only come out of the above loop if the status becomes true. So no need to test it further.
+
+
+
+# Test if DB is ready for accepting connections. Call a function depending on DB_PROVIDER
+testDBReadiness-${DB_PROVIDER}
+if [ $? -eq 0 ] ; then
+  echo "The container 'atlassiandb' (with provider ${DB_PROVIDER} is now ready and accepting connections."
 else
-  echo "Container atlassiandb did not start. Please investigate. Logs in: $SETUP_DIR/logs/docker-compose.atlassiandb.log"
-  echo "Exiting ..."    
+  echo "Something went wrong in bringing up DB container 'atlassiandb' with the provider ${DB_PROVIDER}."
+  echo "Please investigate. Exiting ..."
   exit 9
 fi
 
+exit 0
+
+# Initialize / setup Databases for usage, based on DB_Provider.
+# The init-databases.sh has intelligence built into it to select the right DB_PROVIDER, 
+#   and execute the necessary commands on that.
+
+source ./init-databases.sh
 
 
-# Setup databases
-# ---------------
-echo
-echo "Setting up databases for Atlassian products in the DB container ..."
-# depending on db provider
-if [ "${DB_PROVIDER}" == "mysql" ] ; then
-  source ./init-mysql-dbs.sh
-fi
 
-if [ "${DB_PROVIDER}" == "postgres" ] ; then
-  source ./init-postgres-dbs.sh
-fi
-
-
+echo " >>>>>>>>>>>>>>>> Installation/Configuration Complete! <<<<<<<<<<<<<<<<<"
 
 echo
-echo "Bringing up the rest of the stack..."
+
+echo
+echo "Proceeding to bringing up the rest of the stack..."
 echo "This will take a while. It includes building several images when run for the first time."
 echo "Logs in: $SETUP_DIR/logs/docker-compose.log "
 echo
 docker-compose up -d >> $SETUP_DIR/logs/docker-compose.log 2>&1
 
+if $? -eq 0 ; then 
+  echo "docker-compose was able to bring up entire application suite. Please refer to README.md for next steps."
+  exit 0
+else
+  echo "Something went wrong in bringing up application suite. Please investigate and fix." 
+  echo "You do not need to run setup again though. "
+  echo "From this point onwards, you can just manage your application using docker-compose "
+  echo "Exiting ..."
+  exit 9
 echo
-echo " >>>>>>>>>>>>>>>> Installation Complete! <<<<<<<<<<<<<<<<<"
-echo
-
-echo "Please refer to README.md for next steps."
-echo
-
-exit 0
-
-
-
 

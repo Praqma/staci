@@ -33,3 +33,46 @@ function generateSSLCertificate(){
     cat /tmp/server.crt /tmp/server.key > ${STORAGE_DIR}/haproxy/haproxy.pem
     echo "- Created SSL certificate for ${COMMON_NAME} as: ${STORAGE_DIR}/hapropxy/haproxy.pem"
 }
+
+
+
+function testDBReadiness-mysql() {
+
+while [ $ATTEMPT -le 59 ]; do
+  ATTEMPT=$(( $ATTEMPT + 1 ))
+  STATUS=$(docker exec  atlassiandb mysqladmin --user=root --password=${MYSQL_ROOT_PASSWORD} ping 2> /dev/null | grep 'alive')
+  if [ "${STATUS}" == "mysqld is alive"  ]; then
+    echo "Done."
+    echo "- MySQL DB is up! (and accepting connections!)"
+    break
+  else
+    echo -n "."
+    sleep 1
+  fi
+done
+
+}
+
+
+function testDBReadiness-postgres() {
+
+while [ $ATTEMPT -le 59 ]; do
+  ATTEMPT=$(( $ATTEMPT + 1 ))
+  STATUS=$(docker exec  atlassiandb pg_isready   2> /dev/null  )
+  if [ "${STATUS}" == "/var/run/postgresql:5432 - accepting connections"  ]; then
+    echo "Done."
+    echo "- Postgres DB is up! (and accepting connections!)"
+    break
+  else
+    echo -n "."
+    sleep 1
+  fi
+done
+
+}
+
+
+
+
+
+
