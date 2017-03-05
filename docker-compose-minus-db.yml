@@ -3,7 +3,8 @@ version: '2'
 services:
   bitbucket:
     build: ./images/bitbucket
-    container_name: bitbucket.example.com
+    container_name: bitbucket
+    hostname: bitbucket
     # 8888 is our custom port we set up for a separate/additional connection.
     expose:
       - "8888"
@@ -17,7 +18,8 @@ services:
 
   jira:
     build:  ./images/jira
-    container_name: jira.example.com
+    container_name: jira
+    hostname: jira
     environment:
       - CATALINA_OPTS="-Datlassian.plugins.enable.wait=300" "-Xmx768m" "-Xms512m" "-Dorg.apache.catalina.SESSION_COOKIE_NAME=jirasession" "-Duser.timezone="
     expose:
@@ -29,14 +31,16 @@ services:
 
   crucible:
     build:  ./images/crucible
-    container_name: crucible.example.com
+    container_name: crucible
+    hostname: crucible
     volumes:
       - /etc/localtime:/etc/localtime
       - STORAGEDIR/crucible:/var/atlassian/crucible
 
   jenkins:
     build: ./images/jenkins
-    container_name: jenkins.example.com
+    container_name: jenkins
+    hostname: jenkins
     ports:
       - "50000:50000"
     volumes:
@@ -45,7 +49,8 @@ services:
 
   artifactory:
     build:  ./images/artifactory
-    container_name: artifactory.example.com
+    container_name: artifactory
+    hostname: artifactory
     volumes:
       - /etc/localtime:/etc/localtime
       - STORAGEDIR/artifactory/backup:/artifactory/backup
@@ -53,8 +58,8 @@ services:
       - STORAGEDIR/artifactory/logs:/artifactory/logs
 
   haproxy:
-    build:  ./images/haproxy
-    container_name: haproxy.example.com
+    build: ./images/haproxy
+    container_name: haproxy
     hostname: haproxy
     depends_on:
       - atlassiandb
@@ -69,4 +74,16 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime
       - STORAGEDIR/haproxy:/var/haproxy
-
+  cadvisor:
+    # Note: cadvisor is not part of haproxy setup. It exposes it's port on the dockerhost.
+    #       This is intentional.
+    image: google/cadvisor:latest 
+    container_name: cadvisor
+    hostname: cadvisor
+    ports:
+      - 8080:8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
