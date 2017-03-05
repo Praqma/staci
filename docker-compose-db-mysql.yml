@@ -1,8 +1,9 @@
   atlassiandb:
     build:  ./images/mysql
     container_name: atlassiandb
-    ports:
-      - "3306:3306"
+    # We do not need to expose the DB port to the outside world!
+    # ports:
+    #  - "3306:3306"
     environment:
       # The word MYSQLPASS is just a placeholder and will get the password from the setup.conf file, 
       # with the help of setup.sh script. 
