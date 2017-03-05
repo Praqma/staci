@@ -14,6 +14,10 @@ Edit and adjust `setup.conf`
 # Setup:
 You need to run `setup.sh` as root (or sudo).
 
+# Monitoring:
+Google's cadvisor is part of the suite and is accessible directly over port 8080 of the dockerhost the application suite is running on. Will prove quite handy!
+
+
 # Post Installation steps:
 
 ## Link Jira , BitBucket and Jira together:
@@ -24,6 +28,43 @@ Crucible is special. You just use it's default port for application links, such 
 If you encounter any errors click on the edit icon beside each application link entry and check that OAUTH (impersonation) is enabled.
 
 Do not panic if errors occur on your first try: a successful connection requires that there be reciprocal links present. We suggest to start from the jira and bitbucket.
+
+
+# Database setup:
+During the setup, init-databases.sh script will create necessary databases and users for them.
+
+## postgres
+```
+[kamran@dockerhost staci]$ docker exec -it atlassiandb bash
+root@58c73b9c33a7:/# psql -U postgres -c "\l"                                                                                      
+                                     List of databases
+    Name     |      Owner      | Encoding |  Collate   |   Ctype    |   Access privileges   
+-------------+-----------------+----------+------------+------------+-----------------------
+ bitbucketdb | bitbucketdbuser | UTF8     | en_US.utf8 | en_US.utf8 | 
+ crucibledb  | crucibledbuser  | UTF8     | en_US.utf8 | en_US.utf8 | 
+ jiradb      | jiradbuser      | UTF8     | en_US.utf8 | en_US.utf8 | 
+ postgres    | postgres        | UTF8     | en_US.utf8 | en_US.utf8 | 
+ template0   | postgres        | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+             |                 |          |            |            | postgres=CTc/postgres
+ template1   | postgres        | UTF8     | en_US.utf8 | en_US.utf8 | =c/postgres          +
+             |                 |          |            |            | postgres=CTc/postgres
+(6 rows)
+
+root@58c73b9c33a7:/# psql -U postgres -c "\du"
+                                      List of roles
+    Role name    |                         Attributes                         | Member of 
+-----------------+------------------------------------------------------------+-----------
+ bitbucketdbuser |                                                            | {}
+ crucibledbuser  |                                                            | {}
+ jiradbuser      |                                                            | {}
+ postgres        | Superuser, Create role, Create DB, Replication, Bypass RLS | {}
+
+root@58c73b9c33a7:/# exit
+exit
+[kamran@dockerhost staci]$ 
+```
+
+
 
 
 (This is very much work in progress. The code and documentation will be augmented in due time. Feel free to make contributions)
