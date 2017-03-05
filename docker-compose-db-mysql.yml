@@ -9,5 +9,5 @@
       # with the help of setup.sh script. 
       - MYSQL_ROOT_PASSWORD=MYSQLPASS
     volumes:
-      - /etc/localtime:/etc/localtime
+      - /etc/localtime:/etc/localtime:ro
       - STORAGEDIR/atlassiandb/mysql:/var/lib/mysql

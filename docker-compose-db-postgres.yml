@@ -9,6 +9,6 @@
       # with the help of setup.sh script. 
       - POSTGRES_PASSWORD=POSTGRESPASS
     volumes:
-      - /etc/localtime:/etc/localtime
+      - /etc/localtime:/etc/localtime:ro
       # - STORAGEDIR/atlassiandb/postgres:/var/lib/postgresql/data/pgdata
       - STORAGEDIR/atlassiandb/postgres:/var/lib/postgresql/data

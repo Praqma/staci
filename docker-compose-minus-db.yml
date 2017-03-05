@@ -13,7 +13,7 @@ services:
       # 7999 is SSH for bitbucket
       - "7999:7999"
     volumes:
-      - /etc/localtime:/etc/localtime
+      - /etc/localtime:/etc/localtime:ro
       - STORAGEDIR/bitbucket:/var/atlassian/bitbucket
 
   jira:
@@ -26,7 +26,7 @@ services:
       - "8888"
       - "8080"
     volumes:
-      - /etc/localtime:/etc/localtime
+      - /etc/localtime:/etc/localtime:ro
       - STORAGEDIR/jira:/var/atlassian/jira
 
   crucible:
@@ -34,7 +34,7 @@ services:
     container_name: crucible
     hostname: crucible
     volumes:
-      - /etc/localtime:/etc/localtime
+      - /etc/localtime:/etc/localtime:ro
       - STORAGEDIR/crucible:/var/atlassian/crucible
 
   jenkins:
@@ -44,7 +44,7 @@ services:
     ports:
       - "50000:50000"
     volumes:
-      - /etc/localtime:/etc/localtime
+      - /etc/localtime:/etc/localtime:ro
       - STORAGEDIR/jenkins:/var/jenkins_home
 
   artifactory:
@@ -52,7 +52,7 @@ services:
     container_name: artifactory
     hostname: artifactory
     volumes:
-      - /etc/localtime:/etc/localtime
+      - /etc/localtime:/etc/localtime:ro
       - STORAGEDIR/artifactory/backup:/artifactory/backup
       - STORAGEDIR/artifactory/data:/artifactory/data
       - STORAGEDIR/artifactory/logs:/artifactory/logs
@@ -72,7 +72,7 @@ services:
       - "443:443"
       - "80:80"
     volumes:
-      - /etc/localtime:/etc/localtime
+      - /etc/localtime:/etc/localtime:ro
       - STORAGEDIR/haproxy:/var/haproxy
   cadvisor:
     # Note: cadvisor is not part of haproxy setup. It exposes it's port on the dockerhost.
