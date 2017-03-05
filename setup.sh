@@ -47,6 +47,8 @@ POSTGRES_CONNECTOR_TARBALL=$(basename $POSTGRES_CONNECTOR_URL)
 USER_ID=1000
 GROUP_ID=1000
 
+LOG_DIR=/tmp/staci_logs
+
 # Various options used with curl command. Note "do not" use -z . It does not work. (Kamran) . Also don't use -s.
 # CURL_OPTIONS="-# -L"
 CURL_OPTIONS="-# -L"
@@ -62,8 +64,8 @@ if [ -z "${DB_PROVIDER}"  ] ; then
 fi
 
 # If DB_PROVIDER is none of either mysql or postgres, set mysql as the default one.
-if [ "${DB_PROVIDER}" != 'mysql' ]; then  
-  if [ "${DB_PROVIDER}" != "postgres" ] ; then
+if [ "${DB_PROVIDER}" != "mysql" ] ; then  
+  if [ "${DB_PROVIDER}" != "postgres" ] ; then
     echo "Unidentified DB_PROVIDER in config file. You must use either 'mysql' or 'postgres'."
     echo "Setting mysql as default DB_PROVIDER ."
     DB_PROVIDER='mysql'
@@ -71,7 +73,7 @@ if [ "${DB_PROVIDER}" != 'mysql' ]; then
 fi
 
 echo
-echo "Using the ${DB_PROVIDER} DB provider ."
+echo "Using the "${DB_PROVIDER}" as DB provider for atlassiandb container."
 echo
 
 # Assign the password in DB_ROOT_PASSWORD to both MYSQL and POSTGRES env variables. 
@@ -143,36 +145,35 @@ echo
 echo "Copying MySQL connector tarball inside each atlassian product ..."
 # Copy from Jira to other two atlassian products.
 
-if [ ! -r images/crucible/${MYSQL_CONNECTOR_TARBALL} ]; then
-  cp images/jira/${MYSQL_CONNECTOR_TARBALL}  images/crucible/${MYSQL_CONNECTOR_TARBALL}
-fi
-
 if [ ! -r images/bitbucket/${MYSQL_CONNECTOR_TARBALL} ]; then
   cp images/jira/${MYSQL_CONNECTOR_TARBALL}  images/bitbucket/${MYSQL_CONNECTOR_TARBALL}
 fi
 
+if [ ! -r images/crucible/${MYSQL_CONNECTOR_TARBALL} ]; then
+  cp images/jira/${MYSQL_CONNECTOR_TARBALL}  images/crucible/${MYSQL_CONNECTOR_TARBALL}
+fi
 
 echo
 echo "Copying PostgreSQL JDBC connector inside each atlassian product ..."
 # Copy from Jira to other two atlassian products.
 
-if [ ! -r images/crucible/${POSTGRES_CONNECTOR_TARBALL} ]; then
-  cp images/jira/${POSTGRES_CONNECTOR_TARBALL}  images/crucible/${POSTGRES_CONNECTOR_TARBALL}
-fi
-
 if [ ! -r images/bitbucket/${POSTGRES_CONNECTOR_TARBALL} ]; then
   cp images/jira/${POSTGRES_CONNECTOR_TARBALL}  images/bitbucket/${POSTGRES_CONNECTOR_TARBALL}
 fi
 
+if [ ! -r images/crucible/${POSTGRES_CONNECTOR_TARBALL} ]; then
+  cp images/jira/${POSTGRES_CONNECTOR_TARBALL}  images/crucible/${POSTGRES_CONNECTOR_TARBALL}
+fi
 
 ####################################################################################
 
-
 echo
-echo "Creating logs directory in the root of setup directory - ${SETUP_DIR} ..."
+echo "Creating logs directory in ${LOG_DIR} ..."
 
-if [ !  -d $SETUP_DIR/logs ]; then
-  mkdir $SETUP_DIR/logs
+if [ !  -d $LOG_DIR ]; then
+  mkdir $LOG_DIR
+  chmod 0700 $LOG_DIR
+  chown root:root $LOG_DIR
 fi
 
 echo
@@ -196,21 +197,25 @@ for SERVICE in haproxy jira crucible bitbucket artifactory jenkins atlassiandb; 
 done
 
 chown -R 1000:1000 ${STORAGE_DIR}
+
+# postgres and mysql are special. They both need the uid:gid of 999:999.
+chown -R 999:999 ${STORAGE_DIR}/atlassiandb 
+
 echo
 
 echo "Generating self-signed SSL certificates for haproxy ..."
-echo "Logs in: $SETUP_DIR/logs/SSL-certs.log"
+echo "Logs in: $LOG_DIR/SSL-certs.log"
 
-generateSSLCertificate >> $SETUP_DIR/logs/SSL-certs.log  2>&1
+generateSSLCertificate >> $LOG_DIR/SSL-certs.log  2>&1
 
 # build java base image for jira, crucible and bitbucket
 image_check=$(docker images | grep praqma/java)
 
 if [ -z "$image_check" ]; then
   echo
-  echo "Building the base image: praqma/java_8 ... Logs in: $SETUP_DIR/logs/base.log"
+  echo "Building the base image: praqma/java_8 ... Logs in: $LOG_DIR/base.log"
   echo
-  docker build -t "praqma/java_8"  $SETUP_DIR/images/base/. >> $SETUP_DIR/logs/base.log 2>&1  
+  docker build -t "praqma/ijava_8"  $SETUP_DIR/images/base/. >> $LOG_DIR/base-image.log 2>&1  
 fi
 
 
@@ -225,18 +230,19 @@ sed -i -e s#STORAGEDIR#${STORAGE_DIR}#g \
     docker-compose.yml  
 
 
+# NO need - debug
 # Setup correct Dockerfile for atlassiandb image
-cp images/atlassiandb/Dockerfile.${DB_PROVIDER} images/atlassiandb/Dockerfile
+# cp images/atlassiandb/Dockerfile.${DB_PROVIDER} images/atlassiandb/Dockerfile
 
 
 echo 
-echo "Spinning up database for initial configuration ..."
+echo "Spinning up database atlassiandb with '${DB_PROVIDER}' as DB provider for initial configuration ..."
 echo "This will take a while. It includes building atlassiandb docker image when run for the first time."
-echo "Logs in: $SETUP_DIR/logs/docker-compose.atlassiandb.log"
+echo "Logs in: $LOG_DIR/docker-compose.atlassiandb.log"
 echo
 
 
-docker-compose up -d atlassiandb > $SETUP_DIR/logs/docker-compose.atlassiandb.log 2>&1
+docker-compose up -d atlassiandb >> $LOG_DIR/docker-compose.atlassiandb.log 2>&1
 
 
 echo
@@ -247,32 +253,30 @@ while [ "$status" != "true" ] ; do
   sleep 1
   echo -n "."
 done
+echo " Done."
 
-echo -n "The atlassiandb container is now running. Waiting for DB to be ready ..."
+echo
+echo "The atlassiandb container is now running. "
+echo
+echo -n "Waiting for '${DB_PROVIDER}' DB container to start accepting connections ..."
 
-
-# From Here on we need to be more careful about DB provder.
-
-# Ideally we will only come out of the above loop if the status becomes true. So no need to test it further.
-
-
-
-# Test if DB is ready for accepting connections. Call a function depending on DB_PROVIDER
+# Test if DB is ready for accepting connections. Call a function depending on DB_PROVIDER and check it's exit code.
 testDBReadiness-${DB_PROVIDER}
 if [ $? -eq 0 ] ; then
-  echo "The container 'atlassiandb' (with provider ${DB_PROVIDER} is now ready and accepting connections."
+  echo " Done."
+  echo "The container 'atlassiandb' (with provider '${DB_PROVIDER}') is now ready and accepting connections."
 else
-  echo "Something went wrong in bringing up DB container 'atlassiandb' with the provider ${DB_PROVIDER}."
+  echo " TIMEOUT!"
+  echo "Something went wrong in bringing up DB container 'atlassiandb' with the provider '${DB_PROVIDER}' ."
   echo "Please investigate. Exiting ..."
   exit 9
 fi
 
-exit 0
 
 # Initialize / setup Databases for usage, based on DB_Provider.
 # The init-databases.sh has intelligence built into it to select the right DB_PROVIDER, 
 #   and execute the necessary commands on that.
-
+echo
 source ./init-databases.sh
 
 
@@ -284,12 +288,14 @@ echo
 echo
 echo "Proceeding to bringing up the rest of the stack..."
 echo "This will take a while. It includes building several images when run for the first time."
-echo "Logs in: $SETUP_DIR/logs/docker-compose.log "
+echo "Logs in: $LOG_DIR/docker-compose.log "
 echo
-docker-compose up -d >> $SETUP_DIR/logs/docker-compose.log 2>&1
 
-if $? -eq 0 ; then 
-  echo "docker-compose was able to bring up entire application suite. Please refer to README.md for next steps."
+docker-compose up -d >> $LOG_DIR/docker-compose.log 2>&1
+if [ $? -eq 0 ] ; then 
+  echo "docker-compose was able to bring up entire application suite." 
+  echo "Though it may take few minutes for the complete application suite to be usable."
+  echo "Please refer to README.md for next steps."
   exit 0
 else
   echo "Something went wrong in bringing up application suite. Please investigate and fix." 
@@ -297,5 +303,5 @@ else
   echo "From this point onwards, you can just manage your application using docker-compose "
   echo "Exiting ..."
   exit 9
+fi
 echo
-
