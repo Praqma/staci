@@ -37,13 +37,16 @@ function generateSSLCertificate(){
 
 
 function testDBReadiness-mysql() {
+ATTEMPT=0
+RETURN_CODE=9
 
 while [ $ATTEMPT -le 59 ]; do
   ATTEMPT=$(( $ATTEMPT + 1 ))
   STATUS=$(docker exec  atlassiandb mysqladmin --user=root --password=${MYSQL_ROOT_PASSWORD} ping 2> /dev/null | grep 'alive')
   if [ "${STATUS}" == "mysqld is alive"  ]; then
-    echo "Done."
+    echo " Done."
     echo "- MySQL DB is up! (and accepting connections!)"
+    RETURN_CODE=0
     break
   else
     echo -n "."
@@ -51,17 +54,48 @@ while [ $ATTEMPT -le 59 ]; do
   fi
 done
 
+if [ $RETURN_CODE -ne 0 ] ; then
+  echo " attempt # ${ATTEMPT} - TIMEOUT !"
+fi
+
+return $RETURN_CODE
 }
 
 
 function testDBReadiness-postgres() {
 
+# Postgres has a strange way of coming up. It comes up, then shutsdown again, then inits DB, then comes up again.
+# So  testing only for pg_ready was not enough. As the system was incorrectly thinking that the DB is ready,
+# whereas it used to go through a shutdown again and then come up later.
+# That was the reason some of my init-databases.sh commands were failing. 
+# In light of above, I have to first check for a string in postgres container logs.
+# i.e. "PostgreSQL init process complete; ready for start up."
+
+DB_CONTAINER="atlassiandb"
+
+INIT_STATUS=""
+
+SEARCH_STRING="PostgreSQL init process complete; ready for start up."
+
+# echo "Waiting for Postges to complete it's init process ..."
+
+while [ "${INIT_STATUS}" == "" ]; do
+   INIT_STATUS=$(docker logs ${DB_CONTAINER} 2> /dev/null | grep "$SEARCH_STRING")
+   echo -n "."
+   sleep 1
+done
+# echo  " Done"
+
+ATTEMPT=0
+RETURN_CODE=9
+
 while [ $ATTEMPT -le 59 ]; do
   ATTEMPT=$(( $ATTEMPT + 1 ))
-  STATUS=$(docker exec  atlassiandb pg_isready   2> /dev/null  )
+  STATUS=$(docker exec  atlassiandb pg_isready   2> /dev/null)
   if [ "${STATUS}" == "/var/run/postgresql:5432 - accepting connections"  ]; then
-    echo "Done."
-    echo "- Postgres DB is up! (and accepting connections!)"
+    # echo " Done."
+    # echo "- Postgres DB is up! (and accepting connections!)"
+    RETURN_CODE=0
     break
   else
     echo -n "."
@@ -69,10 +103,11 @@ while [ $ATTEMPT -le 59 ]; do
   fi
 done
 
+# if [ $RETURN_CODE -ne 0 ] ; then
+#   echo " attempt # ${ATTEMPT} - TIMEOUT !"
+# fi
+
+return $RETURN_CODE
 }
-
-
-
-
 
 
