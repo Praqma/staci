@@ -215,7 +215,7 @@ if [ -z "$image_check" ]; then
   echo
   echo "Building the base image: praqma/java_8 ... Logs in: $LOG_DIR/base.log"
   echo
-  docker build -t "praqma/ijava_8"  $SETUP_DIR/images/base/. >> $LOG_DIR/base-image.log 2>&1  
+  docker build -t "praqma/java_8"  $SETUP_DIR/images/base/. >> $LOG_DIR/base-image.log 2>&1  
 fi
 
 
