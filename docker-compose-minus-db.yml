@@ -1,10 +1,10 @@
 version: '2'
 
 services:
-  bitbucket:
+  git:
     build: ./images/bitbucket
-    container_name: bitbucket
-    hostname: bitbucket
+    container_name: git.DOMAINNAME
+    hostname: git.DOMAINNAME
     # 8888 is our custom port we set up for a separate/additional connection.
     expose:
       - "8888"
@@ -14,12 +14,12 @@ services:
       - "7999:7999"
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - STORAGEDIR/bitbucket:/var/atlassian/bitbucket
+      - ATLASSIANTOPDIR/bitbucket:/var/atlassian/bitbucket
 
-  jira:
+  projects:
     build:  ./images/jira
-    container_name: jira
-    hostname: jira
+    container_name: projects.DOMAINNAME
+    hostname: projects.DOMAINNAME
     environment:
       - CATALINA_OPTS="-Datlassian.plugins.enable.wait=300" "-Xmx768m" "-Xms512m" "-Dorg.apache.catalina.SESSION_COOKIE_NAME=jirasession" "-Duser.timezone="
     expose:
@@ -27,59 +27,59 @@ services:
       - "8080"
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - STORAGEDIR/jira:/var/atlassian/jira
+      - ATLASSIANTOPDIR/jira:/var/atlassian/jira
 
-  crucible:
+  codereview:
     build:  ./images/crucible
-    container_name: crucible
-    hostname: crucible
+    container_name: codereview.DOMAINNAME
+    hostname: codereview.DOMAINNAME
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - STORAGEDIR/crucible:/var/atlassian/crucible
+      - ATLASSIANTOPDIR/crucible:/var/atlassian/crucible
 
-  jenkins:
+  build:
     build: ./images/jenkins
-    container_name: jenkins
-    hostname: jenkins
+    container_name: build.DOMAINNAME
+    hostname: build.DOMAINNAME
     ports:
       - "50000:50000"
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - STORAGEDIR/jenkins:/var/jenkins_home
+      - CODETOPDIR/jenkins:/var/jenkins_home
 
-  artifactory:
+  artifacts:
     build:  ./images/artifactory
-    container_name: artifactory
-    hostname: artifactory
+    container_name: artifacts.DOMAINNAME
+    hostname: artifacts.DOMAINNAME
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - STORAGEDIR/artifactory/backup:/artifactory/backup
-      - STORAGEDIR/artifactory/data:/artifactory/data
-      - STORAGEDIR/artifactory/logs:/artifactory/logs
+      - CODETOPDIR/artifactory/backup:/artifactory/backup
+      - CODETOPDIR/artifactory/data:/artifactory/data
+      - CODETOPDIR/artifactory/logs:/artifactory/logs
 
   haproxy:
     build: ./images/haproxy
-    container_name: haproxy
-    hostname: haproxy
+    container_name: haproxy.DOMAINNAME
+    hostname: haproxy.DOMAINNAME
     depends_on:
       - atlassiandb
-      - jenkins        
-      - artifactory
-      - jira
-      - crucible
-      - bitbucket
+      - build
+      - artifacts
+      - projects
+      - codereview
+      - git
     ports:
       - "443:443"
       - "80:80"
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - STORAGEDIR/haproxy:/var/haproxy
+      - CODETOPDIR/haproxy:/var/haproxy
   cadvisor:
     # Note: cadvisor is not part of haproxy setup. It exposes it's port on the dockerhost.
     #       This is intentional.
     image: google/cadvisor:latest 
-    container_name: cadvisor
-    hostname: cadvisor
+    container_name: cadvisor.DOMAINNAME
+    hostname: cadvisor.DOMAINNAME
     ports:
       - 8080:8080
     volumes:

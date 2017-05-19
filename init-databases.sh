@@ -1,7 +1,13 @@
 #! /bin/bash
 
+
+# Load setup.conf and setup.conf.local
 if [ "$1" == "debug" ] ; then
   source ./setup.conf
+fi
+
+if [ -r ./setup.conf.local ]; then
+  source ./setup.conf.local
 fi
 
 
@@ -19,7 +25,7 @@ fi
     
 SETUP_DIR=$(pwd)
 
-DB_CONTAINER="atlassiandb"
+DB_CONTAINER="atlassiandb.${DOMAIN_NAME}"
 
 function setup_mysql_db(){
   local USER_NAME=$1

@@ -14,7 +14,7 @@ fi
 #
 
 SETUP_DIR=$(pwd)
-CONFIG_FILE=setup.conf
+CONFIG_FILE=./setup.conf
 
 #
 #
@@ -32,9 +32,55 @@ else
 fi
 
 
+# If there is a local config file (setup.conf.local), load values from that too.
+
+if [ -r "${CONFIG_FILE}.local" ] ; then
+  source "${CONFIG_FILE}.local"
+fi
+
+
+
+########### START - SANITY CHECKS #############################################################
+#
+#
+# Test various things before moving on. 
+if [ -z "${CODE_STORAGE_DIR}" ] ; then
+  echo "You cannot set CODE_STORAGE_DIR to null/empty. Exiting ..."
+  exit 1
+fi
+
+if [ -z "${ATLASSIAN_STORAGE_DIR}" ] ; then
+  echo "You cannot set ATLASSIAN_STORAGE_DIR to null/empty. Exiting ..."
+  exit 1
+fi 
+
+
+if [ ! -d "${STORAGE_TOP_DIR}/${CODE_STORAGE_DIR}" ] ; then
+  echo "The directory: ${STORAGE_TOP_DIR}/${CODE_STORAGE_DIR} does not exist. Exiting ..."
+  exit 1
+fi
+
+if [ ! -d "${STORAGE_TOP_DIR}/${ATLASSIAN_STORAGE_DIR}" ] ; then
+  echo "The directory: ${STORAGE_TOP_DIR}/${ATLASSIAN_STORAGE_DIR} does not exist. Exiting ..."
+  exit 1
+fi
+
+# Need to add more tests here. 
+
+#
+#
+########### END - SANITY CHECKS #############################################################
+
+
 ########### START - SYTEM DEFINED VARIABLES - #############################
 #
 #
+
+# Easy to use variables for CODE and ATLASSIAN mount points.
+ATLASSIAN_TOP_DIR=${STORAGE_TOP_DIR}/${ATLASSIAN_STORAGE_DIR}
+CODE_TOP_DIR=${STORAGE_TOP_DIR}/${CODE_STORAGE_DIR}
+
+
 # The command basename only returns the last (filename) portion of any long path / URL.  
 
 JIRA_TARBALL=$(basename $JIRA_URL)
@@ -177,29 +223,39 @@ if [ !  -d $LOG_DIR ]; then
 fi
 
 echo
-echo "Creating volume directories for persistent data storage in ${STORAGE_DIR}..."
-if [ !  -d ${STORAGE_DIR} ]; then
-  mkdir -p ${STORAGE_DIR}
+echo "Creating volume directories for persistent data storage in ${STORAGE_TOP_DIR}..."
+if [ !  -d ${STORAGE_TOP_DIR} ]; then
+  mkdir -p ${STORAGE_TOP_DIR}
 fi
 
-for SERVICE in haproxy jira crucible bitbucket artifactory jenkins atlassiandb; do
-  if [  ! -d "${STORAGE_DIR}/${SERVICE}" ]; then
-    mkdir ${STORAGE_DIR}/${SERVICE}
+for SERVICE in haproxy artifactory jenkins ; do
+  if [  ! -d "${CODE_TOP_DIR}/${SERVICE}" ]; then
+    mkdir ${CODE_TOP_DIR}/${SERVICE}
     if [ "${SERVICE}" == "artifactory" ]; then
-      mkdir -p ${STORAGE_DIR}/${SERVICE}/backup ${STORAGE_DIR}/${SERVICE}/data ${STORAGE_DIR}/${SERVICE}/logs
-    fi
-
-    # atlassiandb can have mysql or postgres backend. Need to keep them separated.
-    if [ "${SERVICE}" == "atlassiandb" ]; then
-      mkdir -p ${STORAGE_DIR}/${SERVICE}/mysql ${STORAGE_DIR}/${SERVICE}/postgres
+      mkdir -p ${CODE_TOP_DIR}/${SERVICE}/backup ${CODE_TOP_DIR}/${SERVICE}/data ${CODE_TOP_DIR}/${SERVICE}/logs
     fi
   fi
 done
 
-chown -R 1000:1000 ${STORAGE_DIR}
+
+for SERVICE in jira bitucket crucible ; do
+  if [  ! -d "${ATLASSIAN_TOP_DIR}/${SERVICE}" ]; then
+    mkdir ${ATLASSIAN_TOP_DIR}/${SERVICE}
+
+    # atlassiandb can have mysql or postgres backend. Need to keep them separated.
+    if [ "${SERVICE}" == "atlassiandb" ]; then
+      mkdir -p ${ATLASSIAN_TOP_DIR}/${SERVICE}/mysql ${ATLASSIAN_TOP_DIR}/${SERVICE}/postgres
+    fi
+  fi
+done
+
+
+# chwon everything to 1000:1000 for both CODE and ATLASSIAN TOP directories. 
+chown -R 1000:1000 ${CODE_TOP_DIR}
+chown -R 1000:1000 ${ATLASSIAN_TOP_DIR}
 
 # postgres and mysql are special. They both need the uid:gid of 999:999.
-chown -R 999:999 ${STORAGE_DIR}/atlassiandb 
+chown -R 999:999 ${ATLASSIAN_TOP_DIR}/atlassiandb 
 
 echo
 
@@ -224,10 +280,16 @@ fi
 cat docker-compose-minus-db.yml docker-compose-db-${DB_PROVIDER}.yml > docker-compose.yml
 
 # Then do some sed magic:
-sed -i -e s#STORAGEDIR#${STORAGE_DIR}#g \
+sed -i -e s#STORAGETOPDIR#${STORAGE_TOP_DIR}#g \
+       -e s#CODETOPDIR#${CODE_TOP_DIR}#g \
+       -e s#ATLASSIANTOPDIR#${ATLASSIAN_TOP_DIR}#g \
        -e s#MYSQLPASS#${MYSQL_ROOT_PASSWORD}#g \
        -e s#POSTGRESPASS#${POSTGRES_PASSWORD}#g \
+       -e s#DOMAINNAME#${DOMAIN_NAME}#g \
     docker-compose.yml  
+
+
+sed -i -e s#DOMAINNAME#${DOMAIN_NAME}#g  images/haproxy/haproxy.cfg
 
 
 # NO need - debug
@@ -249,7 +311,7 @@ echo
 echo -n "Waiting for atlassiandb container to start ..."
 # Needs to be a loop here, which exits when the status becomes true. 
 while [ "$status" != "true" ] ; do
-  status=$(docker inspect -f {{.State.Running}} atlassiandb 2>&1)
+  status=$(docker inspect -f {{.State.Running}} atlassiandb.${DOMAIN_NAME} 2>&1)
   sleep 1
   echo -n "."
 done

@@ -1,6 +1,7 @@
   atlassiandb:
     build:  ./images/postgres
-    container_name: atlassiandb
+    container_name: atlassiandb.DOMAINNAME
+    hostname: atlassiandb.DOMAINNAME
     # We do not need to expose the DB port to the outside world!
     # ports:
     #  - "5432:5432"
@@ -10,5 +11,5 @@
       - POSTGRES_PASSWORD=POSTGRESPASS
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      # - STORAGEDIR/atlassiandb/postgres:/var/lib/postgresql/data/pgdata
-      - STORAGEDIR/atlassiandb/postgres:/var/lib/postgresql/data
+      # - STORAGETOPDIR/atlassiandb/postgres:/var/lib/postgresql/data/pgdata
+      - ATLASSIANTOPDIR/atlassiandb/postgres:/var/lib/postgresql/data

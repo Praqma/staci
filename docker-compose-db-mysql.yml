@@ -1,6 +1,7 @@
   atlassiandb:
     build:  ./images/mysql
-    container_name: atlassiandb
+    container_name: atlassiandb.DOMAINNAME
+    hostname: atlassiandb.DOMAINNAME
     # We do not need to expose the DB port to the outside world!
     # ports:
     #  - "3306:3306"
@@ -10,4 +11,4 @@
       - MYSQL_ROOT_PASSWORD=MYSQLPASS
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - STORAGEDIR/atlassiandb/mysql:/var/lib/mysql
+      - ATLASSIANTOPDIR/atlassiandb/mysql:/var/lib/mysql
