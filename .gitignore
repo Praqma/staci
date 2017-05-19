@@ -8,3 +8,6 @@ images/atlassiandb/Dockerfile
 docker-compose.yml
 
 logs/*
+
+# Custom settings related to any particular client, which needs to be skipped.
+setup.conf.local
