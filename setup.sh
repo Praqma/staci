@@ -279,6 +279,9 @@ fi
 # here we have to select based on DB_PROVIDER.
 cat docker-compose-minus-db.yml docker-compose-db-${DB_PROVIDER}.yml > docker-compose.yml
 
+echo
+echo "Replacing keywords with values from config variables in the freshly generated docker-compose.yml file ..."
+echo 
 # Then do some sed magic:
 sed -i -e s#STORAGETOPDIR#${STORAGE_TOP_DIR}#g \
        -e s#CODETOPDIR#${CODE_TOP_DIR}#g \
@@ -289,7 +292,10 @@ sed -i -e s#STORAGETOPDIR#${STORAGE_TOP_DIR}#g \
     docker-compose.yml  
 
 
-sed -i -e s#DOMAINNAME#${DOMAIN_NAME}#g  images/haproxy/haproxy.cfg
+echo "Generating haproxy.cfg from haproxy.cfg.template replacing keywords with values from config variables ..."
+# Notice no '-i' in the sed below. That is because it creates a config file out of a template file.
+sed -e s#DOMAINNAME#${DOMAIN_NAME}#g  images/haproxy/haproxy.cfg.template > images/haproxy/haproxy.cfg 
+echo
 
 
 # NO need - debug
