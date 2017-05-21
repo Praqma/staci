@@ -1,0 +1,28 @@
+    <Service name="Catalina">
+
+        <Connector port="8080"
+
+                   maxThreads="150"
+                   minSpareThreads="25"
+                   connectionTimeout="20000"
+
+                   maxHttpHeaderSize="8192"
+                   protocol="HTTP/1.1"
+                   useBodyEncodingForURI="true"
+                   redirectPort="443"
+                   proxyName="projects.DOMAINNAME"
+                   proxyPort="443"
+                   scheme="https"
+                   acceptCount="100"
+                   disableUploadTimeout="true"
+                   bindOnInit="false"/>
+
+        <Connector port="8081"
+
+                   maxThreads="150"
+                   connectionTimeout="20000"
+                   minSpareThreads="10" 
+                   acceptCount="10"
+                   protocol="HTTP/1.1"
+                   URIEncoding="UTF-8"/>
+
