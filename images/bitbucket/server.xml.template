@@ -65,7 +65,7 @@
 	connectionTimeout="200000" 
 	useBodyEncodingForURI="true" 
 	redirectPort="443" 
-	proxyName="bitbucket.example.com" 
+	proxyName="BITBUCKETNAME.DOMAINNAME" 
 	proxyPort="443" 
 	scheme="https" 
 	compression="on" 

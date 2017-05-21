@@ -60,7 +60,7 @@
                    protocol="HTTP/1.1"
                    useBodyEncodingForURI="true"
                    redirectPort="443"
-                   proxyName="projects.DOMAINNAME"
+                   proxyName="JIRANAME.DOMAINNAME"
                    proxyPort="443"
                    scheme="https"
                    acceptCount="100"
