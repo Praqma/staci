@@ -15,3 +15,13 @@ setup.conf.local
 
 # ingnore the haproxy.cfg file. Only maintain haproxy.cfg.template 
 haproxy.cfg
+
+# Ignore all server.xml files as they are generated from their template files.
+server.xml
+
+# 
+# Ignore all *tc_connector.xml files as they are generated from their template files.
+*tc_connector.xml
+
+# Ignore local license files
+*.license

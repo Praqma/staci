@@ -1,10 +1,11 @@
 version: '2'
 
 services:
-  git:
-    build: ./images/bitbucket
-    container_name: git.DOMAINNAME
-    hostname: git.DOMAINNAME
+
+  BITBUCKETNAME:
+    JENKINSNAME: ./images/bitbucket
+    container_name: BITBUCKETNAME.DOMAINNAME
+    hostname: BITBUCKETNAME.DOMAINNAME
     # 8888 is our custom port we set up for a separate/additional connection.
     expose:
       - "8888"
@@ -14,12 +15,12 @@ services:
       - "7999:7999"
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ATLASSIANTOPDIR/bitbucket:/var/atlassian/bitbucket
+      - ATLASSIANTOPDIR/BITBUCKETNAME:/var/atlassian/bitbucket
 
-  projects:
-    build:  ./images/jira
-    container_name: projects.DOMAINNAME
-    hostname: projects.DOMAINNAME
+  JIRANAME:
+    JENKINSNAME:  ./images/jira
+    container_name: JIRANAME.DOMAINNAME
+    hostname: JIRANAME.DOMAINNAME
     environment:
       - CATALINA_OPTS="-Datlassian.plugins.enable.wait=300" "-Xmx768m" "-Xms512m" "-Dorg.apache.catalina.SESSION_COOKIE_NAME=jirasession" "-Duser.timezone="
     expose:
@@ -27,47 +28,47 @@ services:
       - "8080"
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ATLASSIANTOPDIR/jira:/var/atlassian/jira
+      - ATLASSIANTOPDIR/JIRANAME:/var/atlassian/jira
 
-  codereview:
-    build:  ./images/crucible
-    container_name: codereview.DOMAINNAME
-    hostname: codereview.DOMAINNAME
+  CRUCIBLENAME:
+    JENKINSNAME:  ./images/crucible
+    container_name: CRUCIBLENAME.DOMAINNAME
+    hostname: CRUCIBLENAME.DOMAINNAME
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ATLASSIANTOPDIR/crucible:/var/atlassian/crucible
+      - ATLASSIANTOPDIR/CRUCIBLENAME:/var/atlassian/crucible
 
-  build:
-    build: ./images/jenkins
-    container_name: build.DOMAINNAME
-    hostname: build.DOMAINNAME
+  JENKINSNAME:
+    JENKINSNAME: ./images/jenkins
+    container_name: JENKINSNAME.DOMAINNAME
+    hostname: JENKINSNAME.DOMAINNAME
     ports:
       - "50000:50000"
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - CODETOPDIR/jenkins:/var/jenkins_home
+      - CODETOPDIR/JENKINSNAME:/var/jenkins_home
 
-  artifacts:
-    build:  ./images/artifactory
-    container_name: artifacts.DOMAINNAME
-    hostname: artifacts.DOMAINNAME
+  ARTIFACTORYNAME:
+    JENKINSNAME:  ./images/artifactory
+    container_name: ARTIFACTORYNAME.DOMAINNAME
+    hostname: ARTIFACTORYNAME.DOMAINNAME
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - CODETOPDIR/artifactory/backup:/artifactory/backup
-      - CODETOPDIR/artifactory/data:/artifactory/data
-      - CODETOPDIR/artifactory/logs:/artifactory/logs
+      - CODETOPDIR/ARTIFACTORYNAME/backup:/artifactory/backup
+      - CODETOPDIR/ARTIFACTORYNAME/data:/artifactory/data
+      - CODETOPDIR/ARTIFACTORYNAME/logs:/artifactory/logs
 
   haproxy:
-    build: ./images/haproxy
+    JENKINSNAME: ./images/haproxy
     container_name: haproxy.DOMAINNAME
     hostname: haproxy.DOMAINNAME
     depends_on:
       - atlassiandb
-      - build
-      - artifacts
-      - projects
-      - codereview
-      - git
+      - JENKINSNAME
+      - ARTIFACTORYNAME
+      - JIRANAME
+      - CRUCIBLENAME
+      - BITBUCKETNAME
     ports:
       - "443:443"
       - "80:80"

@@ -126,6 +126,11 @@ echo
 MYSQL_ROOT_PASSWORD="${DB_ROOT_PASSWORD}"
 POSTGRES_PASSWORD="${DB_ROOT_PASSWORD}"
 
+
+# which user started this program as sudo? logname helps! 
+# It is used to set the correct ownership of the files generate from template files.
+ORIGINAL_USER=$(logname)
+ORIGINAL_GID=$(id -g ${ORIGINAL_USER})
 #
 #
 ########### END - SYTEM DEFINED VARIABLES - ##############################
@@ -228,7 +233,8 @@ if [ !  -d ${STORAGE_TOP_DIR} ]; then
   mkdir -p ${STORAGE_TOP_DIR}
 fi
 
-for SERVICE in haproxy artifactory jenkins ; do
+# admin might have different names for services, specified in setup.conf. So it is best to use those names for directories.
+for SERVICE in haproxy ${ARTIFACTORY_NAME} ${JENKINS_NAME} ; do
   if [  ! -d "${CODE_TOP_DIR}/${SERVICE}" ]; then
     mkdir ${CODE_TOP_DIR}/${SERVICE}
     if [ "${SERVICE}" == "artifactory" ]; then
@@ -238,7 +244,9 @@ for SERVICE in haproxy artifactory jenkins ; do
 done
 
 
-for SERVICE in jira bitucket crucible ; do
+# for SERVICE in jira bitucket crucible ; do
+# admin might have different names for services, specified in setup.conf. So it is best to use those names for directories.
+for SERVICE in ${JIRA_NAME} ${BITBUCKET_NAME} ${CRUCIBLE_NAME} atlassiandb; do
   if [  ! -d "${ATLASSIAN_TOP_DIR}/${SERVICE}" ]; then
     mkdir ${ATLASSIAN_TOP_DIR}/${SERVICE}
 
@@ -289,13 +297,51 @@ sed -i -e s#STORAGETOPDIR#${STORAGE_TOP_DIR}#g \
        -e s#MYSQLPASS#${MYSQL_ROOT_PASSWORD}#g \
        -e s#POSTGRESPASS#${POSTGRES_PASSWORD}#g \
        -e s#DOMAINNAME#${DOMAIN_NAME}#g \
+       -e s#JIRANAME#${JIRA_NAME}#g  \
+       -e s#BITBUCKETNAME#${BITBUCKET_NAME}#g  \
+       -e s#CRUCIBLENAME#${CRUCIBLE_NAME}#g  \
+       -e s#JENKINSNAME#${JENKINS_NAME}#g  \
+       -e s#ARTIFACTORYNAME#${ARTIFACTORY_NAME}#g  \
     docker-compose.yml  
 
+chown ${ORIGINAL_USER}:${ORIGINAL_GID} docker-compose.yml
 
 echo "Generating haproxy.cfg from haproxy.cfg.template replacing keywords with values from config variables ..."
 # Notice no '-i' in the sed below. That is because it creates a config file out of a template file.
-sed -e s#DOMAINNAME#${DOMAIN_NAME}#g  images/haproxy/haproxy.cfg.template > images/haproxy/haproxy.cfg 
+sed -e s#DOMAINNAME#${DOMAIN_NAME}#g  \
+    -e s#JIRANAME#${JIRA_NAME}#g  \
+    -e s#BITBUCKETNAME#${BITBUCKET_NAME}#g  \
+    -e s#CRUCIBLENAME#${CRUCIBLE_NAME}#g  \
+    -e s#JENKINSNAME#${JENKINS_NAME}#g  \
+    -e s#ARTIFACTORYNAME#${ARTIFACTORY_NAME}#g  \
+    images/haproxy/haproxy.cfg.template > images/haproxy/haproxy.cfg 
 echo
+
+
+
+echo "Generating various other jira and bitbucket files from their respective template files, replacing keywords with values from config variables ..."
+# Notice no '-i' in the sed below. That is because it creates a config file out of a template file.
+
+sed -e s#DOMAINNAME#${DOMAIN_NAME}#g  \
+    -e s#JIRANAME#${JIRA_NAME}#g  \
+    images/jira/server.xml.template > images/jira/server.xml
+
+sed -e s#DOMAINNAME#${DOMAIN_NAME}#g  \
+    -e s#JIRANAME#${JIRA_NAME}#g  \
+    images/jira/jira_tc_connector.xml.template > images/jira/jira_tc_connector.xml
+
+
+sed -e s#DOMAINNAME#${DOMAIN_NAME}#g  \
+    -e s#BITBUCKETNAME#${BITBUCKET_NAME}#g  \
+    images/bitbucket/server.xml.template > images/bitbucket/server.xml
+
+sed -e s#DOMAINNAME#${DOMAIN_NAME}#g  \
+    -e s#BITBUCKETNAME#${BITBUCKET_NAME}#g  \
+    images/bitbucket/bitbucket_tc_connector.xml.template > images/bitbucket/bitbucket_tc_connector.xml
+
+
+
+chown ${ORIGINAL_USER}:${ORIGINAL_GID} images/* -R
 
 
 # NO need - debug

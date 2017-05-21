@@ -25,43 +25,43 @@ frontend http-in
         bind *:80
 
         #define samples and matches in ACLs 
-        acl build hdr(host) -i build.DOMAINNAME
-        acl artifacts hdr(host) -i artifacts.DOMAINNAME
-        acl projects hdr(host) -i projects.DOMAINNAME
-        acl git hdr(host) -i git.DOMAINNAME
-        acl codereview hdr(host) -i codereview.DOMAINNAME
-	 use_backend build if build
-	 use_backend artifacts if artifacts
-	 use_backend projects if projects
-	 use_backend codereview if codereview
-	 use_backend git if git
+        acl JENKINSNAME hdr(host) -i JENKINSNAME.DOMAINNAME
+        acl ARTIFACTORYNAME hdr(host) -i ARTIFACTORYNAME.DOMAINNAME
+        acl JIRANAME hdr(host) -i JIRANAME.DOMAINNAME
+        acl BITBUCKETNAME hdr(host) -i BITBUCKETNAME.DOMAINNAME
+        acl CRUCIBLENAME hdr(host) -i CRUCIBLENAME.DOMAINNAME
+	 use_backend JENKINSNAME if JENKINSNAME
+	 use_backend ARTIFACTORYNAME if ARTIFACTORYNAME
+	 use_backend JIRANAME if JIRANAME
+	 use_backend CRUCIBLENAME if CRUCIBLENAME
+	 use_backend BITBUCKETNAME if BITBUCKETNAME
 frontend https-in
         bind *:443 ssl crt /var/haproxy/haproxy.pem
         reqadd X-Forwarded-Proto:\ https
 
         # Define hosts
-        acl build hdr(host) -i build.DOMAINNAME
-        acl artifacts hdr(host) -i artifacts.DOMAINNAME
-        acl projects hdr(host) -i projects.DOMAINNAME
-        acl codereview hdr(host) -i codereview.DOMAINNAME
-        acl git hdr(host) -i git.DOMAINNAME
-	 use_backend build if build
-	 use_backend artifacts if artifacts
-	 use_backend projects if projects
-	 use_backend codereview if codereview
-	 use_backend git if git
-backend git
+        acl JENKINSNAME hdr(host) -i JENKINSNAME.DOMAINNAME
+        acl ARTIFACTORYNAME hdr(host) -i ARTIFACTORYNAME.DOMAINNAME
+        acl JIRANAME hdr(host) -i JIRANAME.DOMAINNAME
+        acl CRUCIBLENAME hdr(host) -i CRUCIBLENAME.DOMAINNAME
+        acl BITBUCKETNAME hdr(host) -i BITBUCKETNAME.DOMAINNAME
+	 use_backend JENKINSNAME if JENKINSNAME
+	 use_backend ARTIFACTORYNAME if ARTIFACTORYNAME
+	 use_backend JIRANAME if JIRANAME
+	 use_backend CRUCIBLENAME if CRUCIBLENAME
+	 use_backend BITBUCKETNAME if BITBUCKETNAME
+backend BITBUCKETNAME
         redirect scheme https if !{ ssl_fc }
-        server git git.DOMAINNAME:7990 check
-backend projects
+        server BITBUCKETNAME BITBUCKETNAME.DOMAINNAME:7990 check
+backend JIRANAME
         redirect scheme https if !{ ssl_fc }
-        server projects projects.DOMAINNAME:8080 check
-backend build
+        server JIRANAME JIRANAME.DOMAINNAME:8080 check
+backend JENKINSNAME
         redirect scheme https if !{ ssl_fc }
-        server build build.DOMAINNAME:8080 check
-backend artifacts
+        server JENKINSNAME JENKINSNAME.DOMAINNAME:8080 check
+backend ARTIFACTORYNAME
         redirect scheme https if !{ ssl_fc }
-        server artifacts artifacts.DOMAINNAME:8080 check
-backend codereview
+        server ARTIFACTORYNAME ARTIFACTORYNAME.DOMAINNAME:8080 check
+backend CRUCIBLENAME
 	redirect scheme https if !{ ssl_fc }
-        server codereview codereview.DOMAINNAME:8060 check
+        server CRUCIBLENAME CRUCIBLENAME.DOMAINNAME:8060 check
