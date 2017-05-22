@@ -50,18 +50,20 @@ frontend https-in
 	 use_backend JIRANAME if JIRANAME
 	 use_backend CRUCIBLENAME if CRUCIBLENAME
 	 use_backend BITBUCKETNAME if BITBUCKETNAME
+# Note: The backends MUST NOT HAVE the .DOMAINNAME component , 
+#       else we have problems later with Jira, etc (Base URL checks fail).
 backend BITBUCKETNAME
         redirect scheme https if !{ ssl_fc }
-        server BITBUCKETNAME BITBUCKETNAME.DOMAINNAME:7990 check
+        server BITBUCKETNAME BITBUCKETNAME:7990 check
 backend JIRANAME
         redirect scheme https if !{ ssl_fc }
-        server JIRANAME JIRANAME.DOMAINNAME:8080 check
+        server JIRANAME JIRANAME:8080 check
 backend JENKINSNAME
         redirect scheme https if !{ ssl_fc }
-        server JENKINSNAME JENKINSNAME.DOMAINNAME:8080 check
+        server JENKINSNAME JENKINSNAME:8080 check
 backend ARTIFACTORYNAME
         redirect scheme https if !{ ssl_fc }
-        server ARTIFACTORYNAME ARTIFACTORYNAME.DOMAINNAME:8080 check
+        server ARTIFACTORYNAME ARTIFACTORYNAME:8080 check
 backend CRUCIBLENAME
 	redirect scheme https if !{ ssl_fc }
-        server CRUCIBLENAME CRUCIBLENAME.DOMAINNAME:8060 check
+        server CRUCIBLENAME CRUCIBLENAME:8060 check

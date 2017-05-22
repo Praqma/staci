@@ -1,11 +1,14 @@
 version: '2'
 
+# Note: The services MUST NOT HAVE their hostnames or container_names set with DOMAINNAME,
+#       else we get problems later with Jira, etc, which fails on Base URL check.
+
 services:
 
   BITBUCKETNAME:
     JENKINSNAME: ./images/bitbucket
-    container_name: BITBUCKETNAME.DOMAINNAME
-    hostname: BITBUCKETNAME.DOMAINNAME
+    container_name: BITBUCKETNAME
+    hostname: BITBUCKETNAME
     # 8888 is our custom port we set up for a separate/additional connection.
     expose:
       - "8888"
@@ -19,10 +22,21 @@ services:
 
   JIRANAME:
     JENKINSNAME:  ./images/jira
-    container_name: JIRANAME.DOMAINNAME
-    hostname: JIRANAME.DOMAINNAME
+    container_name: JIRANAME
+    hostname: JIRANAME
     environment:
-      - CATALINA_OPTS="-Datlassian.plugins.enable.wait=300" "-Xmx768m" "-Xms512m" "-Dorg.apache.catalina.SESSION_COOKIE_NAME=jirasession" "-Duser.timezone="
+      # - CATALINA_OPTS="-Datlassian.plugins.enable.wait=300" "-Xmx768m" "-Xms512m" "-Dorg.apache.catalina.SESSION_COOKIE_NAME=jirasession" "-Duser.timezone="
+      # Added extra options based on:
+      # https://confluence.atlassian.com/jirakb/how-to-configure-an-outbound-http-and-https-proxy-for-jira-applications-247857187.html
+      # Note that I do not want to use https.nonProxyHosts as I do want the containers to access the proxy for any HTTPS urls.
+
+      - CATALINA_OPTS="-Datlassian.plugins.enable.wait=300" "-Xmx768m" "-Xms512m" "-Dorg.apache.catalina.SESSION_COOKIE_NAME=jirasession" "-Duser.timezone=" "-Dhttp.nonProxyHosts=localhost|projects|git|codereview|build|artifacts"
+
+      #   # -Dhttp.nonProxyHosts and -Dhttps.nonProxyHosts 
+      #  The property http.nonProxyHosts indicates the hosts which should be connected to directly
+      #    and not through the proxy server. The value can be a list of hosts, each separated by a ( | ), 
+      #    and in addition a wildcard character ( * ) can be used for matching. For example:
+      #  "-Dhttp.nonProxyHosts=*.foo.com|localhost|confluence|crowd"
     expose:
       - "8888"
       - "8080"
@@ -32,16 +46,24 @@ services:
 
   CRUCIBLENAME:
     JENKINSNAME:  ./images/crucible
-    container_name: CRUCIBLENAME.DOMAINNAME
-    hostname: CRUCIBLENAME.DOMAINNAME
+    container_name: CRUCIBLENAME
+    hostname: CRUCIBLENAME
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ATLASSIANTOPDIR/CRUCIBLENAME:/var/atlassian/crucible
 
   JENKINSNAME:
     JENKINSNAME: ./images/jenkins
-    container_name: JENKINSNAME.DOMAINNAME
-    hostname: JENKINSNAME.DOMAINNAME
+    container_name: JENKINSNAME
+    hostname: JENKINSNAME
+    
+    # CPU and Memory limits:
+    # (Reference: https://docs.docker.com/compose/compose-file/compose-file-v2/#restart)
+    # cpu_quota: 50000 = 50%
+
+    cpu_quota: 50000
+    mem_limit: 4g
+
     ports:
       - "50000:50000"
     volumes:
@@ -50,8 +72,8 @@ services:
 
   ARTIFACTORYNAME:
     JENKINSNAME:  ./images/artifactory
-    container_name: ARTIFACTORYNAME.DOMAINNAME
-    hostname: ARTIFACTORYNAME.DOMAINNAME
+    container_name: ARTIFACTORYNAME
+    hostname: ARTIFACTORYNAME
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - CODETOPDIR/ARTIFACTORYNAME/backup:/artifactory/backup
@@ -60,8 +82,8 @@ services:
 
   haproxy:
     JENKINSNAME: ./images/haproxy
-    container_name: haproxy.DOMAINNAME
-    hostname: haproxy.DOMAINNAME
+    container_name: haproxy
+    hostname: haproxy
     depends_on:
       - atlassiandb
       - JENKINSNAME
@@ -79,8 +101,8 @@ services:
     # Note: cadvisor is not part of haproxy setup. It exposes it's port on the dockerhost.
     #       This is intentional.
     image: google/cadvisor:latest 
-    container_name: cadvisor.DOMAINNAME
-    hostname: cadvisor.DOMAINNAME
+    container_name: cadvisor
+    hostname: cadvisor
     ports:
       - 8080:8080
     volumes:
