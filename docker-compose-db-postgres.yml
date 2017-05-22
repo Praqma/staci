@@ -1,7 +1,7 @@
   atlassiandb:
     build:  ./images/postgres
-    container_name: atlassiandb.DOMAINNAME
-    hostname: atlassiandb.DOMAINNAME
+    container_name: atlassiandb
+    hostname: atlassiandb
     # We do not need to expose the DB port to the outside world!
     # ports:
     #  - "5432:5432"

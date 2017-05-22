@@ -16,7 +16,8 @@ ENV JIRA_INSTALL  /opt/atlassian/jira
 
 # Install Atlassian JIRA and helper tools and setup initial home
 # directory structure.
-COPY atlassian-jira-software-7.3.1.tar.gz "${JIRA_INSTALL}/atlassian-jira-software-7.3.1.tar.gz"
+# COPY atlassian-jira-software-7.3.1.tar.gz "${JIRA_INSTALL}/atlassian-jira-software-7.3.1.tar.gz"
+COPY atlassian-jira-software-7.3.6.tar.gz "${JIRA_INSTALL}/atlassian-jira-software-7.3.6.tar.gz"
 
 COPY server.xml /tmp
 
@@ -26,8 +27,8 @@ RUN set -x \
     && chmod -R 700                 "${JIRA_HOME}" \
     && chown -R atlassian:atlassian "${JIRA_HOME}" \
     && mkdir -p                     "${JIRA_INSTALL}/conf/Catalina" \
-    && tar -xzf "${JIRA_INSTALL}/atlassian-jira-software-7.3.1.tar.gz" --directory "${JIRA_INSTALL}" --strip-components=1 --no-same-owner \
-    && rm -f "${JIRA_INSTALL}/atlassian-jira-software-7.3.1.tar.gz" \
+    && tar -xzf "${JIRA_INSTALL}/atlassian-jira-software-7.3.6.tar.gz" --directory "${JIRA_INSTALL}" --strip-components=1 --no-same-owner \
+    && rm -f "${JIRA_INSTALL}/atlassian-jira-software-7.3.6.tar.gz" \
     && cp /tmp/server.xml 	/opt/atlassian/jira/conf/server.xml \
     && chmod -R 700                 "${JIRA_INSTALL}/logs" \
     && chmod -R 700                 "${JIRA_INSTALL}/temp" \

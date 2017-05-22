@@ -39,7 +39,6 @@ if [ -r "${CONFIG_FILE}.local" ] ; then
 fi
 
 
-
 ########### START - SANITY CHECKS #############################################################
 #
 #
@@ -88,6 +87,7 @@ CRUCIBLE_TARBALL=$(basename $CRUCIBLE_URL)
 BITBUCKET_TARBALL=$(basename $BITBUCKET_URL)
 MYSQL_CONNECTOR_TARBALL=$(basename $MYSQL_CONNECTOR_URL)
 POSTGRES_CONNECTOR_TARBALL=$(basename $POSTGRES_CONNECTOR_URL)
+
 
 # Define the UID and GID for the directories and files ...
 USER_ID=1000
@@ -359,11 +359,12 @@ echo
 docker-compose up -d atlassiandb >> $LOG_DIR/docker-compose.atlassiandb.log 2>&1
 
 
+DB_CONTAINER="atlassiandb"
 echo
 echo -n "Waiting for atlassiandb container to start ..."
 # Needs to be a loop here, which exits when the status becomes true. 
 while [ "$status" != "true" ] ; do
-  status=$(docker inspect -f {{.State.Running}} atlassiandb.${DOMAIN_NAME} 2>&1)
+  status=$(docker inspect -f {{.State.Running}} ${DB_CONTAINER} 2>&1)
   sleep 1
   echo -n "."
 done

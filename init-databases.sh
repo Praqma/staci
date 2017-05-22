@@ -25,7 +25,7 @@ fi
     
 SETUP_DIR=$(pwd)
 
-DB_CONTAINER="atlassiandb.${DOMAIN_NAME}"
+DB_CONTAINER="atlassiandb"
 
 function setup_mysql_db(){
   local USER_NAME=$1

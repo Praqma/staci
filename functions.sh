@@ -40,7 +40,7 @@ function testDBReadiness-mysql() {
 ATTEMPT=0
 RETURN_CODE=9
 
-DB_CONTAINER="atlassiandb.${DOMAIN_NAME}"
+DB_CONTAINER="atlassiandb"
 
 while [ $ATTEMPT -le 59 ]; do
   ATTEMPT=$(( $ATTEMPT + 1 ))
@@ -73,7 +73,7 @@ function testDBReadiness-postgres() {
 # In light of above, I have to first check for a string in postgres container logs.
 # i.e. "PostgreSQL init process complete; ready for start up."
 
-DB_CONTAINER="atlassiandb.${DOMAIN_NAME}"
+DB_CONTAINER="atlassiandb"
 
 INIT_STATUS=""
 
@@ -83,7 +83,7 @@ SEARCH_STRING="is ready to accept connections"
 # echo "Waiting for Postges to complete it's init process ..."
 
 while [ "${READY_STATUS}" == "" ]; do
-   READY_STATUS=$(docker logs ${DB_CONTAINER} 2>&1 | grep  "$SEARCH_STRING")
+   READY_STATUS=$(docker logs ${DB_CONTAINER} 2>&1 | grep "$SEARCH_STRING")
    echo -n "."
    sleep 1
 done

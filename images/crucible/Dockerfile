@@ -14,7 +14,7 @@ RUN apt-get update && \
 
 # Some configuration variables.
 ENV LANG C.UTF-8
-ENV FECRU_VERSION 4.2.0
+ENV FECRU_VERSION 4.4.1
 
 # Set Fisheye memory usage
 # ENV FISHEYE_OPTS -Xmx3072m -XX:MaxPermSize=256m
@@ -40,7 +40,8 @@ ENV CRUCIBLE_HOME   /opt/atlassian/crucible
 
 # Copy crucible.zip from host computer to /opt/atlassian/ in the container,
 #   and then unzip it over there. Then rename the resultant directory to crucible.
-COPY crucible-4.2.0.zip /opt/atlassian/
+# COPY crucible-4.2.0.zip /opt/atlassian/
+COPY crucible-4.4.1.zip /opt/atlassian/
 
 WORKDIR /opt/atlassian/
 

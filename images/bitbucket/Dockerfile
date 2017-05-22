@@ -7,14 +7,15 @@ RUN echo "atlassian:praqma" | chpasswd
 # Configuration variables.
 ENV BITBUCKET_HOME     /var/atlassian/bitbucket
 ENV BITBUCKET_INSTALL  /opt/atlassian/bitbucket
-ENV BITBUCKET_VERSION  4.10.1
+ENV BITBUCKET_VERSION  4.14.5
 
 # Define memory usage for tomcat
 ENV Xms           512m
 ENV Xmx           1512m
 
 # Install Atlassian Bitbucket, tools and setup initial home directory structure.
-COPY atlassian-bitbucket-4.10.1.tar.gz "${BITBUCKET_INSTALL}/atlassian-bitbucket-4.10.1.tar.gz"
+# COPY atlassian-bitbucket-4.10.1.tar.gz "${BITBUCKET_INSTALL}/atlassian-bitbucket-4.10.1.tar.gz"
+COPY atlassian-bitbucket-4.14.5.tar.gz "${BITBUCKET_INSTALL}/atlassian-bitbucket-4.14.5.tar.gz"
 
 # Copy our custom (superior) server.xml file in the correct location: :)
 COPY server.xml /tmp

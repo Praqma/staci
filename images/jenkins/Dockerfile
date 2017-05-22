@@ -1,4 +1,4 @@
-FROM jenkins:2.32.2
+FROM jenkins:2.46.2
 MAINTAINER Praqma <info@praqma.com>
 
 # Install Jenkins plugins

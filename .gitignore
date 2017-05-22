@@ -25,3 +25,5 @@ server.xml
 
 # Ignore local license files
 *.license
+
+*/plugins.txt
