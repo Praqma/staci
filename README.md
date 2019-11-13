@@ -1,6 +1,9 @@
 ---
 Maintainer: Hoeghh 
 ---
+
+> **Important : STACI repository will be deleted, as it is no longer being developed on. Please see our ASK project instead. https://github.com/Praqma/ask**
+
 # Support Tracking And Continuous Integration
 
 STACI lets you run Atlassian products with easy command line scripts. It uses Docker to
