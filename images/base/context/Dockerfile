@@ -16,3 +16,8 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
 # Add /srv/java on PATH variable
 ENV PATH ${PATH}:${JAVA_HOME}/bin:/srv/java
+
+# Secure the right timezone is applied
+RUN echo "Europe/Copenhagen" >/etc/timezone && \
+ln -sf /usr/share/zoneinfo/Europe/Copenhagen /etc/localtime && \
+dpkg-reconfigure -f noninteractive tzdata
